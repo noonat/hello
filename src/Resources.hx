@@ -38,9 +38,9 @@ class Resources {
   static public var loadedPercent(getLoadedPercent, never):Float;
   static public var loadedPercentString(getLoadedPercentString, never):String;
   static public var onLoaded:Signal<LoadedListener> = new Signal<LoadedListener>();
-  static private var _resources:Hash<ResourceData> = new Hash<ResourceData>();
-  static private var _loadedResources:Array<String> = new Array<String>();
-  static private var _pendingResources:Array<String> = new Array<String>();
+  static var _resources:Hash<ResourceData> = new Hash<ResourceData>();
+  static var _loadedResources:Array<String> = new Array<String>();
+  static var _pendingResources:Array<String> = new Array<String>();
 
   static public function init() {
   #if debug

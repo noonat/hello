@@ -8,8 +8,8 @@ class Engine {
   public var time:Float;
   public var width:Int;
   public var height:Int;
-  private var _pendingWorld:World;
-  private var _world:World;
+  var _pendingWorld:World;
+  var _world:World;
 
   public var world(getWorld, setWorld):World;
   inline function getWorld():World return _world
