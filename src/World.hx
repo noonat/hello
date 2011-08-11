@@ -2,7 +2,7 @@ package;
 
 using Mixins;
 
-class World {
+class World extends Space {
   public var isActive:Bool;
   public var isVisible:Bool;
   var _entities:ValueList<Entity>;
@@ -14,15 +14,16 @@ class World {
   var _names:Hash<ValueList<Entity>>;
   var _tags:Hash<ValueList<Entity>>;
 
-  public function new() {
+  public function new(cellSize:Int=32) {
+    super(cellSize);
     isActive = true;
     isVisible = true;
     _entities = Entity.listPool.create();
     _entitiesToAdd = Entity.listPool.create();
     _entitiesToRemove = Entity.listPool.create();
     _layers = new IntHash<ValueList<Graphic>>();
-    _layersNeedSort = false;
     _layersKeys = new Array<Int>();
+    _layersNeedSort = false;
     _names = new Hash<ValueList<Entity>>();
     _tags = new Hash<ValueList<Entity>>();
   }
@@ -109,6 +110,7 @@ class World {
       node = node.next;
       if (entity.isActive) {
         entity.update();
+        updateEntityCells(entity);
       }
     }
   }
@@ -146,6 +148,7 @@ class World {
             addToLayers(graphic);
           }
         }
+        updateEntityCells(entity);
         entity.added();
       }
     }
@@ -160,6 +163,11 @@ class World {
         _entitiesToAdd.remove(entity);
       } else if (entity.world == this) {
         entity.removed();
+        var cells = entity.cells;
+        while (cells.first != null) {
+          var cell = cells.shift();
+          cell.entities.remove(entity);
+        }
         var node = entity.graphics.first;
         while (node != null) {
           var graphic = node.value;

@@ -10,18 +10,36 @@ private typedef WorldFriend = {
 };
 
 class Entity {
+  public var cells(getCells, never):ValueList<SpaceCell>;
   public var graphics(getGraphics, never):ValueList<Graphic>;
   public var flags:Int;
   public var isActive:Bool;
   public var isVisible:Bool;
+  public var isCollidable:Bool;
+  public var hitbox(getHitbox, setHitbox):Hitbox;
   public var name(getName, setName):String;
+  public var stamp:Int;
   public var world:World;
   public var x(getX, setX):Float;
   public var y(getY, setY):Float;
 
+  // These are just shorthand for hitbox values transformed to entity space.
+  public var originX(getOriginX, never):Float;
+  public var originY(getOriginY, never):Float;
+  public var minX(getMinX, never):Float;
+  public var minY(getMinY, never):Float;
+  public var maxX(getMaxX, never):Float;
+  public var maxY(getMaxY, never):Float;
+  public var halfWidth(getHalfWidth, never):Float;
+  public var halfHeight(getHalfHeight, never):Float;
+  public var width(getWidth, never):Float;
+  public var height(getHeight, never):Float;
+
+  var _cells:ValueList<SpaceCell>;
   var _graphics:ValueList<Graphic>;
   var _graphicsToAdd:ValueList<Graphic>;
   var _graphicsToRemove:ValueList<Graphic>;
+  var _hitbox:Hitbox;
   var _name:String;
   var _tags:Hash<Bool>;
   var _x:Float;
@@ -31,7 +49,11 @@ class Entity {
     flags = 0;
     isActive = true;
     isVisible = true;
+    isCollidable = true;
+    hitbox = new Hitbox(0, 0);
+    stamp = 0;
     world = null;
+    _cells = SpaceCell.listPool.create();
     _graphics = Graphic.listPool.create();
     _name = null;
     _tags = new Hash<Bool>();
@@ -128,8 +150,28 @@ class Entity {
     return flags & mask != 0;
   }
 
+  inline function getCells():ValueList<SpaceCell> {
+    return _cells;
+  }
+
   inline function getGraphics():ValueList<Graphic> {
     return _graphics;
+  }
+
+  inline function getHitbox():Hitbox {
+    return _hitbox;
+  }
+
+  inline function setHitbox(value:Hitbox):Hitbox {
+    if (value == null) {
+      // FIXME: set to Hitbox(0, 0) instead?
+      throw "entity hitbox cannot be set to null";
+    }
+    if (_hitbox != value) {
+      _hitbox = value;
+      _hitbox.entity = this;
+    }
+    return value;
   }
 
   inline function getName():String {
@@ -165,6 +207,46 @@ class Entity {
 
   inline function setY(value:Float):Float {
     return _y = value;
+  }
+
+  inline function getOriginX():Float {
+    return _x + _hitbox.x;
+  }
+
+  inline function getOriginY():Float {
+    return _y + _hitbox.y;
+  }
+
+  inline function getMinX():Float {
+    return _x + _hitbox.x + _hitbox.minX;
+  }
+
+  inline function getMinY():Float {
+    return _y + _hitbox.y + _hitbox.minY;
+  }
+
+  inline function getMaxX():Float {
+    return _x + _hitbox.x + _hitbox.maxX;
+  }
+
+  inline function getMaxY():Float {
+    return _y + _hitbox.y + _hitbox.maxY;
+  }
+
+  inline function getHalfWidth():Float {
+    return _hitbox.halfWidth;
+  }
+
+  inline function getHalfHeight():Float {
+    return _hitbox.halfHeight;
+  }
+
+  inline function getWidth():Float {
+    return _hitbox.width;
+  }
+
+  inline function getHeight():Float {
+    return _hitbox.height;
   }
 
   inline function getWorldFriend():WorldFriend {
