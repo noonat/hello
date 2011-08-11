@@ -1,5 +1,9 @@
 import haxe.rtti.Generic;
 
+/**
+* A generic node class that supports object pooling. This is used by the
+* ValueList class to wrap individual values.
+*/
 class ValueNode<T> implements haxe.rtti.Generic {
   public var list:ValueList<T>;
   public var next:ValueNode<T>;
@@ -12,6 +16,9 @@ class ValueNode<T> implements haxe.rtti.Generic {
     reset(value);
   }
 
+  /**
+  * Remove the node from its list, and recycle the node.
+  */
   inline public function free() {
     if (list != null) {
       list.unlink(this);

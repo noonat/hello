@@ -46,6 +46,12 @@ task :server do
   sh 'ruby server.rb'
 end
 
+task :test do
+  sh 'haxe -cp src -cp test -neko test.n -main Test'
+  sh 'neko test.n'
+  rm 'test.n'
+end
+
 class Debugger
   def initialize
     $stdout.sync = true

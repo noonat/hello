@@ -2,6 +2,9 @@ package;
 
 import haxe.rtti.Generic;
 
+/**
+* A generic linked list class that supports object pooling.
+*/
 class ValueList<T> implements haxe.rtti.Generic {
   public var first:ValueNode<T>;
   public var _next:ValueList<T>;
@@ -14,6 +17,10 @@ class ValueList<T> implements haxe.rtti.Generic {
     reset();
   }
 
+  /**
+  * Add a value to the front of the list. This will add the value even if the
+  * value already exists in the list.
+  */
   inline public function add(value:T):ValueNode<T> {
     var node;
     if (_nodePool != null) {
@@ -31,6 +38,9 @@ class ValueList<T> implements haxe.rtti.Generic {
     return node;
   }
 
+  /**
+  * Remove all values from the list.
+  */
   inline public function clear() {
     var node = first;
     while (node != null) {
@@ -41,6 +51,9 @@ class ValueList<T> implements haxe.rtti.Generic {
     first = null;
   }
 
+  /**
+  * Remove all values from the list, and recycle the list.
+  */
   inline public function free() {
     clear();
     if (_pool != null) {
@@ -48,6 +61,9 @@ class ValueList<T> implements haxe.rtti.Generic {
     }
   }
 
+  /**
+  * Return true if the value exists in the list. This is an O(n) search.
+  */
   inline public function has(value:T):Bool {
     var node = first;
     var result = false;
@@ -62,6 +78,10 @@ class ValueList<T> implements haxe.rtti.Generic {
     return result;
   }
 
+  /**
+  * Remove a value from the list. If more than one node points to this value,
+  * all nodes will be removed.
+  */
   inline public function remove(value:T) {
     var node = first;
     while (node != null) {
@@ -74,6 +94,10 @@ class ValueList<T> implements haxe.rtti.Generic {
     }
   }
 
+  /**
+  * Remove the value at the front of the list and return it, or return null
+  * if the list is empty.
+  */
   inline public function shift():T {
     var node = first;
     if (node != null) {

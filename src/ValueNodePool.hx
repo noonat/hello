@@ -1,5 +1,8 @@
 import haxe.rtti.Generic;
 
+/**
+* Object pool for recycling ValueNode objects.
+*/
 class ValueNodePool<T> implements haxe.rtti.Generic  {
   public var _first:ValueNode<T>;
 
@@ -7,6 +10,9 @@ class ValueNodePool<T> implements haxe.rtti.Generic  {
     _first = null;
   }
 
+  /**
+  * Create a new node (reusing a node from the pool, if possible).
+  */
   inline public function create(value:T):ValueNode<T> {
     if (_first != null) {
       var node = _first;
@@ -18,6 +24,9 @@ class ValueNodePool<T> implements haxe.rtti.Generic  {
     }
   }
 
+  /**
+  * Put a node into the pool for reuse.
+  */
   inline public function put(list:ValueNode<T>) {
     list.next = _first;
     _first = list;
