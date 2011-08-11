@@ -1,11 +1,16 @@
 package;
 
+using Mixins;
+
 class World {
   public var isActive:Bool;
   public var isVisible:Bool;
   var _entities:ValueList<Entity>;
   var _entitiesToAdd:ValueList<Entity>;
   var _entitiesToRemove:ValueList<Entity>;
+  var _layers:IntHash<ValueList<Graphic>>;
+  var _layersKeys:Array<Int>;
+  var _layersNeedSort:Bool;
   var _names:Hash<ValueList<Entity>>;
   var _tags:Hash<ValueList<Entity>>;
 
@@ -15,6 +20,9 @@ class World {
     _entities = Entity.listPool.create();
     _entitiesToAdd = Entity.listPool.create();
     _entitiesToRemove = Entity.listPool.create();
+    _layers = new IntHash<ValueList<Graphic>>();
+    _layersNeedSort = false;
+    _layersKeys = new Array<Int>();
     _names = new Hash<ValueList<Entity>>();
     _tags = new Hash<ValueList<Entity>>();
   }
@@ -73,7 +81,22 @@ class World {
   * Render all the visible graphics in the world, layer by layer.
   */
   public function render() {
-
+    var i = _layersKeys.length;
+    while (i-- > 0) {
+      var layer = _layersKeys[i];
+      var graphics = _layers.get(layer);
+      if (graphics == null) {
+        continue;
+      }
+      var node = graphics.first;
+      while (node != null) {
+        var graphic = node.value;
+        node = node.next;
+        if (graphic.isVisible && graphic.entity.isVisible) {
+          graphic.render();
+        }
+      }
+    }
   }
 
   /**
@@ -93,6 +116,14 @@ class World {
   function resolvePending() {
     resolvePendingRemoves();
     resolvePendingAdds();
+    if (_layersNeedSort) {
+      _layersNeedSort = false;
+      _layersKeys.sort(sortLayersCallback);
+    }
+  }
+
+  function sortLayersCallback(a:Int, b:Int):Int {
+    return a - b;
   }
 
   function resolvePendingAdds() {
@@ -106,6 +137,14 @@ class World {
         addToNames(entity);
         for (tag in entity.getTags()) {
           addToTags(entity, tag);
+        }
+        var node = entity.graphics.first;
+        while (node != null) {
+          var graphic = node.value;
+          node = node.next;
+          if (graphic != null) {
+            addToLayers(graphic);
+          }
         }
         entity.added();
       }
@@ -121,12 +160,47 @@ class World {
         _entitiesToAdd.remove(entity);
       } else if (entity.world == this) {
         entity.removed();
+        var node = entity.graphics.first;
+        while (node != null) {
+          var graphic = node.value;
+          node = node.next;
+          if (graphic != null) {
+            removeFromLayers(graphic);
+          }
+        }
         for (tag in entity.getTags()) {
           removeFromTags(entity, tag);
         }
         removeFromNames(entity);
         entity.world = null;
         _entities.remove(entity);
+      }
+    }
+  }
+
+  function addToLayers(graphic:Graphic) {
+    var graphics = _layers.get(graphic.layer);
+    if (graphics == null) {
+      graphics = Graphic.listPool.create();
+      _layers.set(graphic.layer, graphics);
+      _layersKeys.push(graphic.layer);
+      _layersNeedSort = true;
+    }
+    graphics.add(graphic);
+  }
+
+  function removeFromLayers(graphic:Graphic) {
+    var graphics = _layers.get(graphic.layer);
+    if (graphics != null) {
+      graphics.remove(graphic);
+      if (graphics.first == null) {
+        graphics.free();
+        _layers.remove(graphic.layer);
+        var i = _layersKeys.indexOf(graphic.layer);
+        if (i != -1) {
+          _layersKeys.splice(i, 1);
+        }
+        _layersNeedSort = true;
       }
     }
   }

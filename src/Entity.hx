@@ -1,6 +1,8 @@
 package;
 
 private typedef WorldFriend = {
+  function addToLayers(graphic:Graphic):Void;
+  function removeFromLayers(graphic:Graphic):Void;
   function addToNames(entity:Entity):Void;
   function removeFromNames(entity:Entity):Void;
   function addToTags(entity:Entity, tag:String):Void;
@@ -8,6 +10,7 @@ private typedef WorldFriend = {
 };
 
 class Entity {
+  public var graphics(getGraphics, never):ValueList<Graphic>;
   public var flags:Int;
   public var isActive:Bool;
   public var isVisible:Bool;
@@ -16,6 +19,9 @@ class Entity {
   public var x(getX, setX):Float;
   public var y(getY, setY):Float;
 
+  var _graphics:ValueList<Graphic>;
+  var _graphicsToAdd:ValueList<Graphic>;
+  var _graphicsToRemove:ValueList<Graphic>;
   var _name:String;
   var _tags:Hash<Bool>;
   var _x:Float;
@@ -26,6 +32,7 @@ class Entity {
     isActive = true;
     isVisible = true;
     world = null;
+    _graphics = Graphic.listPool.create();
     _name = null;
     _tags = new Hash<Bool>();
     _x = 0;
@@ -42,6 +49,28 @@ class Entity {
 
   public function update() {
     
+  }
+
+  inline public function addGraphic(graphic:Graphic) {
+    if (graphic.entity == null) {
+      _graphics.add(graphic);
+      graphic.entity = this;
+      graphic.added();
+      if (world != null) {
+        getWorldFriend().addToLayers(graphic);
+      }
+    }
+  }
+
+  inline public function removeGraphic(graphic:Graphic) {
+    if (graphic.entity == this) {
+      if (world != null) {
+        getWorldFriend().removeFromLayers(graphic);
+      }
+      graphic.removed();
+      graphic.entity = null;
+      _graphics.remove(graphic);
+    }
   }
 
   inline public function addTag(tag:String) {
@@ -97,6 +126,10 @@ class Entity {
 
   inline public function hasAnyFlags(mask:Int):Bool {
     return flags & mask != 0;
+  }
+
+  inline function getGraphics():ValueList<Graphic> {
+    return _graphics;
   }
 
   inline function getName():String {
