@@ -1,0 +1,5 @@
+.dropbox
+*.DS_Store
+Icon*
+bin/*.swf
+
