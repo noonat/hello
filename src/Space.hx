@@ -15,8 +15,44 @@ class Space {
     _y = 0;
   }
 
-  inline public function collide(entity:Entity):ValueList<Entity> {
-    return null;
+  inline public function collide(entity:Entity, mask:Int=0):ValueList<Entity> {
+    ++_stamp;
+    var list = Entity.listPool.create();
+    var minX = entity.minX;
+    var minY = entity.minY;
+    var maxX = entity.maxX;
+    var maxY = entity.maxY;
+    var col1 = getColumn(Std.int(minX));
+    var col2 = getColumn(Std.int(Lo.ceil(maxX)));
+    var row1 = getRow(Std.int(minY));
+    var row2 = getRow(Std.int(Lo.ceil(maxY)));
+    var row = row1;
+    while (row <= row2) {
+      var col = col1;
+      while (col <= col2) {
+        var cell = getCell(col++, row);
+        if (cell == null) {
+          continue;
+        }
+        var node = cell.entities.first;
+        while (node != null) {
+          var other = node.value;
+          node = node.next;
+          if (entity != other && other.isCollidable && other.stamp != _stamp) {
+            other.stamp = _stamp;
+            if (other.hasFlags(mask)
+            && maxX >= other.minX && maxY >= other.minY
+            && minX <= other.maxX && minY <= other.maxY
+            && entity.bounds.collide(other.bounds)) {
+              list.add(other);
+            }
+          }
+        }
+      }
+      row++;
+    }
+    return list;
+
   }
 
   inline public function collideCircle(x:Float, y:Float, radius:Float, mask:Int=0):ValueList<Entity> {

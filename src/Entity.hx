@@ -10,13 +10,13 @@ private typedef WorldFriend = {
 };
 
 class Entity {
+  public var bounds(getBounds, setBounds):Bounds;
   public var cells(getCells, never):ValueList<SpaceCell>;
   public var graphics(getGraphics, never):ValueList<Graphic>;
   public var flags:Int;
   public var isActive:Bool;
   public var isVisible:Bool;
   public var isCollidable:Bool;
-  public var hitbox(getHitbox, setHitbox):Hitbox;
   public var name(getName, setName):String;
   public var stamp:Int;
   public var world:World;
@@ -35,30 +35,34 @@ class Entity {
   public var width(getWidth, never):Float;
   public var height(getHeight, never):Float;
 
+  var _bounds:Bounds;
   var _cells:ValueList<SpaceCell>;
   var _graphics:ValueList<Graphic>;
   var _graphicsToAdd:ValueList<Graphic>;
   var _graphicsToRemove:ValueList<Graphic>;
-  var _hitbox:Hitbox;
   var _name:String;
   var _tags:Hash<Bool>;
   var _x:Float;
   var _y:Float;
 
-  public function new() {
+  public function new(x:Float=0, y:Float=0, bounds:Bounds=null) {
+    this.x = x;
+    this.y = y;
+    if (bounds != null) {
+      this.bounds = bounds;
+    } else {
+      this.bounds = new AABB(0, 0);
+    }
     flags = 0;
     isActive = true;
     isVisible = true;
     isCollidable = true;
-    hitbox = new Hitbox(0, 0);
     stamp = 0;
     world = null;
     _cells = SpaceCell.listPool.create();
     _graphics = Graphic.listPool.create();
     _name = null;
     _tags = new Hash<Bool>();
-    _x = 0;
-    _y = 0;
   }
 
   public function added() {
@@ -158,18 +162,18 @@ class Entity {
     return _graphics;
   }
 
-  inline function getHitbox():Hitbox {
-    return _hitbox;
+  inline function getBounds():Bounds {
+    return _bounds;
   }
 
-  inline function setHitbox(value:Hitbox):Hitbox {
+  inline function setBounds(value:Bounds):Bounds {
     if (value == null) {
-      // FIXME: set to Hitbox(0, 0) instead?
-      throw "entity hitbox cannot be set to null";
+      // FIXME: set to AABB(0, 0) instead?
+      throw "entity bounds cannot be set to null";
     }
-    if (_hitbox != value) {
-      _hitbox = value;
-      _hitbox.entity = this;
+    if (_bounds != value) {
+      _bounds = value;
+      _bounds.entity = this;
     }
     return value;
   }
@@ -210,43 +214,43 @@ class Entity {
   }
 
   inline function getOriginX():Float {
-    return _x + _hitbox.x;
+    return _x + _bounds.x;
   }
 
   inline function getOriginY():Float {
-    return _y + _hitbox.y;
+    return _y + _bounds.y;
   }
 
   inline function getMinX():Float {
-    return _x + _hitbox.x + _hitbox.minX;
+    return _x + _bounds.minX;
   }
 
   inline function getMinY():Float {
-    return _y + _hitbox.y + _hitbox.minY;
+    return _y + _bounds.minY;
   }
 
   inline function getMaxX():Float {
-    return _x + _hitbox.x + _hitbox.maxX;
+    return _x + _bounds.maxX;
   }
 
   inline function getMaxY():Float {
-    return _y + _hitbox.y + _hitbox.maxY;
+    return _y + _bounds.maxY;
   }
 
   inline function getHalfWidth():Float {
-    return _hitbox.halfWidth;
+    return _bounds.halfWidth;
   }
 
   inline function getHalfHeight():Float {
-    return _hitbox.halfHeight;
+    return _bounds.halfHeight;
   }
 
   inline function getWidth():Float {
-    return _hitbox.width;
+    return _bounds.width;
   }
 
   inline function getHeight():Float {
-    return _hitbox.height;
+    return _bounds.height;
   }
 
   inline function getWorldFriend():WorldFriend {

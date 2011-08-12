@@ -1,0 +1,4 @@
+enum BoundsType {
+  AABB;
+  CIRCLE;
+}
