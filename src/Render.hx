@@ -57,5 +57,23 @@ class Render {
 
   static inline function getBuffer():BitmapData {
     return _buffer;
-  } 
+  }
+
+  #if debug
+  static inline public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=2):Void {
+    _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
+    _debug.graphics.drawCircle(x, y, radius);
+  }
+
+  static inline public function debugLine(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=2):Void {
+    _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
+    _debug.graphics.moveTo(x1 - Lo.cameraX, y1 - Lo.cameraY);
+    _debug.graphics.lineTo(x2 - Lo.cameraX, y2 - Lo.cameraY);
+  }
+
+  static inline public function debugRect(x:Float, y:Float, w:Float, h:Float, color:Int=0x00ff00, alpha:Float=1.0, thickness:Float=2):Void {
+    _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
+    _debug.graphics.drawRect(x - Lo.cameraX, y - Lo.cameraY, w, h);
+  }
+  #end
 }
