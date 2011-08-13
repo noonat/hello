@@ -47,16 +47,14 @@ class Bounds {
   }
 
   inline public function collide(other:Bounds):Bool {
-    var result:Bool;
-    switch (_type) {
+    return switch (_type) {
       case BoundsType.AABB:
-        result = _aabb.collideBounds(other);
+        _aabb.collideBounds(other);
       case BoundsType.CIRCLE:
-        result = _circle.collideBounds(other);
+        _circle.collideBounds(other);
       default:
-        result = false;
+        false;
     }
-    return result;
   }
 
   inline function getType():BoundsType {

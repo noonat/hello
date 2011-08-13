@@ -13,16 +13,14 @@ class Circle extends Bounds {
   }
 
   inline public function collideBounds(other:Bounds):Bool {
-    var result:Bool;
-    switch (other.type) {
+    return switch (other.type) {
       case BoundsType.AABB:
-        result = Collide.testAABBCircle(other.aabb, this);
+        Collide.testAABBCircle(other.aabb, this);
       case BoundsType.CIRCLE:
-        result = Collide.testCircleCircle(this, other.circle);
+        Collide.testCircleCircle(this, other.circle);
       default:
-        result = false;
+        false;
     }
-    return result;
   }
 
   inline public function set(radius:Float, ?x:Float, ?y:Float) {

@@ -8,16 +8,14 @@ class AABB extends Bounds {
   }
 
   inline public function collideBounds(other:Bounds):Bool {
-    var result:Bool;
-    switch (other.type) {
+    return switch (other.type) {
       case BoundsType.AABB:
-        result = Collide.testAABBAABB(this, other.aabb);
+        Collide.testAABBAABB(this, other.aabb);
       case BoundsType.CIRCLE:
-        result = Collide.testAABBCircle(this, other.circle);
+        Collide.testAABBCircle(this, other.circle);
       default:
-        result = false;
+        false;
     }
-    return result;
   }
 
   inline public function set(halfWidth:Float, halfHeight:Float, ?x:Float, ?y:Float) {
