@@ -61,7 +61,7 @@ class Texture {
     this.rect = rect != null ? rect.clone() : new Rectangle();
   }
 
-  inline public function copyPixelsInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+  inline public function copyInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
     _point.x = x;
     _point.y = y + clipOffset.y;
     _rect.x = clipRect.x;
@@ -71,9 +71,40 @@ class Texture {
     if (flipped) {
       _rect.x = sourceRect.width - _rect.x - _rect.width;
     } else {
-      clipOffset.x += x;
+      _point.x += x;
     }
-    destBitmapData.copyPixels(flipped ? source : sourceFlipped, _rect, _point, null, null, mergeAlpha);
+    destBitmapData.copyPixels(
+      flipped ? source : sourceFlipped, _rect, _point, null, null, mergeAlpha);
+  }
+
+  inline public function copyRectInto(destBitmapData:BitmapData, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+    _point.x = x;
+    _point.y = y;
+    _rect.x = (clipRect.x - clipOffset.x) + sourceX;
+    _rect.y = (clipRect.y - clipOffset.y) + sourceY;
+    _rect.width = sourceWidth;
+    _rect.height = sourceHeight;
+    if (_rect.x < clipRect.x) {
+      if (!flipped) {
+        _point.x += clipRect.x - _rect.x;
+      }
+      _rect.left = clipRect.x;
+    }
+    if (_rect.y < clipRect.y) {
+      _point.y += clipRect.y - _rect.y;
+      _rect.top = clipRect.y;
+    }
+    if (_rect.right > clipRect.right) {
+      _rect.right = clipRect.right;
+    }
+    if (_rect.bottom > clipRect.bottom) {
+      _rect.bottom = clipRect.bottom;
+    }
+    if (flipped) {
+      _rect.x = sourceRect.width - _rect.x - _rect.width;
+    }
+    destBitmapData.copyPixels(
+      flipped ? sourceFlipped : source, _rect, _point, null, null, mergeAlpha);
   }
 
   inline function getSource():BitmapData {

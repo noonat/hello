@@ -82,47 +82,17 @@ class Spritemap extends Graphic {
       }
     }
 
-    _point.x = x - Lo.cameraX * scrollX;
-    _point.y = y - Lo.cameraY * scrollY;
-    if (entity != null && relative) {
-      _point.x += entity.x;
-      _point.y += entity.y;
-    }
-    
-    // Update the frame rect
-    var clipRect = _texture.clipRect;
-    _frameRect.x = clipRect.x - _texture.clipOffset.x;
-    _frameRect.y = clipRect.y - _texture.clipOffset.y;
-    _frameRect.x += (_frame % _cols) * _frameWidth;
-    _frameRect.y += Std.int(_frame / _cols) * _frameHeight;
-    _frameRect.width = _frameWidth;
-    _frameRect.height = _frameHeight;
-    if (_frameRect.x < clipRect.x) {
-      if (!isFlipped) {
-        _point.x += clipRect.x - _frameRect.x;
-      }
-      _frameRect.left = clipRect.x;
-    }
-    if (_frameRect.y < clipRect.y) {
-      _point.y += clipRect.y - _frameRect.y;
-      _frameRect.top = clipRect.y;
-    }
-    if (_frameRect.right > clipRect.right) {
-      _frameRect.right = clipRect.right;
-    }
-    if (_frameRect.bottom > clipRect.bottom) {
-      _frameRect.bottom = clipRect.bottom;
-    }
-    if (isFlipped) {
-      _frameRect.x = _texture.sourceRect.width - _frameRect.x - _frameRect.width;
-    }
-
     // Render the frame
-    if (isFlipped) {
-      Render.buffer.copyPixels(_texture.sourceFlipped, _frameRect, _point);
-    } else {
-      Render.buffer.copyPixels(_texture.source, _frameRect, _point);
+    var fx = (_frame % _cols) * _frameWidth;
+    var fy = Std.int(_frame / _cols) * _frameHeight;
+    var xx = x - Lo.cameraX * scrollX;
+    var yy = y - Lo.cameraY * scrollY;
+    if (entity != null && relative) {
+      xx += entity.x;
+      yy += entity.y;
     }
+    Render.drawTextureRect(
+      _texture, xx, yy, fx, fy, _frameWidth, _frameHeight, isFlipped);
   }
 
   public function add(name:String, frames:Array<Int>, frameRate:Float=0, loop:Bool=true, flip:Bool=false):Anim {

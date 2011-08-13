@@ -58,8 +58,12 @@ class Render {
 
   }
 
-  static inline public function copyTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
-    texture.copyPixelsInto(_buffer, x, y, flipped, mergeAlpha);
+  static inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+    texture.copyInto(_buffer, x, y, flipped, mergeAlpha);
+  }
+
+  static inline public function drawTextureRect(texture:Texture, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+    texture.copyRectInto(_buffer, x, y, sourceX, sourceY, sourceWidth, sourceHeight, flipped, mergeAlpha);
   }
 
   static inline function getBuffer():BitmapData {
