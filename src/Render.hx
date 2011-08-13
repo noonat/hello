@@ -57,6 +57,10 @@ class Render {
   static public function flush() {
     
   }
+  
+  static inline public function copyTexture(texture:Texture, x:Float, y:Float, mergeAlpha:Bool=true) {
+    texture.copyPixelsInto(_buffer, x, y, mergeAlpha);
+  }
 
   static inline function getBuffer():BitmapData {
     return _buffer;
