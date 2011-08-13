@@ -13,6 +13,7 @@ import flash.Lib;
 import flash.Vector;
 
 class Lo {
+  static public inline var EPSILON:Float = 1e-8;
   static public inline var DEG:Float = 180.0 / Math.PI;
   static public inline var RAD:Float = Math.PI / 180.0;
 

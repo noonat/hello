@@ -2,7 +2,7 @@
 * Base class for all bounding volumes. This class cannot be instantiated
 * directly. Instead, use the appropriate subclass, such as AABB or Circle.
 *
-* entity, x, and y are the only properties that can be set directly 
+* entity, x, and y are the only properties that can be set directly
 * the Bounds class. All others must be modified through the subclass.
 */
 class Bounds {
@@ -52,6 +52,17 @@ class Bounds {
         _aabb.collideBounds(other);
       case BoundsType.CIRCLE:
         _circle.collideBounds(other);
+      default:
+        false;
+    }
+  }
+
+  inline public function intersectSegment(sweep:CollisionSweep):Bool {
+    return switch (_type) {
+      case BoundsType.AABB:
+        Collide.intersectSegmentAABB(sweep, _aabb, 0, 0);
+      case BoundsType.CIRCLE:
+        Collide.intersectSegmentCircle(sweep, _circle, 0);
       default:
         false;
     }

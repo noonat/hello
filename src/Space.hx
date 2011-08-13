@@ -92,8 +92,111 @@ class Space {
     return collide(_tmpEntity, mask);
   }
 
-  inline public function collideSegment(x1:Float, y1:Float, x2:Float, y2:Float, mask:Int=0):ValueList<Entity> {
-    return null;
+  /**
+  * Find the earliest intersection between a segment and the entities in the
+  * space. For more details on how this algorithm works, see:
+  * http://www.cs.yorku.ca/~amana/research/grid.pdf
+  */
+  inline public function intersectSegment(segment:Segment, mask:Int=0):CollisionSweep {
+    ++_stamp;
+    var sweep = CollisionSweep.create(segment);
+    var x1 = segment.x1 - _x;
+    var y1 = segment.y1 - _y;
+    var x2 = segment.x2 - _x;
+    var y2 = segment.y2 - _y;
+    var dx = segment.deltaX;
+    var dy = segment.deltaY;
+
+    // Calculate our starting grid offset and step.
+    // (This is the paper's x, y, stepX, stepY.)
+    var gx:Int = Std.int(x1 / _cellSize);
+    var gy:Int = Std.int(y1 / _cellSize);
+    var gsx:Int = dx < 0 ? -1 : 1;
+    var gsy:Int = dy < 0 ? -1 : 1;
+    if (!intersectSegmentCell(gx, gy, sweep)) {
+      // Calculate the starting time offset and step.
+      // This is placed along the edge of the current cell.
+      // (This is the paper's tMaxX, tMaxY, tDeltaX, tDeltaY.)
+
+      var tx:Float, tsx:Float = (_cellSize * gsx) / dx;
+      if (dx == 0) {
+        tx = 1;
+      } else {
+        tx = gx * _cellSize;
+        if (dx > 0) {
+          tx += _cellSize - 1;
+        }
+        tx = (tx - x1) / dx;
+        if (tx > 1) {
+          tx = 1;
+        }
+      }
+
+      var ty:Float, tsy:Float = (_cellSize * gsy) / dy;
+      if (dy == 0) {
+        ty = 1;
+      } else {
+        ty = gy * _cellSize;
+        if (dy > 0) {
+          ty += _cellSize - 1;
+        }
+        ty = (ty - y1) / dy;
+        if (ty > 1) {
+          ty = 1;
+        }
+      }
+
+      // Iterate until it hits something or reaches the end of the line.
+      while (tx < 1 || ty < 1) {
+        if (tx < ty) {
+          gx += gsx;
+          tx += tsx;
+          if (intersectSegmentCell(gx, gy, sweep)) {
+            break;
+          }
+        } else {
+          gy += gsy;
+          ty += tsy;
+          if (intersectSegmentCell(gx, gy, sweep)) {
+            break;
+          }
+        }
+      }
+    }
+
+    return sweep;
+  }
+
+  /**
+  * Convenience method to call intersectSegment without having to actually
+  * create the segment.
+  */
+  inline public function intersectSegmentXY(x1:Float, y1:Float, x2:Float, y2:Float, mask:Int=0):CollisionSweep {
+    return intersectSegment(new Segment(x1, y1, x2, y2), mask);
+  }
+
+  /**
+  * Internal helper for intersectSegment, to collide against entities in a
+  * given space cell. Returns true if the sweep hit anything.
+  */
+  inline function intersectSegmentCell(col:Int, row:Int, sweep:CollisionSweep):Bool {
+    var intersected = false;
+    var cell = getCell(col, row);
+    if (cell != null) {
+      var node = cell.entities.first;
+      while (node != null) {
+        var entity = node.value;
+        node = node.next;
+        if (entity.isCollidable && entity.stamp != _stamp) {
+          entity.stamp = _stamp;
+          if (entity.hasFlags(sweep.mask)
+          && entity.bounds.intersectSegment(sweep)) {
+            intersected = true;
+          }
+        }
+      }
+    }
+    return intersected;
   }
 
   /**
