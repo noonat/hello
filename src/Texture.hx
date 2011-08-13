@@ -61,10 +61,19 @@ class Texture {
     this.rect = rect != null ? rect.clone() : new Rectangle();
   }
 
-  inline public function copyPixelsInto(destBitmapData:BitmapData, x:Float, y:Float, mergeAlpha:Bool=true) {
-    _point.x = x + clipOffset.x;
+  inline public function copyPixelsInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+    _point.x = x;
     _point.y = y + clipOffset.y;
-    destBitmapData.copyPixels(source, clipRect, _point, null, null, mergeAlpha);
+    _rect.x = clipRect.x;
+    _rect.y = clipRect.y;
+    _rect.width = clipRect.width;
+    _rect.height = clipRect.height;
+    if (flipped) {
+      _rect.x = sourceRect.width - _rect.x - _rect.width;
+    } else {
+      clipOffset.x += x;
+    }
+    destBitmapData.copyPixels(flipped ? source : sourceFlipped, _rect, _point, null, null, mergeAlpha);
   }
 
   inline function getSource():BitmapData {

@@ -58,8 +58,8 @@ class Render {
 
   }
 
-  static inline public function copyTexture(texture:Texture, x:Float, y:Float, mergeAlpha:Bool=true) {
-    texture.copyPixelsInto(_buffer, x, y, mergeAlpha);
+  static inline public function copyTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
+    texture.copyPixelsInto(_buffer, x, y, flipped, mergeAlpha);
   }
 
   static inline function getBuffer():BitmapData {

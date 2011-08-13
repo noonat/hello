@@ -98,7 +98,9 @@ class Spritemap extends Graphic {
     _frameRect.width = _frameWidth;
     _frameRect.height = _frameHeight;
     if (_frameRect.x < clipRect.x) {
-      _point.x += clipRect.x - _frameRect.x;
+      if (!isFlipped) {
+        _point.x += clipRect.x - _frameRect.x;
+      }
       _frameRect.left = clipRect.x;
     }
     if (_frameRect.y < clipRect.y) {
