@@ -102,38 +102,52 @@ class Lo {
 
   static inline public function ceil(value:Float):Float {
     var intValue = Std.int(value);
-    if (value == intValue) {
-      return value;
+    return if (value == intValue) {
+      value;
     } else if (value >= 0) {
-      return Std.int(value + 1);
+      Std.int(value + 1);
     } else {
-      return intValue;
+      intValue;
     }
   }
 
-  static inline public function clamp(value:Dynamic, min:Dynamic, max:Dynamic):Dynamic {
-    if (value < min) {
-      return min;
-    } else if (value > max) {
-      return max;
-    } else {
-      return value;
-    }
+  static inline public function clamp(value:Float, min:Float, max:Float):Float {
+    return value < min ? min : (value > max ? max : value);
   }
 
-  static inline public function min(a:Dynamic, b:Dynamic):Dynamic {
+  static inline public function clampInt(value:Int, min:Int, max:Int):Int {
+    return value < min ? min : (value > max ? max : value);
+  }
+
+  static inline public function min(a:Float, b:Float):Float {
     return a < b ? a : b;
   }
 
-  static inline public function max(a:Dynamic, b:Dynamic):Dynamic {
+  static inline public function minInt(a:Int, b:Int):Int {
+    return a < b ? a : b;
+  }
+
+  static inline public function max(a:Float, b:Float):Float {
     return a > b ? a : b;
   }
 
-  static inline public function sign(value:Dynamic):Dynamic {
+  static inline public function maxInt(a:Int, b:Int):Int {
+    return a > b ? a : b;
+  }
+
+  static inline public function sign(value:Float):Float {
     return value > 0 ? 1 : -1;
   }
 
-  static inline public function signZero(value:Dynamic):Dynamic {
+  static inline public function signInt(value:Int):Int {
+    return value > 0 ? 1 : -1;
+  }
+
+  static inline public function signZero(value:Float):Float {
+    return value == 0 ? 0 : (value > 0 ? 1 : -1);
+  }
+
+  static inline public function signZeroInt(value:Int):Int {
     return value == 0 ? 0 : (value > 0 ? 1 : -1);
   }
 
