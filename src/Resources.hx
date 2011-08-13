@@ -72,8 +72,12 @@ class Resources {
 
   static inline public function getString(id:String):String {
     var bytes = getBytes(id);
-    bytes.position = 0;
-    return bytes.readUTFBytes(bytes.length);
+    return if (bytes != null) {
+      bytes.position = 0;
+      bytes.readUTFBytes(bytes.length);
+    } else {
+      null;
+    }
   }
 
   static public function getResource(id:String):ResourceData {
