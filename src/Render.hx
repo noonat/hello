@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.display.StageQuality;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
@@ -41,8 +42,10 @@ class Render {
   static public function flip() {
     flush();
     #if debug
+    Lo.stage.quality = StageQuality.HIGH;
     _buffer.draw(_debug);
     _debug.graphics.clear();
+    Lo.stage.quality = StageQuality.LOW;
     #end
     _bitmaps[_bitmapIndex].visible = true;
     _bitmapIndex = (_bitmapIndex + 1) % 2;
