@@ -17,7 +17,7 @@ class Collide {
     if (delta > 0) {
       deltaSquared += delta * delta;
     }
-    delta = (aabb.entity.x + aabb.minY) - (circle.entity.x + circle.y);
+    delta = (aabb.entity.y + aabb.minY) - (circle.entity.y + circle.y);
     if (delta > 0) {
       deltaSquared += delta * delta;
     }
