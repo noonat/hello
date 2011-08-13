@@ -1,9 +1,17 @@
 package;
 
+/**
+* Spatial partioning class. Divides a space into a uniform grid of square
+* cells. It provides methods for efficiently doing collision tests. World
+* inherits from this class.
+*/
 class Space {
   var _cells:IntHash<SpaceCell>;
   var _cellSize:Int;
   var _stamp:Int;
+  var _tmpAABB:AABB;
+  var _tmpEntity:Entity;
+  var _tmpCircle:Circle;
   var _x:Float;
   var _y:Float;
 
@@ -11,10 +19,18 @@ class Space {
     _cells = new IntHash<SpaceCell>();
     _cellSize = cellSize;
     _stamp = 0;
+    _tmpEntity = new Entity();
+    _tmpAABB = new AABB(0, 0);
+    _tmpAABB.entity = _tmpEntity;
+    _tmpCircle = new Circle(0, 0);
+    _tmpCircle.entity = _tmpEntity;
     _x = 0;
     _y = 0;
   }
 
+  /**
+  * Find all entities that an entity is colliding with.
+  */
   inline public function collide(entity:Entity, mask:Int=0):ValueList<Entity> {
     ++_stamp;
     var list = Entity.listPool.create();
@@ -52,15 +68,28 @@ class Space {
       row++;
     }
     return list;
-
   }
 
+  /**
+  * Find all entities colliding with a circle.
+  */
   inline public function collideCircle(x:Float, y:Float, radius:Float, mask:Int=0):ValueList<Entity> {
-    return null;
+    _tmpEntity.x = 0;
+    _tmpEntity.y = 0;
+    _tmpEntity.bounds = _tmpCircle;
+    _tmpCircle.set(radius, x, y);
+    return collide(_tmpEntity, mask);
   }
 
+  /**
+  * Find all entities colliding with a rectangle.
+  */
   inline public function collideRect(x:Float, y:Float, width:Float, height:Float, mask:Int=0):ValueList<Entity> {
-    return null;
+    _tmpEntity.x = 0;
+    _tmpEntity.y = 0;
+    _tmpEntity.bounds = _tmpAABB;
+    _tmpAABB.setMinMax(x, y, x + width, y + height);
+    return collide(_tmpEntity, mask);
   }
 
   inline public function collideSegment(x1:Float, y1:Float, x2:Float, y2:Float, mask:Int=0):ValueList<Entity> {
