@@ -57,18 +57,18 @@ class TextureAtlas {
       for (id in Reflect.fields(frames)) {
         var frameData = Reflect.field(frames, id);
         var texture = new Texture(id, this);
-        if (Reflect.hasField(frameData, 'spriteOffset')) {
-          if (_pointRegex.match(Reflect.field(frameData, 'spriteOffset'))) {
-            texture.clipOrigin.x = Std.parseFloat(_pointRegex.matched(1));
-            texture.clipOrigin.y = Std.parseFloat(_pointRegex.matched(2));
-          }
-        }
         if (Reflect.hasField(frameData, 'textureRect')) {
           if (_rectRegex.match(Reflect.field(frameData, 'textureRect'))) {
             texture.clipRect.x = Std.parseFloat(_rectRegex.matched(1));
             texture.clipRect.y = Std.parseFloat(_rectRegex.matched(2));
             texture.clipRect.width = Std.parseFloat(_rectRegex.matched(3));
             texture.clipRect.height = Std.parseFloat(_rectRegex.matched(4));
+          }
+        }
+        if (Reflect.hasField(frameData, 'spriteColorRect')) {
+          if (_rectRegex.match(Reflect.field(frameData, 'spriteColorRect'))) {
+            texture.clipOffset.x = Std.parseFloat(_rectRegex.matched(1));
+            texture.clipOffset.y = Std.parseFloat(_rectRegex.matched(2));
           }
         }
         if (Reflect.hasField(frameData, 'spriteSourceSize')) {

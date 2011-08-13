@@ -15,9 +15,9 @@ class Texture {
 
   /**
   * If the original texture was trimmed before being merged into the atlas,
-  * this is the offset to the top-left of the original texture.
+  * this is the offset from the top-left of the original texture.
   */
-  public var clipOrigin:Point;
+  public var clipOffset:Point;
 
   /**
   * The rectangle (within the atlas) of the trimmed texture.
@@ -47,7 +47,7 @@ class Texture {
   static var _point:Point = new Point();
   static var _rect:Rectangle = new Rectangle();
 
-  public function new(id:String, atlas:TextureAtlas, clipOrigin:Point=null, clipRect:Rectangle=null, rect:Rectangle=null) {
+  public function new(id:String, atlas:TextureAtlas, clipOffset:Point=null, clipRect:Rectangle=null, rect:Rectangle=null) {
     if (id == null) {
       throw 'Invalid texture: id cannot be null';
     }
@@ -56,14 +56,14 @@ class Texture {
     }
     this.id = id;
     this.atlas = atlas;
-    this.clipOrigin = clipOrigin != null ? clipOrigin.clone() : new Point();
+    this.clipOffset = clipOffset != null ? clipOffset.clone() : new Point();
     this.clipRect = clipRect != null ? clipRect.clone() : new Rectangle();
     this.rect = rect != null ? rect.clone() : new Rectangle();
   }
-  
+
   inline public function copyPixelsInto(destBitmapData:BitmapData, x:Float, y:Float, mergeAlpha:Bool=true) {
-    _point.x = x - clipOrigin.x;
-    _point.y = y - clipOrigin.y;
+    _point.x = x + clipOffset.x;
+    _point.y = y + clipOffset.y;
     destBitmapData.copyPixels(source, clipRect, _point, null, null, mergeAlpha);
   }
 
