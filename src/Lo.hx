@@ -101,11 +101,9 @@ class Lo {
     out.y = Math.sin(angle * RAD) * length + y;
   }
 
-  static inline public function ceil(value:Float):Float {
+  static inline public function ceil(value:Float):Int {
     var intValue = Std.int(value);
-    return if (value == intValue) {
-      value;
-    } else if (value >= 0) {
+    return if (value != intValue && value >= 0) {
       Std.int(value + 1);
     } else {
       intValue;
