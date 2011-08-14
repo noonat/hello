@@ -56,7 +56,7 @@ class Lo {
         if (args == null) {
           args = [];
         }
-        Lo.init(width, height, frameRate, Type.createInstance(cls, args));
+        Lo.init(width, height, frameRate, cls, args);
       }
     };
     onResourcesLoaded = function() {
@@ -158,8 +158,7 @@ class Lo {
     return min + Math.random() * (max - min);
   }
 
-  static function init(width:Int, height:Int, frameRate:Int, engine:Engine) {
-    Lo.engine = engine;
+  static function init(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>) {
     stage = Lib.current.stage;
     stage.align = StageAlign.TOP_LEFT;
     stage.frameRate = frameRate;
@@ -173,7 +172,7 @@ class Lo {
     _width = width;
     _height = height;
     Render.init();
-    Lo.engine.init();
+    Lo.engine = Type.createInstance(cls, args);
   }
 
   static function onEnterFrame(event:Event) {

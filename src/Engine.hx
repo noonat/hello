@@ -18,10 +18,6 @@ class Engine {
   }
 
   public function new() {
-    
-  }
-
-  public function init() {
     elapsed = 0;
     time = Lib.getTimer() / 1000.0;
   }
