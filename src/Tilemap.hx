@@ -59,7 +59,7 @@ class Tilemap extends Graphic {
   override public function render() {
     var px = x - Lo.cameraX * scrollX;
     var py = y - Lo.cameraY * scrollY;
-    if (relative) {
+    if (entity != null && relative) {
       px += entity.x;
       py += entity.y;
     }
