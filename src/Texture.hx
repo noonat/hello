@@ -71,10 +71,10 @@ class Texture {
     if (flipped) {
       _rect.x = sourceRect.width - _rect.x - _rect.width;
     } else {
-      _point.x += x;
+      _point.x += clipOffset.x;
     }
     destBitmapData.copyPixels(
-      flipped ? source : sourceFlipped, _rect, _point, null, null, mergeAlpha);
+      flipped ? sourceFlipped : source, _rect, _point, null, null, mergeAlpha);
   }
 
   inline public function copyRectInto(destBitmapData:BitmapData, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
