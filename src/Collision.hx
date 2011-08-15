@@ -244,13 +244,11 @@ class Collision {
     if (sweep.segment.deltaX == 0 && sweep.segment.deltaY == 0) {
       // If the sweep isn't actually moving anywhere, just do a static test
       var hit:CollisionHit = intersectAABBAABB(movingAABB, staticAABB);
-      intersected = hit != null;
-      if (intersected) {
+      if (hit != null) {
+        intersected = true;
         sweep.time = 0;
         if (sweep.hit == null) {
           sweep.hit = hit;
-          sweep.x = sweep.segment.x1;
-          sweep.y = sweep.segment.y1;
         } else {
           sweep.hit.copy(hit);
           hit.free();
@@ -263,6 +261,37 @@ class Collision {
         // FIXME: Is this right? Or should be along delta vector at time - half?
         sweep.x -= sweep.hit.normalX * movingAABB.halfWidth;
         sweep.y -= sweep.hit.normalY * movingAABB.halfHeight;
+      }
+    }
+    return intersected;
+  }
+
+  /**
+  * Intersect `movingCircle` into `staticCircle` along the movement path
+  * described by `sweep`. Returns true if an intersection occurs, and
+  * updates `sweep`.
+  */
+  static inline public function sweepCircleCircle(sweep:CollisionSweep, movingCircle:Circle, staticCircle:Circle):Bool {
+    var intersected:Bool = false;
+    if (sweep.segment.deltaX == 0 && sweep.segment.deltaY == 0) {
+      // If the sweep isn't actually moving anywhere, just do a static test
+      var hit = intersectCircleCircle(movingCircle, staticCircle);
+      if (hit != null) {
+        intersected = true;
+        sweep.time = 0;
+        if (sweep.hit == null) {
+          sweep.hit = hit;
+        } else {
+          sweep.hit.copy(hit);
+          hit.free();
+        }
+      }
+    } else {
+      intersected = intersectSegmentCircle(
+        sweep, staticCircle, movingCircle.radius);
+      if (intersected) {
+        sweep.x -= sweep.hit.normalX * movingCircle.radius;
+        sweep.y -= sweep.hit.normalY * movingCircle.radius;
       }
     }
     return intersected;
