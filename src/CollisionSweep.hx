@@ -5,6 +5,8 @@ class CollisionSweep {
   public var mask:Int;
   public var segment:Segment;
   public var time:Float;
+  public var x:Float;
+  public var y:Float;
   var _next:CollisionSweep;
   static var _first:CollisionSweep;
 
@@ -28,6 +30,8 @@ class CollisionSweep {
     this.mask = mask;
     this.segment = segment;
     time = 1.0;
+    x = segment.x1 + segment.deltaX;
+    y = segment.y1 + segment.deltaY;
   }
 
   static public function create(segment:Segment, mask:Int=0) {

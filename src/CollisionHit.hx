@@ -16,6 +16,17 @@ class CollisionHit {
 
   }
 
+  inline public function copy(hit:CollisionHit) {
+    x = hit.x;
+    y = hit.y;
+    deltaX = hit.deltaX;
+    deltaY = hit.deltaY;
+    normalX = hit.normalX;
+    normalY = hit.normalY;
+    bounds = hit.bounds;
+    entity = hit.entity;
+  }
+
   inline public function normalize():Float {
     var length = normalX * normalX + normalY * normalY;
     if (length > 0) {
