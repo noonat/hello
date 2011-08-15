@@ -8,14 +8,20 @@ class Collision {
     _tmpAABB.entity = _tmpEntity;
   }
 
-  static inline public function testAABBAABB(aabb1:AABB, aabb2:AABB):Bool {
+  /**
+  * Return true if AABB `a` is overlapping AABB `b`.
+  */
+  static inline public function testAABBAABB(a:AABB, b:AABB):Bool {
     return (
-      aabb1.entity.x + aabb1.maxX > aabb2.entity.x + aabb2.minX &&
-      aabb1.entity.y + aabb1.maxY > aabb2.entity.y + aabb2.minY &&
-      aabb1.entity.x + aabb1.minX < aabb2.entity.x + aabb2.maxX &&
-      aabb1.entity.y + aabb1.minY < aabb2.entity.y + aabb2.maxY);
+      a.entity.x + a.maxX > b.entity.x + b.minX &&
+      a.entity.y + a.maxY > b.entity.y + b.minY &&
+      a.entity.x + a.minX < b.entity.x + b.maxX &&
+      a.entity.y + a.minY < b.entity.y + b.maxY);
   }
 
+  /**
+  * Return true if `aabb` is overlapping `circle`.
+  */
   static inline public function testAABBCircle(aabb:AABB, circle:Circle):Bool {
     var deltaSquared = 0.0;
     var delta = (aabb.entity.x + aabb.minX) - (circle.entity.x + circle.x);
@@ -37,10 +43,13 @@ class Collision {
     return deltaSquared <= circle.radiusSquared;
   }
 
-  static inline public function testCircleCircle(circle1:Circle, circle2:Circle):Bool {
-    var dx = (circle2.entity.x + circle2.x) - (circle1.entity.x + circle1.x);
-    var dy = (circle2.entity.y + circle2.y) - (circle1.entity.y + circle1.y);
-    var radius = circle1.radius + circle2.radius;
+  /**
+  * Return true if circle `a` is overlapping circle `b`.
+  */
+  static inline public function testCircleCircle(a:Circle, b:Circle):Bool {
+    var dx = (b.entity.x + b.x) - (a.entity.x + a.x);
+    var dy = (b.entity.y + b.y) - (a.entity.y + a.y);
+    var radius = a.radius + b.radius;
     return dx * dx + dy * dy < radius * radius;
   }
 
