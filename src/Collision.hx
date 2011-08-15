@@ -1,4 +1,4 @@
-class Collide {
+class Collision {
   static var _tmpEntity:Entity;
   static var _tmpAABB:AABB;
 

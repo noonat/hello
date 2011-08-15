@@ -15,9 +15,9 @@ class Circle extends Bounds {
   inline public function collideBounds(other:Bounds):Bool {
     return switch (other.type) {
       case BoundsType.AABB:
-        Collide.testAABBCircle(other.aabb, this);
+        Collision.testAABBCircle(other.aabb, this);
       case BoundsType.CIRCLE:
-        Collide.testCircleCircle(this, other.circle);
+        Collision.testCircleCircle(this, other.circle);
       default:
         false;
     }

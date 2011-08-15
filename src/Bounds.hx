@@ -60,9 +60,9 @@ class Bounds {
   inline public function intersectSegment(sweep:CollisionSweep):Bool {
     return switch (_type) {
       case BoundsType.AABB:
-        Collide.intersectSegmentAABB(sweep, _aabb, 0, 0);
+        Collision.intersectSegmentAABB(sweep, _aabb, 0, 0);
       case BoundsType.CIRCLE:
-        Collide.intersectSegmentCircle(sweep, _circle, 0);
+        Collision.intersectSegmentCircle(sweep, _circle, 0);
       default:
         false;
     }
