@@ -3,6 +3,7 @@ class Collision {
   static var _tmpCapsule:Capsule;
   static var _tmpEntity:Entity;
   static var _tmpSweep:CollisionSweep;
+  static var _tmpSweep2:CollisionSweep;
 
   static function __init__() {
     _tmpEntity = new Entity();
@@ -10,6 +11,7 @@ class Collision {
     _tmpAABB.entity = _tmpEntity;
     _tmpCapsule = new Capsule(0, 0, 0, 0, 0);
     _tmpSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
+    _tmpSweep2 = CollisionSweep.create(new Segment(0, 0, 1, 1));
   }
 
   /**
@@ -355,6 +357,43 @@ class Collision {
       }
     }
     return intersected;
+  }
+
+  /**
+  * Intersect `aabb` into `circle` along the movement path described by
+  * `sweep`. Returns true if an intersection occurs, and updates `sweep`.
+  *
+  * This actually transforms the movement so that the AABB is stationary and
+  * the circle is moving, then uses `sweepCircleAABB`.
+  */
+  static inline public function sweepAABBCircle(sweep:CollisionSweep, aabb:AABB, circle:Circle):Bool {
+    if (_tmpSweep2.hit != null) {
+      _tmpSweep2.hit.free();
+      _tmpSweep2.hit = null;
+    }
+    var cx = circle.entity.x + circle.x;
+    var cy = circle.entity.y + circle.y;
+    _tmpSweep2.segment.set(
+      cx, cy, cx - sweep.segment.deltaX, cy - sweep.segment.deltaY);
+    _tmpSweep2.mask = sweep.mask;
+    _tmpSweep2.time = sweep.time;
+    if (sweepCircleAABB(_tmpSweep2, circle, aabb)) {
+      sweep.time = _tmpSweep2.time;
+      sweep.x = sweep.segment.x1 + sweep.time * sweep.segment.deltaX;
+      sweep.y = sweep.segment.y1 + sweep.time * sweep.segment.deltaY;
+      var hit = sweep.hit;
+      if (hit == null) {
+        hit = sweep.hit = CollisionHit.create();
+      }
+      hit.normalX = sweep.x - cx;
+      hit.normalY = sweep.y - cy;
+      hit.normalize();
+      hit.x = cx + hit.normalX * circle.radius;
+      hit.y = cy + hit.normalY * circle.radius;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
