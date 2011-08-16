@@ -7,6 +7,7 @@ class Segment {
   public var y2(getY2, setY2):Float;
   public var deltaX(getDeltaX, setDeltaX):Float;
   public var deltaY(getDeltaY, setDeltaY):Float;
+  public var deltaSquared(getDeltaSquared, never):Float;
   public var scaleX(getScaleX, never):Float;
   public var scaleY(getScaleY, never):Float;
   public var signX(getSignX, never):Float;
@@ -17,12 +18,27 @@ class Segment {
   var _y2:Float;
   var _deltaX:Float;
   var _deltaY:Float;
+  var _deltaSquared:Float;
   var _scaleX:Float;
   var _scaleY:Float;
   var _signX:Float;
   var _signY:Float;
 
   public function new(x1:Float, y1:Float, x2:Float, y2:Float) {
+    set(x1, y1, x2, y2);
+  }
+
+  /**
+  * Return the linear time for the point when it is projected onto the line.
+  * Clamp the time to 0, 1 if you want to project it onto the segment.
+  */
+  inline public function getTimeForPoint(x:Float, y:Float):Float {
+    return (
+      (_deltaX * (x - _x1) + _deltaY * (y - _y1)) /
+      (_deltaX * _deltaX + _deltaY * _deltaY));
+  }
+
+  inline public function set(x1:Float, y1:Float, x2:Float, y2:Float) {
     _x1 = x1;
     _y1 = y1;
     _x2 = x2;
@@ -31,16 +47,18 @@ class Segment {
     updateY();
   }
 
-  inline function updateX() {
+  function updateX() {
     _deltaX = _x2 - _x1;
+    _deltaSquared = _deltaX * _deltaX + _deltaY * _deltaY;
     _scaleX = 1.0 / _deltaX;
-    _signX = Lo.sign(_deltaX);
+    _signX = Lo.sign(_scaleX);
   }
 
-  inline function updateY() {
+  function updateY() {
     _deltaY = _y2 - _y1;
+    _deltaSquared = _deltaX * _deltaX + _deltaY * _deltaY;
     _scaleY = 1.0 / _deltaY;
-    _signY = Lo.sign(_deltaY);
+    _signY = Lo.sign(_scaleY);
   }
 
   inline function getX1():Float {
@@ -107,6 +125,10 @@ class Segment {
   inline function setDeltaY(value:Float):Float {
     y2 = _y1 + value;
     return value;
+  }
+
+  inline function getDeltaSquared():Float {
+    return _deltaSquared;
   }
 
   inline function getScaleX():Float {
