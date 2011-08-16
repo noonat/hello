@@ -19,6 +19,7 @@ class Entity {
   public var isCollidable:Bool;
   public var name(getName, setName):String;
   public var stamp:Int;
+  public var sweep:CollisionSweep;
   public var world:World;
   public var x(getX, setX):Float;
   public var y(getY, setY):Float;
@@ -42,6 +43,7 @@ class Entity {
   var _graphicsToRemove:ValueList<Graphic>;
   var _name:String;
   var _tags:Hash<Bool>;
+  var _tmpSegment:Segment;
   var _x:Float;
   var _y:Float;
 
@@ -66,15 +68,37 @@ class Entity {
   }
 
   public function added() {
-    
+
   }
 
   public function removed() {
-    
+
   }
 
   public function update() {
-    
+
+  }
+
+  inline public function moveBy(dx:Float, dy:Float, mask:Int=0):CollisionSweep {
+    if (sweep != null) {
+      sweep.free();
+      sweep = null;
+    }
+    if (world != null) {
+      if (_tmpSegment == null) {
+        _tmpSegment = new Segment(originX, originY, originX + dx, originY + dy);
+      } else {
+        _tmpSegment.set(originX, originY, originX + dx, originY + dy);
+      }
+      sweep = world.sweep(this, _tmpSegment, mask);
+      _x = sweep.x - _bounds.x;
+      _y = sweep.y - _bounds.y;
+      world.updateEntityCells(this);
+    } else {
+      _x += dx;
+      _y += dy;
+    }
+    return sweep;
   }
 
   inline public function addGraphic(graphic:Graphic) {
