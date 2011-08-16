@@ -49,7 +49,7 @@ class CollisionHit {
     y = 0;
     deltaX = 0;
     deltaY = 0;
-    normalX = 1;
+    normalX = 0;
     normalY = 0;
   }
 
