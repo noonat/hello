@@ -385,6 +385,8 @@ class Collision {
       if (hit == null) {
         hit = sweep.hit = CollisionHit.create();
       }
+      hit.bounds = circle;
+      hit.entity = circle.entity;
       hit.normalX = sweep.x - cx;
       hit.normalY = sweep.y - cy;
       hit.normalize();
@@ -443,6 +445,10 @@ class Collision {
         _tmpCapsule.setFromEdge(aabb, u ^ 3, v, circle.radius);
         intersected = intersectSegmentCapsule(sweep, _tmpCapsule);
       }
+    }
+    if (intersected) {
+      sweep.hit.bounds = aabb;
+      sweep.hit.entity = aabb.entity;
     }
     return intersected;
   }
