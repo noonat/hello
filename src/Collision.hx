@@ -1,11 +1,15 @@
 class Collision {
-  static var _tmpEntity:Entity;
   static var _tmpAABB:AABB;
+  static var _tmpCapsule:Capsule;
+  static var _tmpEntity:Entity;
+  static var _tmpSweep:CollisionSweep;
 
   static function __init__() {
     _tmpEntity = new Entity();
     _tmpAABB = new AABB(0, 0);
     _tmpAABB.entity = _tmpEntity;
+    _tmpCapsule = new Capsule(0, 0, 0, 0, 0);
+    _tmpSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
   }
 
   /**
@@ -206,7 +210,7 @@ class Collision {
   * to the test described in Real-Time Collision Detection (5.5.5), but does
   * not require delta to be unit length.
   */
-  static inline public function intersectSegmentCircle(sweep:CollisionSweep, circle:Circle, padding:Float):Bool {
+  static inline public function intersectSegmentCircle(sweep:CollisionSweep, circle:Circle, padding:Float=0):Bool {
     var hit:CollisionHit = null;
     var segment = sweep.segment;
     var mx = segment.x1 - (circle.entity.x + circle.x);
@@ -242,6 +246,82 @@ class Collision {
   }
 
   /**
+  * Intersect the segment described by `sweep` into `capsule`.
+  *
+  * This function is used by sweepCircleAABB. It is adapted from Real-Time
+  * Collision Detection (5.3.7).
+  */
+  static public function intersectSegmentCapsule(sweep:CollisionSweep, capsule:Capsule):Bool {
+    var segment = sweep.segment;
+    var mx = segment.x1 - capsule.x1;
+    var my = segment.y1 - capsule.y1;
+    var md = mx * capsule.deltaX + my * capsule.deltaY;
+    var nd = segment.deltaX * capsule.deltaX + segment.deltaY * capsule.deltaY;
+    if (md < 0 && md + nd < 0) {
+      // Segment is outside the (x1, y1) end of the capsule rect.
+      // Intersect it with the circle at that end of the capsule.
+      return intersectSegmentCircle(sweep, capsule.circle1);
+    }
+    if (md > capsule.deltaSquared && md + nd > capsule.deltaSquared) {
+      // Segment is outside the (x2, y2) end of the capsule rect.
+      // Intersect it with the circle at that end of the capsule.
+      return intersectSegmentCircle(sweep, capsule.circle2);
+    }
+
+    var mn = mx * segment.deltaX + my * segment.deltaY;
+    var a = capsule.deltaSquared * segment.deltaSquared - nd * nd;
+    var k = (mx * mx + my * my) - capsule.radiusSquared;
+    var c = (capsule.deltaSquared * k) - (md * md);
+    if (Lo.abs(a) < Lo.EPSILON) {
+      // Segment runs parallel to the capsule axis
+      if (c > 0) {
+        // 'a' and thus the segment lies outside capsule
+        return false;
+      }
+      // Segment intersects capsule. Figure out how.
+      if (md < 0) {
+        intersectSegmentCircle(sweep, capsule.circle1);
+      } else if (md > capsule.deltaSquared) {
+        intersectSegmentCircle(sweep, capsule.circle2);
+      } else {
+        var hit = sweep.hit;
+        if (hit == null) {
+          hit = sweep.hit = CollisionHit.create();
+        }
+        sweep.time = 0;
+        sweep.x = hit.x = segment.x1;
+        sweep.y = hit.y = segment.y1;
+      }
+      return true;
+    }
+
+    var b = (capsule.deltaSquared * mn) - (nd * md);
+    var discr = (b * b) - (a * c);
+    if (discr < 0) {
+      // No real roots; no intersection.
+      return false;
+    }
+
+    var time = (-b - Math.sqrt(discr)) / a;
+    if (md + time * nd < 0) {
+      return intersectSegmentCircle(sweep, capsule.circle1);
+    } else if (md + time * nd > capsule.deltaSquared) {
+      return intersectSegmentCircle(sweep, capsule.circle2);
+    } else if (time >= 0 && time <= 1 && time < sweep.time) {
+      var hit = sweep.hit;
+      if (hit == null) {
+        hit = sweep.hit = CollisionHit.create();
+      }
+      sweep.time = time;
+      sweep.x = hit.x = segment.x1 + time * segment.deltaX;
+      sweep.y = hit.y = segment.y1 + time * segment.deltaY;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
   * Intersect `movingAABB` into `staticAABB` along the movement path described
   * by `sweep`. Returns true if an intersection occurs, and updates `sweep`.
   *
@@ -268,8 +348,61 @@ class Collision {
         sweep, staticAABB, movingAABB.halfWidth, movingAABB.halfHeight);
       if (intersected) {
         // FIXME: Is this right? Or should be along delta vector at time - half?
-        sweep.x -= sweep.hit.normalX * movingAABB.halfWidth;
-        sweep.y -= sweep.hit.normalY * movingAABB.halfHeight;
+        sweep.x = sweep.hit.x;
+        sweep.y = sweep.hit.y;
+        sweep.hit.x -= sweep.hit.normalX * movingAABB.halfWidth;
+        sweep.hit.y -= sweep.hit.normalY * movingAABB.halfHeight;
+      }
+    }
+    return intersected;
+  }
+
+  /**
+  * Intersect `circle` into `aabb` along the movement path described by
+  * `sweep`. Returns true if an intersection occurs, and updates `sweep`.
+  */
+  static inline public function sweepCircleAABB(sweep:CollisionSweep, circle:Circle, aabb:AABB):Bool {
+    var intersected:Bool = false;
+    _tmpSweep.copy(sweep);
+    if (intersectSegmentAABB(_tmpSweep, aabb, circle.radius, circle.radius)) {
+      var u:Int = 0, v:Int = 0;
+      if (_tmpSweep.x < (aabb.entity.x + aabb.minX)) {
+        u |= 1;
+      }
+      if (_tmpSweep.x > (aabb.entity.x + aabb.maxX)) {
+        v |= 1;
+      }
+      if (_tmpSweep.y < (aabb.entity.y + aabb.minY)) {
+        u |= 2;
+      }
+      if (_tmpSweep.y > (aabb.entity.y + aabb.maxY)) {
+        v |= 2;
+      }
+      var m:Int = u + v;
+      if (m == 3) {
+        // Voronoi vertex region
+        _tmpCapsule.setFromEdge(aabb, v, v ^ 1, circle.radius);
+        if (intersectSegmentCapsule(sweep, _tmpCapsule)) {
+          // Hit a horizontal edge
+          intersected = true;
+          sweep.hit.normalX = 0;
+          sweep.hit.normalY = v & 2 == 0 ? -1 : 1;
+        }
+        _tmpCapsule.setFromEdge(aabb, v, v ^ 2, circle.radius);
+        if (intersectSegmentCapsule(sweep, _tmpCapsule)) {
+          // Hit a vertical edge
+          intersected = true;
+          sweep.hit.normalX = v & 1 == 0 ? -1 : 1;
+          sweep.hit.normalY = 0;
+        }
+      } else if (m & (m - 1) == 0) {
+        // Voronoi face region (within the AABB)
+        intersected = true;
+        sweep.copy(_tmpSweep);
+      } else {
+        // Voronoi edge region
+        _tmpCapsule.setFromEdge(aabb, u ^ 3, v, circle.radius);
+        intersected = intersectSegmentCapsule(sweep, _tmpCapsule);
       }
     }
     return intersected;
@@ -299,8 +432,10 @@ class Collision {
       intersected = intersectSegmentCircle(
         sweep, staticCircle, movingCircle.radius);
       if (intersected) {
-        sweep.x -= sweep.hit.normalX * movingCircle.radius;
-        sweep.y -= sweep.hit.normalY * movingCircle.radius;
+        sweep.x = sweep.hit.x;
+        sweep.y = sweep.hit.y;
+        sweep.hit.x -= sweep.hit.normalX * movingCircle.radius;
+        sweep.hit.y -= sweep.hit.normalY * movingCircle.radius;
       }
     }
     return intersected;

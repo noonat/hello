@@ -14,6 +14,25 @@ class CollisionSweep {
 
   }
 
+  inline public function copy(sweep:CollisionSweep) {
+    if (sweep.hit == null) {
+      if (hit != null) {
+        hit.free();
+        hit = null;
+      }
+    } else {
+      if (hit == null) {
+        hit = CollisionHit.create();
+      }
+      hit.copy(sweep.hit);
+    }
+    segment.set(sweep.segment.x1, sweep.segment.y1, sweep.segment.x2, sweep.segment.y2);
+    mask = sweep.mask;
+    time = sweep.time;
+    x = sweep.x;
+    y = sweep.y;
+  }
+
   public function free(freeHit:Bool=true) {
     if (_next == null) {
       if (hit != null && freeHit) {
