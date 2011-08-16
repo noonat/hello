@@ -49,9 +49,25 @@ class Bounds {
   inline public function collide(other:Bounds):Bool {
     return switch (_type) {
       case BoundsType.AABB:
-        _aabb.collideBounds(other);
+        switch (other.type) {
+          case BoundsType.AABB:
+            Collision.testAABBAABB(_aabb, other._aabb);
+          case BoundsType.CIRCLE:
+            Collision.testAABBCircle(_aabb, other._circle);
+          default:
+            false;
+        }
+
       case BoundsType.CIRCLE:
-        _circle.collideBounds(other);
+        switch (other.type) {
+          case BoundsType.AABB:
+            Collision.testAABBCircle(other._aabb, _circle);
+          case BoundsType.CIRCLE:
+            Collision.testCircleCircle(_circle, other._circle);
+          default:
+            false;
+        }
+
       default:
         false;
     }
@@ -63,6 +79,33 @@ class Bounds {
         Collision.intersectSegmentAABB(sweep, _aabb, 0, 0);
       case BoundsType.CIRCLE:
         Collision.intersectSegmentCircle(sweep, _circle, 0);
+      default:
+        false;
+    }
+  }
+
+  inline public function sweep(sweep:CollisionSweep, into:Bounds):Bool {
+    return switch (_type) {
+      case BoundsType.AABB:
+        switch (into._type) {
+          case BoundsType.AABB:
+            Collision.sweepAABBAABB(sweep, _aabb, into._aabb);
+          case BoundsType.CIRCLE:
+            Collision.sweepAABBCircle(sweep, _aabb, into._circle);
+          default:
+            false;
+        }
+
+      case BoundsType.CIRCLE:
+        switch (into._type) {
+          case BoundsType.AABB:
+            Collision.sweepCircleAABB(sweep, _circle, into._aabb);
+          case BoundsType.CIRCLE:
+            Collision.sweepCircleCircle(sweep, _circle, into._circle);
+          default:
+            false;
+        }
+
       default:
         false;
     }

@@ -7,17 +7,6 @@ class AABB extends Bounds {
     set(halfWidth, halfHeight, x, y);
   }
 
-  inline public function collideBounds(other:Bounds):Bool {
-    return switch (other.type) {
-      case BoundsType.AABB:
-        Collision.testAABBAABB(this, other.aabb);
-      case BoundsType.CIRCLE:
-        Collision.testAABBCircle(this, other.circle);
-      default:
-        false;
-    }
-  }
-
   inline public function set(halfWidth:Float, halfHeight:Float, ?x:Float, ?y:Float) {
     _halfWidth = halfWidth;
     _halfHeight = halfHeight;

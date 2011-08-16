@@ -168,7 +168,7 @@ class Space {
   }
 
   /**
-  * Convenience method to call intersectSegment without having to actually
+  * Convenience method to call `intersectSegment` without having to actually
   * create the segment.
   */
   inline public function intersectSegmentXY(x1:Float, y1:Float, x2:Float, y2:Float, mask:Int=0):CollisionSweep {
@@ -176,7 +176,7 @@ class Space {
   }
 
   /**
-  * Internal helper for intersectSegment, to collide against entities in a
+  * Internal helper for `intersectSegment`, to collide against entities in a
   * given space cell. Returns true if the sweep hit anything.
   */
   inline function intersectSegmentCell(col:Int, row:Int, sweep:CollisionSweep):Bool {
@@ -197,6 +197,72 @@ class Space {
       }
     }
     return intersected;
+  }
+
+  /**
+  * Sweep an entity through the world, from from `(segment.x1, segment.y1)`
+  * to `(segment.x2, segment.y2)`, testing for collisions with any entities
+  * that intersect the movement. Returns a `CollisionSweep` object. If a
+  * collision occurred, `sweep.hit` will be set to the hit position.
+  *
+  * `sweep.x` and `sweep.y` will be set to the furthest position the entity
+  * reached (the end point of the move, if no collision). `sweep.time` will
+  * be set to the percentage of the move completed (from 0 to 1).
+  *
+  * You shouldn't need to call this method directly; instead, use
+  * `entity.moveBy()` or `entity.moveTo()`.
+  */
+  inline public function sweep(entity:Entity, segment:Segment, mask:Int=0):CollisionSweep {
+    ++_stamp;
+
+    var sweep = CollisionSweep.create(segment);
+    var minX = Lo.min(segment.x1, segment.x2);
+    var minY = Lo.min(segment.y1, segment.y2);
+    var maxX = Lo.max(segment.x1, segment.x2);
+    var maxY = Lo.max(segment.y1, segment.y2);
+    minX -= entity.bounds.halfWidth;
+    minY -= entity.bounds.halfHeight;
+    maxX += entity.bounds.halfWidth;
+    maxY += entity.bounds.halfHeight;
+
+    var col1 = getColumn(Std.int(minX));
+    var col2 = getColumn(Std.int(Lo.ceil(maxX)));
+    var row1 = getRow(Std.int(minY));
+    var row2 = getRow(Std.int(Lo.ceil(maxY)));
+    var row = row1;
+    while (row <= row2) {
+      var col = col1;
+      while (col <= col2) {
+        var cell = getCell(col++, row);
+        if (cell == null) {
+          continue;
+        }
+        var node = cell.entities.first;
+        while (node != null) {
+          var other = node.value;
+          node = node.next;
+          if (entity != other && other.isCollidable && other.stamp != _stamp) {
+            other.stamp = _stamp;
+            if (other.hasFlags(mask)
+            && maxX >= other.minX && maxY >= other.minY
+            && minX <= other.maxX && minY <= other.maxY) {
+              entity.bounds.sweep(sweep, other.bounds);
+            }
+          }
+        }
+      }
+      row++;
+    }
+
+    return sweep;
+  }
+
+  /**
+  * Convenience method to call `sweep` without having to actually create the
+  * segment for the move.
+  */
+  inline public function sweepXY(entity:Entity, x:Float, y:Float, mask:Int=0):CollisionSweep {
+    return sweep(entity, new Segment(entity.originX, entity.originY, x, y), mask);
   }
 
   /**
