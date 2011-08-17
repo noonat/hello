@@ -439,6 +439,47 @@ class Collision {
   }
 
   /**
+  * Intersect `aabb` into `grid`. Returns a CollisionHit object, where
+  * `hit.deltaX` and `hit.deltaY` describe a vector to move `aabb` out of
+  * collision. Returns null if no intersection occurs.
+  */
+  static inline public function intersectAABBGrid(aabb:AABB, grid:Grid):CollisionHit {
+    var tileWidth = grid.tileWidth;
+    var tileHeight = grid.tileHeight;
+    var halfTileWidth = tileWidth * 0.5;
+    var halfTileHeight = tileHeight * 0.5;
+    var originX = grid.entity.x + grid.minX;
+    var originY = grid.entity.y + grid.minY;
+    var x1 = (aabb.entity.x + aabb.minX) - originX;
+    var y1 = (aabb.entity.y + aabb.minY) - originY;
+    var x2 = (aabb.entity.x + aabb.maxX) - (originX + grid.width);
+    var y2 = (aabb.entity.y + aabb.maxY) - (originY + grid.height);
+    var col1 = Std.int(x1 / tileWidth);
+    var row1 = Std.int(y1 / tileHeight);
+    var col2 = Std.int(x2 / tileWidth);
+    var row2 = Std.int(y2 / tileHeight);
+    var row = row1;
+    while (row <= row2) {
+      var col = col1;
+      while (col <= col2) {
+        if (!grid.getTile(col, row)) {
+          continue;
+        }
+        _tmpEntity.x = originX + (col * tileWidth) + halfTileWidth;
+        _tmpEntity.y = originY + (row * tileHeight) + halfTileHeight;
+        _tmpAABB.entity = _tmpEntity;
+        _tmpAABB.set(halfTileWidth, halfTileHeight, 0, 0);
+        var hit = intersectAABBAABB(aabb, _tmpAABB);
+        if (hit != null) {
+          return hit;
+        }
+      }
+      ++row;
+    }
+    return null;
+  }
+
+  /**
   * Intersect the point `x`, `y` into `aabb`. Returns a CollisionHit object
   * if they intersect, with `hit.x` and `hit.y` set to the nearest edge of
   * the box. Returns null if no intersection occurs.
@@ -494,7 +535,7 @@ class Collision {
     var intersected:Bool = false;
     if (sweep.segment.deltaX == 0 && sweep.segment.deltaY == 0) {
       // If the sweep isn't actually moving anywhere, just do a static test
-      var hit:CollisionHit = intersectAABBAABB(movingAABB, staticAABB);
+      var hit = intersectAABBAABB(movingAABB, staticAABB);
       if (hit != null) {
         intersected = true;
         sweep.time = 0;
