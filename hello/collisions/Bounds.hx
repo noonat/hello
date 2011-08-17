@@ -6,6 +6,10 @@ package hello.collisions;
 *
 * entity, x, and y are the only properties that can be set directly
 * the Bounds class. All others must be modified through the subclass.
+* 
+* Classes that inherit from `Bounds` are responsible for setting _width,
+* _height, _halfWidth, and _halfHeight so that the common Bounds accessors
+* work correctly.
 */
 class Bounds {
   public var type(getType, never):BoundsType;
@@ -16,8 +20,10 @@ class Bounds {
   // inherit from the type, the property will be null.
   public var aabb(getAABB, never):AABB;
   public var circle(getCircle, never):Circle;
+  public var grid(getGrid, never):Grid;
   var _aabb:AABB;
   var _circle:Circle;
+  var _grid:Grid;
 
   // Common bounding volume properties
   public var entity:Entity;
@@ -123,6 +129,10 @@ class Bounds {
 
   inline function getCircle():Circle {
     return _circle;
+  }
+  
+  inline function getGrid():Grid {
+    return _grid;
   }
 
   inline function getHalfWidth():Float {
