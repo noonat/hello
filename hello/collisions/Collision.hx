@@ -1,11 +1,32 @@
 package hello.collisions;
 
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
+/**
+* This is a static class used by `Space` to perform collision tests. It is
+* not intended to be used directly by a game, but nothing would prevent you
+* from doing so.
+*
+* - `test*` functions are fast overlap tests, returning a boolean.
+* - `intersect*` functions are a bit more complex, and return a `CollisionHit`
+*   object. This object gives the hit position, hit normal (the direction
+*   pointing away from the hit surface), and a delta vector that can be used
+*   to resolve the collision.
+* - `intersectSegment*` functions are a special case, for raycasting a line
+*   against static shapes. This uses a `Sweep` object to define the line and
+*   movement.
+* - `sweep*` functions are the most complex: they take an object that is moving
+*   from one point to another, and collide them against a stationary object.
+*/
 class Collision {
   static var _tmpAABB:AABB;
   static var _tmpCapsule:Capsule;
   static var _tmpEntity:Entity;
   static var _tmpSweep:CollisionSweep;
   static var _tmpSweep2:CollisionSweep;
+  static var _rect:Rectangle;
+  static var _zero:Point;
 
   static function __init__() {
     _tmpEntity = new Entity();
@@ -14,6 +35,8 @@ class Collision {
     _tmpCapsule = new Capsule(0, 0, 0, 0, 0);
     _tmpSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
     _tmpSweep2 = CollisionSweep.create(new Segment(0, 0, 1, 1));
+    _rect = new Rectangle();
+    _zero = new Point(0, 0);
   }
 
   /**
@@ -49,6 +72,21 @@ class Collision {
       deltaSquared += delta * delta;
     }
     return deltaSquared <= circle.radiusSquared;
+  }
+
+  /**
+  * Return true if `aabb` is overlapping solid tiles in `grid`.
+  */
+  static inline public function testAABBGrid(aabb:AABB, grid:Grid):Bool {
+    _rect.x = (aabb.entity.x + aabb.minX) - (grid.entity.x + grid.minX);
+    _rect.y = (aabb.entity.y + aabb.minY) - (grid.entity.y + grid.minY);
+    var x = Std.int((_rect.x + aabb.width - 1) / grid.tileWidth) + 1;
+    var y = Std.int((_rect.y + aabb.height - 1) / grid.tileHeight) + 1;
+    _rect.x = Std.int(_rect.x / grid.tileWidth);
+    _rect.y = Std.int(_rect.y / grid.tileHeight);
+    _rect.width = grid.minX - _rect.x;
+    _rect.height = grid.minY - _rect.y;
+    return grid.data.hitTest(_zero, 1, _rect);
   }
 
   /**
