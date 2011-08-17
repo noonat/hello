@@ -2,6 +2,8 @@ package examples.queens;
 
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.text.TextField;
+import flash.text.TextFormat;
 import haxe.xml.Fast;
 import hello.collisions.AABB;
 import hello.Engine;
@@ -21,6 +23,9 @@ using hello.Mixins;
 
 class Queens extends Engine {
   static public var atlas:TextureAtlas;
+  var _fps:Int;
+  var _fpsTimer:Float;
+  var _text:TextField;
 
   static public function main() {
     Lo.main(320, 240, 60, Queens, []);
@@ -28,11 +33,27 @@ class Queens extends Engine {
 
   public function new() {
     super();
+    _fps = 0;
+    _fpsTimer = 0;
+    _text = new TextField();
+    _text.defaultTextFormat = new TextFormat('Arial', 12, 0xffffff);
+    flash.Lib.current.addChild(_text);
     Render.backgroundColor = 0x0f110b;
     Render.scale = 2;
     atlas = new TextureAtlas('atlas_queens');
     atlas.setTexturesFromPropertyList('atlas_queens_plist');
     world = new Game();
+  }
+
+  override public function tick() {
+    super.tick();
+    _fpsTimer += Lo.elapsed;
+    if (_fpsTimer >= 1.0) {
+      _text.text = '' + _fps;
+      _fps = 0;
+      _fpsTimer %= 1;
+    }
+    _fps++;
   }
 
   static public function computeVelocity(velocity:Float, acceleration:Float=0, drag:Float=0, max:Float=10000):Float {
