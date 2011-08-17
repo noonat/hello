@@ -62,6 +62,8 @@ class Bounds {
             Collision.testAABBAABB(_aabb, other._aabb);
           case BoundsType.CIRCLE:
             Collision.testAABBCircle(_aabb, other._circle);
+          case BoundsType.GRID:
+            Collision.testAABBGrid(_aabb, other._grid);
           default:
             false;
         }

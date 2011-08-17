@@ -84,8 +84,8 @@ class Collision {
     var y = Std.int((_rect.y + aabb.height - 1) / grid.tileHeight) + 1;
     _rect.x = Std.int(_rect.x / grid.tileWidth);
     _rect.y = Std.int(_rect.y / grid.tileHeight);
-    _rect.width = grid.minX - _rect.x;
-    _rect.height = grid.minY - _rect.y;
+    _rect.width = x - _rect.x;
+    _rect.height = y - _rect.y;
     return grid.data.hitTest(_zero, 1, _rect);
   }
 
@@ -291,10 +291,10 @@ class Collision {
   */
   static inline public function intersectSegmentGrid(sweep:CollisionSweep, grid:Grid):Bool {
     var segment = sweep.segment;
-    var x1 = segment.x1 - grid.entity.minX + grid.minX;
-    var y1 = segment.y1 - grid.entity.minY + grid.minY;
-    var x2 = segment.x2 - grid.entity.minX + grid.minX;
-    var y2 = segment.y2 - grid.entity.minY + grid.minY;
+    var x1 = segment.x1 - (grid.entity.x + grid.minX);
+    var y1 = segment.y1 - (grid.entity.y + grid.minY);
+    var x2 = segment.x2 - (grid.entity.x + grid.minX);
+    var y2 = segment.y2 - (grid.entity.y + grid.minY);
     var dx = segment.deltaX;
     var dy = segment.deltaY;
     var time = Math.POSITIVE_INFINITY;
@@ -444,6 +444,7 @@ class Collision {
   * collision. Returns null if no intersection occurs.
   */
   static inline public function intersectAABBGrid(aabb:AABB, grid:Grid):CollisionHit {
+    var hit:CollisionHit = null;
     var tileWidth = grid.tileWidth;
     var tileHeight = grid.tileHeight;
     var halfTileWidth = tileWidth * 0.5;
@@ -452,31 +453,32 @@ class Collision {
     var originY = grid.entity.y + grid.minY;
     var x1 = (aabb.entity.x + aabb.minX) - originX;
     var y1 = (aabb.entity.y + aabb.minY) - originY;
-    var x2 = (aabb.entity.x + aabb.maxX) - (originX + grid.width);
-    var y2 = (aabb.entity.y + aabb.maxY) - (originY + grid.height);
+    var x2 = (aabb.entity.x + aabb.maxX) - originX;
+    var y2 = (aabb.entity.y + aabb.maxY) - originY;
     var col1 = Std.int(x1 / tileWidth);
     var row1 = Std.int(y1 / tileHeight);
     var col2 = Std.int(x2 / tileWidth);
     var row2 = Std.int(y2 / tileHeight);
+    var col = col1;
     var row = row1;
     while (row <= row2) {
-      var col = col1;
-      while (col <= col2) {
-        if (!grid.getTile(col, row)) {
-          continue;
-        }
+      if (grid.getTile(col, row)) {
         _tmpEntity.x = originX + (col * tileWidth) + halfTileWidth;
         _tmpEntity.y = originY + (row * tileHeight) + halfTileHeight;
         _tmpAABB.entity = _tmpEntity;
         _tmpAABB.set(halfTileWidth, halfTileHeight, 0, 0);
-        var hit = intersectAABBAABB(aabb, _tmpAABB);
+        hit = intersectAABBAABB(aabb, _tmpAABB);
         if (hit != null) {
-          return hit;
+          break;
         }
       }
-      ++row;
+      col++;
+      if (col > col2) {
+        col = col1;
+        row++;
+      }
     }
-    return null;
+    return hit;
   }
 
   /**
