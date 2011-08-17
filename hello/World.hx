@@ -112,7 +112,9 @@ class World extends Space {
       node = node.next;
       if (entity.isActive) {
         entity.update();
-        updateEntityCells(entity);
+        if (!entity.isSynchronized) {
+          updateEntityCells(entity);
+        }
       }
     }
   }

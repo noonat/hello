@@ -1,5 +1,10 @@
 package hello.collisions;
 
+private typedef EntityFriend = {
+  var _spaceX:Float;
+  var _spaceY:Float;
+};
+
 /**
 * Spatial partioning class. Divides a space into a uniform grid of square
 * cells. It provides methods for efficiently doing collision tests. World
@@ -269,6 +274,8 @@ class Space {
   * Update the cell list for an entity.
   */
   public function updateEntityCells(entity:Entity) {
+    getEntityFriend(entity)._spaceX = entity.x;
+    getEntityFriend(entity)._spaceY = entity.y;
     var x1 = entity.x;
     var y1 = entity.y;
     var x2 = x1 + entity.width;
@@ -332,5 +339,9 @@ class Space {
   */
   inline function getRow(y:Int):Int {
     return Std.int((y - _y) / _cellSize);
+  }
+
+  inline function getEntityFriend(entity:Entity):EntityFriend {
+    return untyped entity;
   }
 }

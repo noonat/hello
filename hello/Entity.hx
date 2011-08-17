@@ -24,6 +24,7 @@ class Entity {
   public var isActive:Bool;
   public var isVisible:Bool;
   public var isCollidable:Bool;
+  public var isSynchronized(getIsSynchronized, never):Bool;
   public var name(getName, setName):String;
   public var stamp:Int;
   public var sweep:CollisionSweep;
@@ -49,6 +50,8 @@ class Entity {
   var _graphicsToAdd:ValueList<Graphic>;
   var _graphicsToRemove:ValueList<Graphic>;
   var _name:String;
+  var _spaceX:Float;
+  var _spaceY:Float;
   var _tags:Hash<Bool>;
   var _tmpSegment:Segment;
   var _x:Float;
@@ -187,6 +190,12 @@ class Entity {
 
   inline function getCells():ValueList<SpaceCell> {
     return _cells;
+  }
+
+  inline function getIsSynchronized():Bool {
+    return (
+      Lo.abs(_spaceX - _x) < Lo.EPSILON &&
+      Lo.abs(_spaceY - _y) < Lo.EPSILON);
   }
 
   inline function getGraphics():ValueList<Graphic> {
