@@ -1,4 +1,4 @@
-package hello;
+package hello.graphics;
 
 import flash.display.BitmapData;
 import flash.geom.Matrix;

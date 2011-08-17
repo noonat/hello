@@ -1,4 +1,4 @@
-package hello;
+package hello.graphics;
 
 class Image extends Graphic {
   public var isFlipped:Bool;

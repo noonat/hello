@@ -1,6 +1,7 @@
 package hello;
 
 import hello.collisions.Space;
+import hello.graphics.Graphic;
 using hello.Mixins;
 
 class World extends Space {

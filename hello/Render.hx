@@ -9,6 +9,7 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+import hello.graphics.Texture;
 
 class Render {
   static public var angle(getAngle, setAngle):Float;

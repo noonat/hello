@@ -1,4 +1,4 @@
-package hello;
+package hello.graphics;
 
 /**
  * Template used by Spritemap to define animations. Don't create

@@ -5,6 +5,7 @@ import hello.collisions.Bounds;
 import hello.collisions.CollisionSweep;
 import hello.collisions.Segment;
 import hello.collisions.SpaceCell;
+import hello.graphics.Graphic;
 
 private typedef WorldFriend = {
   function addToLayers(graphic:Graphic):Void;
