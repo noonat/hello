@@ -64,22 +64,18 @@ class Tilemap extends Graphic {
       px += entity.x;
       py += entity.y;
     }
-    var rx:Float = 0.0;
-    var ry:Float = 0.0;
-    var rw:Float = Lo.min(_bufferRect.width, Lo.width);
-    var rh:Float = Lo.min(_bufferRect.height, Lo.height);
+    var rx = 0.0;
+    var ry = 0.0;
     if (px < 0) {
       rx -= px;
       px = 0.0;
-    } else {
-      rw -= px;
     }
     if (py < 0) {
       ry -= py;
       py = 0.0;
-    } else {
-      rh -= py;
     }
+    var rw = Lo.min(_bufferRect.width, Lo.width - px);
+    var rh = Lo.min(_bufferRect.height, Lo.height - py);
     if (rw > 0 && rh > 0) {
       _point.x = px;
       _point.y = py;
