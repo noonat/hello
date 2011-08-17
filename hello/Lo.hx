@@ -10,7 +10,6 @@ import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
-import flash.Vector;
 
 class Lo {
   static public inline var EPSILON:Float = 1e-8;
@@ -49,10 +48,11 @@ class Lo {
   static public function main(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>=null) {
     var current = Lib.current;
     var onAddedToStage:Event -> Void = null;
+    var onCreated:Void -> Void = null;
     var onResourcesLoaded:Void -> Void = null;
     var tryLoad:Void -> Void = null;
     tryLoad = function() {
-      if (onAddedToStage == null && onResourcesLoaded == null) {
+      if (onAddedToStage == null && onCreated == null && onResourcesLoaded == null) {
         if (args == null) {
           args = [];
         }
@@ -71,8 +71,26 @@ class Lo {
       };
       current.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
     }
+    #if nme  // hxcpp
+      onCreated = function() {
+        onCreated = null;
+        tryLoad();
+      };
+    #end
     Resources.onLoaded.add(onResourcesLoaded);
     Resources.init();
+    #if nme  // hxcpp
+      var flags = nme.Lib.HARDWARE | nme.Lib.VSYNC;
+      nme.Lib.create(onCreated, 640, 480, frameRate, 0, flags, 'Hello');
+    #end
+  }
+
+  static public function trace(args:Dynamic) {
+  #if flash
+    Lib.trace(args);
+  #else
+    trace(args);
+  #end
   }
 
   static inline public function keyDown(index:Int):Bool {

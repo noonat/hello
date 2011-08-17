@@ -153,7 +153,7 @@ class Game extends World {
       var className = xmlEntity.att.className;
       var cls:Class<Dynamic> = Type.resolveClass(className);
       if (cls == null) {
-        flash.Lib.trace('WARNING: unknown entity class "' + className + '"');
+        Lo.trace('WARNING: unknown entity class "' + className + '"');
         entities.push(null);
         continue;
       }
@@ -193,7 +193,7 @@ class Game extends World {
         }
         var value:Dynamic = xmlEntity.x.get(key);
         if (fields.indexOf(key) == -1) {
-          flash.Lib.trace('WARNING: unknown field "' + key + '" for entity "' + entity + '"');
+          Lo.trace('WARNING: unknown field "' + key + '" for entity "' + entity + '"');
           continue;
         }
         if (Type.typeof(Reflect.field(entity, key)) == ValueType.TBool) {

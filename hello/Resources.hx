@@ -30,11 +30,15 @@ class Resources {
   #if debug
     getBasePath(Resource.getString('resources.xml'));
     var urlRequest = new URLRequest(basePath + '/resources.xml');
-    var urlLoader = new URLLoader();
-    urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
-      Resources.load(urlLoader.data);
-    });
-    urlLoader.load(urlRequest);
+    #if flash
+      var urlLoader = new URLLoader();
+      urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
+        Resources.load(urlLoader.data);
+      });
+      urlLoader.load(urlRequest);
+    #else  // hxcpp
+      Resources.load(ByteArray.readFile(urlRequest.url).asString());
+    #end
   #else
     load(Resource.getString('resources.xml'));
   #end
@@ -68,7 +72,7 @@ class Resources {
   static public function getResource(id:String):ResourceData {
     var resource = _resources.get(id);
     if (resource == null) {
-      Lib.trace('Resources.getResource("' + id + '"): Invalid resource');
+      Lo.trace('Resources.getResource("' + id + '"): Invalid resource');
     }
     return resource;
   }
@@ -82,6 +86,9 @@ class Resources {
       basePath = '/res';
     }
     basePath = ~/\/+$/g.replace(basePath, '');
+    #if nme  // hxcpp
+      basePath = ~/^\/+/g.replace(basePath, '');
+    #end
     return basePath;
   }
   
@@ -121,13 +128,13 @@ class Resources {
       }
 
       #if release
-      // Verify that the class exists
-      var className = 'res._' + (~/[\/.]/g).replace(resource.path, '_');
-      resource.cls = Type.resolveClass(className);
-      if (resource.cls == null) {
-        Lib.trace('error: resource class ' + className + ' not found');
-        continue;
-      }
+        // Verify that the class exists
+        var className = 'res._' + (~/[\/.]/g).replace(resource.path, '_');
+        resource.cls = Type.resolveClass(className);
+        if (resource.cls == null) {
+          Lo.trace('ERROR: resource class ' + className + ' not found');
+          continue;
+        }
       #end
 
       // Figure out the file type
@@ -179,29 +186,47 @@ class Resources {
         loader.load(urlRequest);
 
       case 'sound':
-        var sound = new Sound();
-        resource.content = sound;
-        sound.addEventListener(Event.COMPLETE, function(event:Event):Void {
+        #if flash
+          var sound = new Sound();
+          resource.content = sound;
+          sound.addEventListener(Event.COMPLETE, function(event:Event):Void {
+            resource.contentLoaded = true;
+            loadedResource(resource);
+            if (listener != null) {
+              listener(resource);
+            }
+          });
+          sound.load(urlRequest);
+        #else  // hxcpp
+          resource.content = new Sound(urlRequest);
           resource.contentLoaded = true;
           loadedResource(resource);
           if (listener != null) {
             listener(resource);
           }
-        });
-        sound.load(urlRequest);
+        #end
 
       default:
-        var urlLoader = new URLLoader();
-        urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-        urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
-          resource.content = urlLoader.data;
+        #if flash
+          var urlLoader = new URLLoader();
+          urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+          urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
+            resource.content = urlLoader.data;
+            resource.contentLoaded = true;
+            loadedResource(resource);
+            if (listener != null) {
+              listener(resource);
+            }
+          });
+          urlLoader.load(urlRequest);
+        #else  // hxcpp
+          resource.content = ByteArray.readFile(urlRequest.url);
           resource.contentLoaded = true;
           loadedResource(resource);
           if (listener != null) {
             listener(resource);
           }
-        });
-        urlLoader.load(urlRequest);
+        #end
     }
   }
 
@@ -211,8 +236,8 @@ class Resources {
       _loadedResources.push(resource.id);
       _pendingResources.splice(index, 1);
       #if debug
-      var paddedPercent = StringTools.lpad(loadedPercentString, ' ', 3);
-      Lib.trace('[' + paddedPercent + '%] Loaded ' + resource.path);
+        var paddedPercent = StringTools.lpad(loadedPercentString, ' ', 3);
+        Lo.trace('[' + paddedPercent + '%] Loaded ' + resource.path);
       #end
       if (_pendingResources.length == 0) {
         onLoaded.dispatch();
