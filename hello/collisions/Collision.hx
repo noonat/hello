@@ -149,6 +149,7 @@ class Collision {
         }
 
         // Only record the hit if it is nearer for the sweep.
+        time = Lo.max(time - Lo.EPSILON, 0);
         if (time < sweep.time) {
           hit = sweep.hit;
           if (hit == null) {
@@ -229,7 +230,7 @@ class Collision {
     if (sigma >= 0 && rr >= Lo.EPSILON) {
       var time = -(c + Math.sqrt(sigma));
       if (time <= rr) {
-        time = Lo.clamp(time / rr, 0, 1);
+        time = Lo.clamp((time / rr) - Lo.EPSILON, 0, 1);
         if (time < sweep.time) {
           hit = sweep.hit;
           if (hit == null) {
@@ -311,15 +312,20 @@ class Collision {
       return intersectSegmentCircle(sweep, capsule.circle1);
     } else if (md + time * nd > capsule.deltaSquared) {
       return intersectSegmentCircle(sweep, capsule.circle2);
-    } else if (time >= 0 && time <= 1 && time < sweep.time) {
-      var hit = sweep.hit;
-      if (hit == null) {
-        hit = sweep.hit = CollisionHit.create();
+    } else if (time >= 0 && time <= 1) {
+      time = Lo.max(time - Lo.EPSILON, 0);
+      if (time < sweep.time) {
+        var hit = sweep.hit;
+        if (hit == null) {
+          hit = sweep.hit = CollisionHit.create();
+        }
+        sweep.time = time;
+        sweep.x = hit.x = segment.x1 + time * segment.deltaX;
+        sweep.y = hit.y = segment.y1 + time * segment.deltaY;
+        return true;
+      } else {
+        return false;
       }
-      sweep.time = time;
-      sweep.x = hit.x = segment.x1 + time * segment.deltaX;
-      sweep.y = hit.y = segment.y1 + time * segment.deltaY;
-      return true;
     } else {
       return false;
     }
