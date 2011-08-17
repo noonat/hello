@@ -100,58 +100,6 @@ class Collision {
   }
 
   /**
-  * Intersect aabb `a` into aabb `b`. Returns a CollisionHit object, where
-  * `hit.deltaX` and `hit.deltaY` describe a vector to move `a` out of
-  * collision. Returns null if no intersection occurs.
-  *
-  * This uses a separating axis test, and gives the axis of least overlap as
-  * the contact point. This can cause weird behavior for moving boxes, so you
-  * should use `sweepAABBAABB` for a moving box.
-  */
-  static inline public function intersectAABBAABB(a:AABB, b:AABB):CollisionHit {
-    var hit:CollisionHit = null;
-    // Find the overlap for the X axis.
-    var dx = (a.entity.x + a.x) - (b.entity.x + b.x);
-    var px = (a.halfWidth + b.halfWidth) - Lo.abs(dx);
-    if (px > 0) {
-      // Find the overlap for the Y axis
-      var dy = (a.entity.y + a.y) - (b.entity.y + b.y);
-      var py = (a.halfHeight + b.halfHeight) - Lo.abs(dy);
-      if (py > 0) {
-        // Use the axis with the smallest overlap
-        hit = CollisionHit.create();
-        if (px < py) {
-          var sign = Lo.sign(dx);
-          hit.deltaX = px * sign;
-          hit.normalX = sign;
-          hit.x = b.entity.x + b.x + (b.halfWidth * sign);
-          hit.y = a.entity.y + a.y;
-        } else {
-          var sign = Lo.sign(dy);
-          hit.deltaY = py * sign;
-          hit.normalY = sign;
-          hit.x = a.entity.x + a.x;
-          hit.y = b.entity.y + b.y + (b.halfHeight * sign);
-        }
-      }
-    }
-    return hit;
-  }
-
-  /**
-  * Intersect the point `x`, `y` into `aabb`. Returns a CollisionHit object
-  * if they intersect, with `hit.x` and `hit.y` set to the nearest edge of
-  * the box. Returns null if no intersection occurs.
-  */
-  static inline public function intersectPointAABB(x:Float, y:Float, aabb:AABB):CollisionHit {
-    _tmpEntity.x = x;
-    _tmpEntity.y = y;
-    _tmpAABB.entity = _tmpEntity;
-    _tmpAABB.set(0, 0, 0, 0);
-    return intersectAABBAABB(_tmpAABB, aabb);
-  }
-
-  /**
   * Intersect the segment described by `sweep` into `aabb`. Returns true if
   * an intersection occurs, and updates `sweep` with the details.
   */
@@ -211,38 +159,6 @@ class Collision {
       }
     }
     return hit != null;
-  }
-
-  /**
-  * Intersect circle `a` into circle `b`. Returns a CollisionHit if they
-  * intersect, where `hit.deltaX` and `hit.deltaY` describe a the vector to
-  * move `a` out of collision. Returns null if they do not intersect.
-  */
-  static inline public function intersectCircleCircle(a:Circle, b:Circle):CollisionHit {
-    var hit:CollisionHit = null;
-    var dx = (a.entity.x + a.x) - (b.entity.x + b.x);
-    var dy = (a.entity.y + a.y) - (b.entity.y + b.y);
-    var distanceSquared = dx * dx + dy * dy;
-    var radiusSum = a.radius + b.radius;
-    if (distanceSquared <= radiusSum * radiusSum) {
-      hit = CollisionHit.create();
-      var distance:Float;
-      if (distanceSquared > 0) {
-        distance = Math.sqrt(distanceSquared);
-        hit.normalX = dx / distance;
-        hit.normalY = dy / distance;
-      } else {
-        // It's right in the middle, just push it out to the right
-        distance = 0;
-        hit.normalX = 1;
-        hit.normalY = 0;
-      }
-      hit.deltaX = (radiusSum - distance) * hit.normalX;
-      hit.deltaY = (radiusSum - distance) * hit.normalY;
-      hit.x = (b.entity.x + b.x + b.radius) * hit.normalX;
-      hit.y = (b.entity.y + b.y + b.radius) * hit.normalY;
-    }
-    return hit;
   }
 
   /**
@@ -367,6 +283,90 @@ class Collision {
     } else {
       return false;
     }
+  }
+
+  /**
+  * Intersect aabb `a` into aabb `b`. Returns a CollisionHit object, where
+  * `hit.deltaX` and `hit.deltaY` describe a vector to move `a` out of
+  * collision. Returns null if no intersection occurs.
+  *
+  * This uses a separating axis test, and gives the axis of least overlap as
+  * the contact point. This can cause weird behavior for moving boxes, so you
+  * should use `sweepAABBAABB` for a moving box.
+  */
+  static inline public function intersectAABBAABB(a:AABB, b:AABB):CollisionHit {
+    var hit:CollisionHit = null;
+    // Find the overlap for the X axis.
+    var dx = (a.entity.x + a.x) - (b.entity.x + b.x);
+    var px = (a.halfWidth + b.halfWidth) - Lo.abs(dx);
+    if (px > 0) {
+      // Find the overlap for the Y axis
+      var dy = (a.entity.y + a.y) - (b.entity.y + b.y);
+      var py = (a.halfHeight + b.halfHeight) - Lo.abs(dy);
+      if (py > 0) {
+        // Use the axis with the smallest overlap
+        hit = CollisionHit.create();
+        if (px < py) {
+          var sign = Lo.sign(dx);
+          hit.deltaX = px * sign;
+          hit.normalX = sign;
+          hit.x = b.entity.x + b.x + (b.halfWidth * sign);
+          hit.y = a.entity.y + a.y;
+        } else {
+          var sign = Lo.sign(dy);
+          hit.deltaY = py * sign;
+          hit.normalY = sign;
+          hit.x = a.entity.x + a.x;
+          hit.y = b.entity.y + b.y + (b.halfHeight * sign);
+        }
+      }
+    }
+    return hit;
+  }
+
+  /**
+  * Intersect the point `x`, `y` into `aabb`. Returns a CollisionHit object
+  * if they intersect, with `hit.x` and `hit.y` set to the nearest edge of
+  * the box. Returns null if no intersection occurs.
+  */
+  static inline public function intersectPointAABB(x:Float, y:Float, aabb:AABB):CollisionHit {
+    _tmpEntity.x = x;
+    _tmpEntity.y = y;
+    _tmpAABB.entity = _tmpEntity;
+    _tmpAABB.set(0, 0, 0, 0);
+    return intersectAABBAABB(_tmpAABB, aabb);
+  }
+
+  /**
+  * Intersect circle `a` into circle `b`. Returns a CollisionHit if they
+  * intersect, where `hit.deltaX` and `hit.deltaY` describe a the vector to
+  * move `a` out of collision. Returns null if they do not intersect.
+  */
+  static inline public function intersectCircleCircle(a:Circle, b:Circle):CollisionHit {
+    var hit:CollisionHit = null;
+    var dx = (a.entity.x + a.x) - (b.entity.x + b.x);
+    var dy = (a.entity.y + a.y) - (b.entity.y + b.y);
+    var distanceSquared = dx * dx + dy * dy;
+    var radiusSum = a.radius + b.radius;
+    if (distanceSquared <= radiusSum * radiusSum) {
+      hit = CollisionHit.create();
+      var distance:Float;
+      if (distanceSquared > 0) {
+        distance = Math.sqrt(distanceSquared);
+        hit.normalX = dx / distance;
+        hit.normalY = dy / distance;
+      } else {
+        // It's right in the middle, just push it out to the right
+        distance = 0;
+        hit.normalX = 1;
+        hit.normalY = 0;
+      }
+      hit.deltaX = (radiusSum - distance) * hit.normalX;
+      hit.deltaY = (radiusSum - distance) * hit.normalY;
+      hit.x = (b.entity.x + b.x + b.radius) * hit.normalX;
+      hit.y = (b.entity.y + b.y + b.radius) * hit.normalY;
+    }
+    return hit;
   }
 
   /**
