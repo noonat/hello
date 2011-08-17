@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 /**
 * Base class for all bounding volumes. This class cannot be instantiated

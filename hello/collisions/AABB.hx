@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class AABB extends Bounds {
   public function new(halfWidth:Float, halfHeight:Float, ?x:Float, ?y:Float) {

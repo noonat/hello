@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 enum BoundsType {
   AABB;

@@ -3,7 +3,7 @@ package examples.queens;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxe.xml.Fast;
-import hello.AABB;
+import hello.collisions.AABB;
 import hello.Engine;
 import hello.Entity;
 import hello.Graphic;

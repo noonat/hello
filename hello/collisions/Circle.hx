@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class Circle extends Bounds {
   public var radius(getRadius, setRadius):Float;

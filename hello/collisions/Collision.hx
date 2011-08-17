@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class Collision {
   static var _tmpAABB:AABB;

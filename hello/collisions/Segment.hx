@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class Segment {
   public var x1(getX1, setX1):Float;

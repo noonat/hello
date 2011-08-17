@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 /**
 * Spatial partioning class. Divides a space into a uniform grid of square

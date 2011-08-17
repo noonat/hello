@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class Capsule extends Segment {
   public var circle1(getCircle1, never):Circle;

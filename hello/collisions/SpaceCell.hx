@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class SpaceCell {
   public var key:Int;

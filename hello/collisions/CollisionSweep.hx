@@ -1,4 +1,4 @@
-package hello;
+package hello.collisions;
 
 class CollisionSweep {
   public var hit:CollisionHit;
