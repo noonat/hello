@@ -20,24 +20,13 @@ import flash.geom.Rectangle;
 *   from one point to another, and collide them against a stationary object.
 */
 class Collision {
-  static var _tmpAABB:AABB;
-  static var _tmpCapsule:Capsule;
-  static var _tmpEntity:Entity;
-  static var _tmpSweep:CollisionSweep;
-  static var _tmpSweep2:CollisionSweep;
-  static var _rect:Rectangle;
-  static var _zero:Point;
-
-  static function __init__() {
-    _tmpEntity = new Entity();
-    _tmpAABB = new AABB(0, 0);
-    _tmpAABB.entity = _tmpEntity;
-    _tmpCapsule = new Capsule(0, 0, 0, 0, 0);
-    _tmpSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
-    _tmpSweep2 = CollisionSweep.create(new Segment(0, 0, 1, 1));
-    _rect = new Rectangle();
-    _zero = new Point(0, 0);
-  }
+  static var _tmpAABB:AABB = new AABB(0, 0);
+  static var _tmpCapsule:Capsule = new Capsule(0, 0, 0, 0, 0);
+  static var _tmpEntity:Entity = new Entity();
+  static var _tmpSweep:CollisionSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
+  static var _tmpSweep2:CollisionSweep = CollisionSweep.create(new Segment(0, 0, 1, 1));
+  static var _rect:Rectangle = new Rectangle();
+  static var _zero:Point = new Point(0, 0);
 
   /**
   * Return true if AABB `a` is overlapping AABB `b`.
@@ -78,6 +67,7 @@ class Collision {
   * Return true if `aabb` is overlapping solid tiles in `grid`.
   */
   static inline public function testAABBGrid(aabb:AABB, grid:Grid):Bool {
+    #if flash
     _rect.x = (aabb.entity.x + aabb.minX) - (grid.entity.x + grid.minX);
     _rect.y = (aabb.entity.y + aabb.minY) - (grid.entity.y + grid.minY);
     var x = Std.int((_rect.x + aabb.width - 1) / grid.tileWidth) + 1;
@@ -87,6 +77,9 @@ class Collision {
     _rect.width = x - _rect.x;
     _rect.height = y - _rect.y;
     return grid.data.hitTest(_zero, 1, _rect);
+    #else
+    return false;
+    #end
   }
 
   /**
