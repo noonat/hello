@@ -3,7 +3,8 @@ package hello.graphics;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-using Mixins;
+import hello.collisions.Grid;
+using hello.Mixins;
 
 class Tilemap extends Graphic {
   public var cols(getCols, never):Int;
@@ -234,20 +235,20 @@ class Tilemap extends Graphic {
     return s;
   }
 
-  // public function createGrid(solidTiles:Array<Int>, cls:Class<Grid>=null):Grid {
-  //   if (cls == null) {
-  //     cls = Grid;
-  //   }
-  //   var grid:Grid = Type.createInstance(cls, [_width, _height, tileWidth, tileHeight]);
-  //   for (row in 0..._rows) {
-  //     for (col in 0..._cols) {
-  //       if (solidTiles.indexOf(getTile(col, row)) != -1) {
-  //         grid.setTile(col, row, true);
-  //       }
-  //     }
-  //   }
-  //   return grid;
-  // }
+  public function createGrid(solidTiles:Array<Int>, cls:Class<Grid>=null):Grid {
+    if (cls == null) {
+      cls = Grid;
+    }
+    var grid:Grid = Type.createInstance(cls, [_width, _height, tileWidth, tileHeight]);
+    for (row in 0..._rows) {
+      for (col in 0..._cols) {
+        if (solidTiles.indexOf(getTile(col, row)) != -1) {
+          grid.setTile(col, row, true);
+        }
+      }
+    }
+    return grid;
+  }
 
   inline public function getTilesetIndex(col:Int, row:Int):Int {
     return (row % _tilesetRows) * _tilesetCols + (col % _tilesetCols);
