@@ -286,6 +286,120 @@ class Collision {
   }
 
   /**
+  * Intersect the segment described by `sweep` into `grid`. Returns true if
+  * an intersection occurs, and updates `sweep` with the details.
+  */
+  static inline public function intersectSegmentGrid(sweep:CollisionSweep, grid:Grid):Bool {
+    var segment = sweep.segment;
+    var x1 = segment.x1 - grid.entity.minX + grid.minX;
+    var y1 = segment.y1 - grid.entity.minY + grid.minY;
+    var x2 = segment.x2 - grid.entity.minX + grid.minX;
+    var y2 = segment.y2 - grid.entity.minY + grid.minY;
+    var dx = segment.deltaX;
+    var dy = segment.deltaY;
+    var time = Math.POSITIVE_INFINITY;
+    var hitNormalX = 0.0;
+    var hitNormalY = 0.0;
+
+    // calculate our starting grid offset and step
+    // (paper's x, y, stepX, stepY)
+    var gx = Std.int(x1 / grid.tileWidth);
+    var gy = Std.int(y1 / grid.tileHeight);
+    var gsx = dx < 0 ? -1 : 1;
+    var gsy = dy < 0 ? -1 : 1;
+    if (grid.getTile(gx, gy)) {
+      // line starts in a solid
+      time = 0;
+    } else {
+      // calculate the starting time offset and step
+      // this is placed along the edge of the current cell
+      // (paper's tMaxX, tMaxY, tDeltaX, tDeltaY)
+
+      var tx:Float, tsx:Float = (grid.tileWidth * gsx) / dx;
+      if (dx == 0) {
+        tx = 1;
+      } else {
+        tx = gx * grid.tileWidth;
+        if (dx > 0) {
+          tx += grid.tileWidth - 1;
+        }
+        tx = (tx - x1) / dx;
+        if (tx > 1) {
+          tx = 1;
+        }
+      }
+
+      var ty:Float, tsy:Float = (grid.tileHeight * gsy) / dy;
+      if (dy == 0) {
+        ty = 1;
+      } else {
+        ty = gy * grid.tileHeight;
+        if (dy > 0) {
+          ty += grid.tileHeight - 1;
+        }
+        ty = (ty - y1) / dy;
+        if (ty > 1) {
+          ty = 1;
+        }
+      }
+
+      // Iterate until we've hit something or
+      // reached the end of the line.
+      while (tx < 1 || ty < 1) {
+        if (tx < ty) {
+          gx += gsx;
+          tx += tsx;
+          if (grid.getTile(gx, gy)) {
+            // Hit a horizontal edge
+            var hitX = gx * grid.tileWidth;
+            if (dx < 0) { // Right edge
+              hitX += grid.tileWidth;
+            }
+            time = (hitX - x1) / dx;
+            hitNormalX = -gsx;
+            hitNormalY = 0;
+            break;
+          }
+        } else {
+          gy += gsy;
+          ty += tsy;
+          if (grid.getTile(gx, gy)) {
+            // Hit vertical edge
+            var hitY = gy * grid.tileHeight;
+            if (dy < 0) { // Bottom edge
+              hitY += grid.tileHeight;
+            }
+            time = (hitY - y1) / dy;
+            hitNormalX = 0;
+            hitNormalY = -gsy;
+            break;
+          }
+        }
+      }
+    }
+
+    time = Lo.max(time - Lo.EPSILON, 0);
+    if (time < sweep.time) {
+      var hit = sweep.hit;
+      if (hit == null) {
+        hit = sweep.hit = CollisionHit.create();
+      }
+      hit.bounds = grid;
+      hit.entity = grid.entity;
+      hit.normalX = hitNormalX;
+      hit.normalY = hitNormalY;
+      hit.deltaX = time * segment.deltaX;
+      hit.deltaY = time * segment.deltaY;
+      sweep.time = time;
+      sweep.x = hit.x = segment.x1 + hit.deltaX;
+      sweep.y = hit.y = segment.y1 + hit.deltaY;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
   * Intersect aabb `a` into aabb `b`. Returns a CollisionHit object, where
   * `hit.deltaX` and `hit.deltaY` describe a vector to move `a` out of
   * collision. Returns null if no intersection occurs.
