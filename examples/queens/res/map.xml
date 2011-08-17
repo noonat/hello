@@ -1,0 +1,99 @@
+<map>
+  <!-- upper castle -->
+  <block x="32" y="40" width="32" height="16" textureName="wall_bricks.png"/>
+  <block x="32" y="56" width="32" height="8" textureName="wall_bricks_fade.png"/>
+  <block x="0" y="-248" width="960" height="280" textureName="wall_bricks.png"/>
+  <block x="0" y="24" width="32" height="16" textureName="roof_bricks.png"/>
+  <block x="0" y="40" width="32" height="8" textureName="roof_bricks2.png"/>
+  <block x="0" y="48" width="32" height="8" textureName="roof_bricks3.png"/>
+  <block x="0" y="56" width="32" height="8" textureName="roof_fringe.png"/>
+  <block x="64" y="24" width="896" height="16" textureName="roof_bricks.png"/>
+  <block x="64" y="40" width="896" height="8" textureName="roof_bricks2.png"/>
+  <block x="64" y="48" width="896" height="8" textureName="roof_bricks3.png"/>
+  <block x="64" y="56" width="896" height="8" textureName="roof_fringe.png"/>
+
+  <!-- screen 1 -->
+  <block x="-32" y="0" width="32" height="240"/>
+  <block x="0" y="208" width="97" height="32" textureName="dirt8.png"/>
+  <block x="0" y="176" width="96" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <block x="160" y="208" width="32" height="32" textureName="dirt8.png"/>
+  <block x="160" y="176" width="32" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <block x="224" y="208" width="96" height="32" textureName="dirt8.png"/>
+  <block x="224" y="176" width="96" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <block x="320" y="184" width="76" height="56" textureName="dirt8.png"/>
+  <block x="320" y="152" width="32" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <block x="396" y="160" width="180" height="80" textureName="dirt8.png"/>
+  <block x="396" y="128" width="160" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <entity className="game.RoofSpike" x="160" y="56" shakeDuration="1.0"/>
+  <entity className="game.RoofSpike" x="180" y="56"/>
+  <entity className="game.RoofSpike" x="200" y="56" isFast="true"/>
+  <entity className="game.RoofSpike" x="240" y="56" shakeDuration="0.0" triggerDistance="24"/>
+
+  <!-- screen 2 -->
+  <entity className="game.ArrowShooter" x="544" y="128" waitDuration="0.25"/>
+  <entity className="game.Platform" x="650" y="200" width="32" height="8" axis="0" dir="-1" min="625" max="725" speed="40" waitDuration="2"/>
+  <entity className="game.Platform" x="800" y="170" width="32" height="8" axis="0" dir="1" min="800" max="900" speed="40" waitDuration="2"/>
+  <entity className="game.RoofSpike" x="740" y="56"/>
+  <entity className="game.RoofSpike" x="805" y="56"/>
+  
+  <!-- screen 3 -->
+  <block x="940" y="208" width="84" height="32" textureName="dirt8.png"/>
+  <block x="940" y="176" width="64" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
+  <block x="1056" y="-240" width="384" height="560" textureName="roof_bricks_dark.png" isCollidable="false" /> <!-- background -->
+  <block x="1056" y="-240" width="384" height="560" textureName="roof_bricks_dark_large.png" isCollidable="false" empty="4"/>
+  <block x="1152" y="-240" width="288" height="128" textureName="roof_bricks.png"/> <!-- roof, left -->
+  <block x="1160" y="-64" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <block x="1160" y="-28" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <entity className="game.Rock" x="1312" y="-112"/>
+  <block x="1168" y="-96" width="144" height="72" textureName="roof_bricks.png"/> <!-- rock platform -->
+  <block x="1312" y="-96" width="32" height="32" textureName="roof_bricks.png"/> <!-- left of rock drop -->
+  <block x="1376" y="-112" width="26" height="48" textureName="roof_bricks.png"/> <!-- right of rock drop -->
+  <block x="1040" y="-240" width="112" height="368" textureName="roof_bricks.png"/> <!-- roof, left -->
+  <block x="1152" y="0" width="160" height="128" textureName="roof_bricks.png"/> <!-- roof, left -->
+  <block x="1312" y="28" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <block x="1312" y="60" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <block x="1312" y="92" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <block x="1312" y="124" width="8" height="4" textureName="roof_brick_4px.png"/>
+  <block x="1408" y="-112" width="32" height="240" textureName="roof_bricks.png"/> <!-- roof, right -->
+  <block x="1328" y="168" width="16" height="16" textureName="roof_bricks.png"/> <!-- bridge -->
+  <block x="1344" y="160" width="64" height="24" name="bridge" textureName="roof_bricks.png"/> <!-- bridge -->
+  <entity className="game.Bridge" x="1344" y="160" width="64" height="24"/>
+  <block x="1024" y="192" width="64" height="48" textureName="roof_bricks.png"/> <!-- floor steps -->
+  <block x="1088" y="176" width="256" height="80" textureName="roof_bricks.png"/> <!-- floor left -->
+  <block x="1408" y="160" width="32" height="80" textureName="roof_bricks.png"/> <!-- floor right -->
+  
+  <!-- screen 4 -->
+  <entity className="game.Crusher" x="1464" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Crusher" x="1512" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Crusher" x="1560" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Crusher" x="1608" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Crusher" x="1656" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Crusher" x="1704" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="game.Gear" x="1464" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1504" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1544" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1584" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1624" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1664" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1704" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="game.Gear" x="1488" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="game.Gear" x="1528" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="game.Gear" x="1568" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="game.Gear" x="1608" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="game.Gear" x="1648" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="game.Gear" x="1688" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <block x="1696" y="96" width="64" height="64" textureName="glow.png" isCollidable="false"/>
+  <block x="1440" y="0" width="320" height="104" textureName="wall_bricks.png" isCollidable="false"/>
+  <block x="1440" y="104" width="320" height="16" textureName="roof_bricks.png"/>
+  <block x="1440" y="160" width="320" height="16" textureName="roof_bricks_dark_bloody.png" isCollidable="false" tags="prebroken"/> <!-- walkway -->
+  <block x="1440" y="176" width="32" height="16" textureName="roof_bricks_dark.png"/> <!-- bottom walkway, upper left 2z1 -->
+  <block x="1440" y="192" width="16" height="48" textureName="roof_bricks_dark.png" isCollidable="false" tags="prebroken"/> <!-- bottom walkway, upper left 1x3 -->
+  <block x="1088" y="256" width="352" height="64" textureName="roof_bricks.png"/> <!-- bottom walkway, lower left 2x3 (and floor on screen 3) -->
+  <block x="1440" y="256" width="32" height="64" textureName="roof_bricks_dark.png"/> <!-- bottom walkway, lower left 2x3 (and floor on screen 3) -->
+  <block x="1728" y="176" width="32" height="16" textureName="roof_bricks_dark.png" isCollidable="false" tags="prebroken"/> <!-- bottom walkway, upper right 2x1 -->
+  <block x="1744" y="192" width="16" height="48" textureName="roof_bricks_dark.png" isCollidable="false" tags="prebroken"/> <!-- bottom walkway, upper right 1x3 -->
+  <block x="1728" y="256" width="32" height="48" textureName="roof_bricks_dark.png"/> <!-- bottom walkway, lower right 2x3 -->
+  <block x="1472" y="304" width="288" height="16" textureName="roof_bricks_dark.png"/> <!-- floor under gears -->
+  <block x="1536" y="176" width="16" height="128" textureName="roof_bricks_dark.png" isCollidable="false" tags="prebroken"/> <!-- left pillar -->
+  <block x="1648" y="176" width="16" height="128" textureName="roof_bricks_dark.png" isCollidable="false" tags="prebroken"/> <!-- right pillar -->
+</map>

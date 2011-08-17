@@ -1,6 +1,6 @@
 require 'rake/clean'
 
-SRCS = FileList['src/**/*.hx']
+SRCS = FileList['examples/**/*.hx', 'hello/**/*.hx']
 
 task :default => 'bin/debug.swf'
 
@@ -16,9 +16,9 @@ file 'bin/debug.swf' => ['bin'] + SRCS do |task|
     '--flash-use-stage',
     '-swf-version 10',
     "-swf #{task.name}",
-    '-resource res/resources.xml@resources.xml',
-    '-cp src',
-    '-main game.Game'
+    '-resource examples/queens/res/resources.xml@resources.xml',
+    '-cp .',
+    '-main examples.queens.Queens'
   ].join(' ')
 end
 CLEAN << 'bin/debug.swf'
@@ -31,9 +31,9 @@ file 'bin/release.swf' => ['bin'] + SRCS do |task|
     '--flash-use-stage',
     '-swf-version 10',
     "-swf #{task.name}",
-    '-resource res/resources.xml@resources.xml',
-    '-cp src',
-    '-main game.Game'
+    '-resource examples/queens/res/resources.xml@resources.xml',
+    '-cp .',
+    '-main examples.queens.Queens'
   ].join(' ')
 end
 CLEAN << 'bin/release.swf'
