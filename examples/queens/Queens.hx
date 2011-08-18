@@ -4,6 +4,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxe.xml.Fast;
 import hello.collisions.AABB;
+import hello.collisions.BoundsType;
 import hello.Assets;
 import hello.Engine;
 import hello.Entity;
@@ -149,6 +150,18 @@ class Game extends World {
                }
             }
          }
+         if (entity.bounds.type == BoundsType.AABB) {
+            if (xmlEntity.has.width) {
+               entity.bounds.aabb.setWidth(Std.parseFloat(xmlEntity.att.width));
+            }
+            if (xmlEntity.has.height) {
+               entity.bounds.aabb.setHeight(Std.parseFloat(xmlEntity.att.height));
+            }
+         } else if (entity.bounds.type == BoundsType.CIRCLE) {
+            if (xmlEntity.has.radius) {
+               entity.bounds.circle.radius = Std.parseFloat(xmlEntity.att.radius);
+            }
+         }
          add(entity);
          entities.push(entity);
       }
@@ -160,6 +173,7 @@ class Game extends World {
       // This is done in two phases so entities can find other entities that
       // they might refer to (e.g. if it refers to another entity by name).
       var i = 0;
+      var ignoreKeys = 'className name tags x y width height radius'.split(' ');
       for (xmlEntity in xml.nodes.entity) {
          var entity = entities[i++];
          if (entity == null) {
@@ -167,7 +181,7 @@ class Game extends World {
          }
          var fields = Type.getInstanceFields(Type.getClass(entity));
          for (key in xmlEntity.x.attributes()) {
-            if (key == 'className' || key == 'name' || key == 'tags' || key == 'x' || key == 'y') {
+            if (ignoreKeys.indexOf(key) != -1) {
                continue;
             }
             var value:Dynamic = xmlEntity.x.get(key);
@@ -245,7 +259,7 @@ class Platform extends Entity {
    var _image:Image;
 
    public function new() {
-      super();
+      super(0, 0, new AABB(16, 4));
       _image = new Image(Queens.atlas.getTexture('platform.png'));
       addGraphic(_image);
    }

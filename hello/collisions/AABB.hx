@@ -24,4 +24,14 @@ class AABB extends Bounds {
       this.x = minX + _halfWidth;
       this.y = minY + _halfHeight;
    }
+
+   inline public function setWidth(value:Float) {
+      _width = value;
+      _halfWidth = value * 0.5;
+   }
+
+   inline public function setHeight(value:Float) {
+      _height = value;
+      _halfHeight = value * 0.5;
+   }
 }
