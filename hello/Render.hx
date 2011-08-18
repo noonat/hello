@@ -9,6 +9,9 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+import hello.collisions.Bounds;
+import hello.collisions.CollisionHit;
+import hello.collisions.CollisionSweep;
 import hello.graphics.Texture;
 
 class Render {
@@ -180,20 +183,101 @@ class Render {
   }
 
   #if debug
-  static inline public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0):Void {
+  static public function debugBounds(bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
+    if (x == null) {
+      x = bounds.entity != null ? bounds.entity.x : 0;
+    }
+    if (y == null) {
+      y = bounds.entity != null ? bounds.entity.y : 0;
+    }
+    x += bounds.x;
+    y += bounds.y;
+    switch (bounds.type) {
+      case BoundsType.AABB, BoundsType.GRID:
+        debugRect(
+          x - bounds.halfWidth, y - bounds.halfHeight,
+          bounds.width, bounds.height, color, alpha, thickness);
+
+      case BoundsType.CIRCLE:
+        debugCircle(x, y, bounds.circle.radius, color, alpha, thickness);
+    }
+  }
+
+  static public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
     _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
     _debug.graphics.drawCircle(x, y, radius);
   }
 
-  static inline public function debugLine(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0):Void {
+  static public function debugHit(hit:CollisionHit, bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
+    if (x == null) {
+      x = (bounds.entity != null ? bounds.entity.x : 0) + hit.deltaX;
+    }
+    if (y == null) {
+      y = (bounds.entity != null ? bounds.entity.y : 0) + hit.deltaY;
+    }
+    debugBounds(bounds, x, y, color, alpha, thickness);
+    debugLine(hit.x, hit.y, hit.x + hit.normalX * 4, hit.y + hit.normalY * 4, color, alpha);
+  }
+
+  static public function debugLine(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
     _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
     _debug.graphics.moveTo(x1 - Lo.cameraX, y1 - Lo.cameraY);
     _debug.graphics.lineTo(x2 - Lo.cameraX, y2 - Lo.cameraY);
   }
 
-  static inline public function debugRect(x:Float, y:Float, w:Float, h:Float, color:Int=0x00ff00, alpha:Float=1.0, thickness:Float=0):Void {
+  static public function debugRect(x:Float, y:Float, w:Float, h:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
     _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
     _debug.graphics.drawRect(x - Lo.cameraX, y - Lo.cameraY, w, h);
+  }
+
+  static public function debugSweep(sweep:CollisionSweep, entity:Entity) {
+    var bounds = entity.bounds;
+    var segment = sweep.segment;
+    var x1 = segment.x1 + bounds.x;
+    var y1 = segment.y1 + bounds.y;
+    var x2 = segment.x2 + bounds.x;
+    var y2 = segment.y2 + bounds.y;
+    switch (bounds.type) {
+      case BoundsType.AABB:
+        var sx:Float = Lo.sign(-segment.deltaX);
+        var sy:Float = Lo.sign(segment.deltaY);
+        debugLine(
+          x1 + (bounds.halfWidth * sx), y1 + (bounds.halfHeight * sy),
+          x2 + (bounds.halfWidth * sx), y2 + (bounds.halfHeight * sy),
+          0xffffff, 0.5);
+        debugLine(
+          x1 - (bounds.halfWidth * sx), y1 - (bounds.halfHeight * sy),
+          x2 - (bounds.halfWidth * sx), y2 - (bounds.halfHeight * sy),
+          0xffffff, 0.5);
+
+      case BoundsType.CIRCLE:
+        var r = bounds.circle.radius;
+        var nx = segment.deltaX;
+        var ny = segment.deltaY;
+        var len = Math.sqrt(nx * nx + ny * ny);
+        if (len > 0) {
+          nx /= len;
+          ny /= len;
+        }
+        debugLine(
+          x1 - ny * r, y1 + nx * r,
+          x2 - ny * r, y2 + nx * r,
+          0xffffff, 0.5);
+        debugLine(
+          x1 + ny * r, y1 - nx * r,
+          x2 + ny * r, y2 - nx * r,
+          0xffffff, 0.5);
+
+      default:
+        return;
+    }
+    var color = if (sweep.hit != null) {
+      debugHit(sweep.hit, bounds, sweep.x, sweep.y, 0xffff00);
+      0xff0000;
+    } else {
+      0x00ff00;
+    }
+    debugBounds(bounds, x2 - bounds.x, y2 - bounds.y, color);
   }
   #end
 }
