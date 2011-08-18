@@ -220,6 +220,12 @@ class Space {
   inline public function sweep(entity:Entity, segment:Segment, mask:Int=0):CollisionSweep {
     ++_stamp;
 
+    var boundsX = entity.bounds.x;
+    var boundsY = entity.bounds.y;
+    segment.set(
+      segment.x1 + boundsX, segment.y1 + boundsY,
+      segment.x2 + boundsX, segment.y2 + boundsY);
+
     var sweep = CollisionSweep.create(segment);
     var minX = Lo.min(segment.x1, segment.x2);
     var minY = Lo.min(segment.y1, segment.y2);
@@ -259,6 +265,12 @@ class Space {
       row++;
     }
 
+    segment.set(
+      segment.x1 - boundsX, segment.y1 - boundsY,
+      segment.x2 - boundsX, segment.y2 - boundsY);
+    sweep.x -= boundsX;
+    sweep.y -= boundsY;
+
     return sweep;
   }
 
@@ -267,7 +279,7 @@ class Space {
   * segment for the move.
   */
   inline public function sweepXY(entity:Entity, x:Float, y:Float, mask:Int=0):CollisionSweep {
-    return sweep(entity, new Segment(entity.originX, entity.originY, x, y), mask);
+    return sweep(entity, new Segment(entity.x, entity.y, x, y), mask);
   }
 
   /**

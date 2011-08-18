@@ -96,13 +96,13 @@ class Entity {
     }
     if (world != null) {
       if (_tmpSegment == null) {
-        _tmpSegment = new Segment(originX, originY, originX + dx, originY + dy);
+        _tmpSegment = new Segment(x, y, x + dx, y + dy);
       } else {
-        _tmpSegment.set(originX, originY, originX + dx, originY + dy);
+        _tmpSegment.set(x, y, x + dx, y + dy);
       }
       sweep = world.sweep(this, _tmpSegment, mask);
-      _x = sweep.x - _bounds.x;
-      _y = sweep.y - _bounds.y;
+      _x = sweep.x;
+      _y = sweep.y;
       world.updateEntityCells(this);
     } else {
       _x += dx;

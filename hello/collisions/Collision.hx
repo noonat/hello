@@ -574,6 +574,7 @@ class Collision {
       _tmpSweep2.hit.free();
       _tmpSweep2.hit = null;
     }
+    // Create a sweep that moves the circle and treats the AABB as stationary
     var cx = circle.entity.x + circle.x;
     var cy = circle.entity.y + circle.y;
     _tmpSweep2.segment.set(
@@ -581,6 +582,8 @@ class Collision {
     _tmpSweep2.mask = sweep.mask;
     _tmpSweep2.time = sweep.time;
     if (sweepCircleAABB(_tmpSweep2, circle, aabb)) {
+      // It collided, so transform the temporary sweep results
+      // back into the AABB's movement space
       sweep.time = _tmpSweep2.time;
       sweep.x = sweep.segment.x1 + sweep.time * sweep.segment.deltaX;
       sweep.y = sweep.segment.y1 + sweep.time * sweep.segment.deltaY;
@@ -625,6 +628,7 @@ class Collision {
       var m:Int = u + v;
       if (m == 3) {
         // Voronoi vertex region
+        // FIXME: the hit and normals here aren't exactly right
         _tmpCapsule.setFromEdge(aabb, v, v ^ 1, circle.radius);
         if (intersectSegmentCapsule(sweep, _tmpCapsule)) {
           // Hit a horizontal edge
@@ -650,6 +654,10 @@ class Collision {
       }
     }
     if (intersected) {
+      sweep.x = sweep.hit.x;
+      sweep.y = sweep.hit.y;
+      sweep.hit.x -= sweep.hit.normalX * circle.radius;
+      sweep.hit.y -= sweep.hit.normalY * circle.radius;
       sweep.hit.bounds = aabb;
       sweep.hit.entity = aabb.entity;
     }
