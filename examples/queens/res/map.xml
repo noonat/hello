@@ -24,17 +24,17 @@
   <block x="320" y="152" width="32" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
   <block x="396" y="160" width="180" height="80" textureName="dirt8.png"/>
   <block x="396" y="128" width="160" height="32" textureName="dirt_fringe.png" isCollidable="false"/>
-  <entity className="game.RoofSpike" x="160" y="56" shakeDuration="1.0"/>
-  <entity className="game.RoofSpike" x="180" y="56"/>
-  <entity className="game.RoofSpike" x="200" y="56" isFast="true"/>
-  <entity className="game.RoofSpike" x="240" y="56" shakeDuration="0.0" triggerDistance="24"/>
+  <entity className="examples.queens.RoofSpike" x="160" y="56" shakeDuration="1.0"/>
+  <entity className="examples.queens.RoofSpike" x="180" y="56"/>
+  <entity className="examples.queens.RoofSpike" x="200" y="56" isFast="true"/>
+  <entity className="examples.queens.RoofSpike" x="240" y="56" shakeDuration="0.0" triggerDistance="24"/>
 
   <!-- screen 2 -->
-  <entity className="game.ArrowShooter" x="544" y="128" waitDuration="0.25"/>
-  <entity className="game.Platform" x="650" y="200" width="32" height="8" axis="0" dir="-1" min="625" max="725" speed="40" waitDuration="2"/>
-  <entity className="game.Platform" x="800" y="170" width="32" height="8" axis="0" dir="1" min="800" max="900" speed="40" waitDuration="2"/>
-  <entity className="game.RoofSpike" x="740" y="56"/>
-  <entity className="game.RoofSpike" x="805" y="56"/>
+  <entity className="examples.queens.ArrowShooter" x="544" y="128" waitDuration="0.25"/>
+  <entity className="examples.queens.Platform" x="650" y="200" width="32" height="8" axis="0" dir="-1" min="625" max="725" speed="40" waitDuration="2"/>
+  <entity className="examples.queens.Platform" x="800" y="170" width="32" height="8" axis="0" dir="1" min="800" max="900" speed="40" waitDuration="2"/>
+  <entity className="examples.queens.RoofSpike" x="740" y="56"/>
+  <entity className="examples.queens.RoofSpike" x="805" y="56"/>
   
   <!-- screen 3 -->
   <block x="940" y="208" width="84" height="32" textureName="dirt8.png"/>
@@ -44,7 +44,7 @@
   <block x="1152" y="-240" width="288" height="128" textureName="roof_bricks.png"/> <!-- roof, left -->
   <block x="1160" y="-64" width="8" height="4" textureName="roof_brick_4px.png"/>
   <block x="1160" y="-28" width="8" height="4" textureName="roof_brick_4px.png"/>
-  <entity className="game.Rock" x="1312" y="-112"/>
+  <entity className="examples.queens.Rock" x="1312" y="-112"/>
   <block x="1168" y="-96" width="144" height="72" textureName="roof_bricks.png"/> <!-- rock platform -->
   <block x="1312" y="-96" width="32" height="32" textureName="roof_bricks.png"/> <!-- left of rock drop -->
   <block x="1376" y="-112" width="26" height="48" textureName="roof_bricks.png"/> <!-- right of rock drop -->
@@ -57,31 +57,31 @@
   <block x="1408" y="-112" width="32" height="240" textureName="roof_bricks.png"/> <!-- roof, right -->
   <block x="1328" y="168" width="16" height="16" textureName="roof_bricks.png"/> <!-- bridge -->
   <block x="1344" y="160" width="64" height="24" name="bridge" textureName="roof_bricks.png"/> <!-- bridge -->
-  <entity className="game.Bridge" x="1344" y="160" width="64" height="24"/>
+  <entity className="examples.queens.Bridge" x="1344" y="160" width="64" height="24"/>
   <block x="1024" y="192" width="64" height="48" textureName="roof_bricks.png"/> <!-- floor steps -->
   <block x="1088" y="176" width="256" height="80" textureName="roof_bricks.png"/> <!-- floor left -->
   <block x="1408" y="160" width="32" height="80" textureName="roof_bricks.png"/> <!-- floor right -->
   
   <!-- screen 4 -->
-  <entity className="game.Crusher" x="1464" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Crusher" x="1512" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Crusher" x="1560" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Crusher" x="1608" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Crusher" x="1656" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Crusher" x="1704" y="32" width="32" height="64" axis="1" min="32" max="96"/>
-  <entity className="game.Gear" x="1464" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1504" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1544" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1584" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1624" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1664" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1704" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
-  <entity className="game.Gear" x="1488" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
-  <entity className="game.Gear" x="1528" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
-  <entity className="game.Gear" x="1568" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
-  <entity className="game.Gear" x="1608" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
-  <entity className="game.Gear" x="1648" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
-  <entity className="game.Gear" x="1688" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Crusher" x="1464" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Crusher" x="1512" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Crusher" x="1560" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Crusher" x="1608" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Crusher" x="1656" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Crusher" x="1704" y="32" width="32" height="64" axis="1" min="32" max="96"/>
+  <entity className="examples.queens.Gear" x="1464" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1504" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1544" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1584" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1624" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1664" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1704" y="285" turnSpeed="5" textureName="gear2.png" tags="gear2" />
+  <entity className="examples.queens.Gear" x="1488" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Gear" x="1528" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Gear" x="1568" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Gear" x="1608" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Gear" x="1648" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
+  <entity className="examples.queens.Gear" x="1688" y="285" turnSpeed="10" textureName="gear.png" tags="gear1" />
   <block x="1696" y="96" width="64" height="64" textureName="glow.png" isCollidable="false"/>
   <block x="1440" y="0" width="320" height="104" textureName="wall_bricks.png" isCollidable="false"/>
   <block x="1440" y="104" width="320" height="16" textureName="roof_bricks.png"/>
