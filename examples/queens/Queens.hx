@@ -4,6 +4,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxe.xml.Fast;
 import hello.collisions.AABB;
+import hello.Assets;
 import hello.Engine;
 import hello.Entity;
 import hello.graphics.Graphic;
@@ -14,7 +15,6 @@ import hello.graphics.TextureAtlas;
 import hello.Key;
 import hello.Lo;
 import hello.Render;
-import hello.Resources;
 import hello.World;
 import Type;
 using hello.Mixins;
@@ -73,7 +73,7 @@ class Game extends World {
     add(_player);
 
     var xml = new haxe.xml.Fast(
-      Xml.parse(Resources.getString('map')).firstElement());
+      Xml.parse(Assets.getString('map')).firstElement());
     readBlocks(xml);
     readEntities(xml);
   }

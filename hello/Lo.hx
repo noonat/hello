@@ -49,18 +49,18 @@ class Lo {
   static public function main(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>=null) {
     var current = Lib.current;
     var onAddedToStage:Event -> Void = null;
-    var onResourcesLoaded:Void -> Void = null;
+    var onAssetsLoaded:Void -> Void = null;
     var tryLoad:Void -> Void = null;
     tryLoad = function() {
-      if (onAddedToStage == null && onResourcesLoaded == null) {
+      if (onAddedToStage == null && onAssetsLoaded == null) {
         if (args == null) {
           args = [];
         }
         Lo.init(width, height, frameRate, cls, args);
       }
     };
-    onResourcesLoaded = function() {
-      onResourcesLoaded = null;
+    onAssetsLoaded = function() {
+      onAssetsLoaded = null;
       tryLoad();
     };
     if (current.stage == null) {
@@ -71,8 +71,8 @@ class Lo {
       };
       current.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
     }
-    Resources.onLoaded.add(onResourcesLoaded);
-    Resources.init();
+    Assets.onLoaded.add(onAssetsLoaded);
+    Assets.init();
   }
 
   static inline public function keyDown(index:Int):Bool {

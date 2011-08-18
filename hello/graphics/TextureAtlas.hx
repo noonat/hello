@@ -8,7 +8,7 @@ class TextureAtlas {
   public var source(getSource, never):BitmapData;
   public var sourceFlipped(getSourceFlipped, never):BitmapData;
   public var sourceRect(getSourceRect, never):Rectangle;
-  var _resource:ResourceData;
+  var _asset:Asset;
   var _source:BitmapData;
   var _sourceFlipped:BitmapData;
   var _sourceRect:Rectangle;
@@ -20,15 +20,15 @@ class TextureAtlas {
 
   public function new(source:Dynamic) {
     if (Std.is(source, String)) {
-      _resource = Resources.getResource(Std.string(source));
-      if (_resource == null) {
-        throw 'Invalid resource "' + source + '"';
+      _asset = Assets.get(Std.string(source));
+      if (_asset == null) {
+        throw 'Invalid asset "' + source + '"';
       }
-      _source = _resource.content;
+      _source = _asset.content;
     } else if (Std.is(source, BitmapData)) {
       _source = source;
     } else {
-      throw 'TextureAtlas source must be a resource id string or BitmapData';
+      throw 'TextureAtlas source must be a asset id string or BitmapData';
     }
     _sourceFlipped = null;
     _sourceRect = _source.rect;
@@ -52,7 +52,7 @@ class TextureAtlas {
   }
 
   public function setTexturesFromPropertyList(id:String) {
-    var text = Resources.getString(id);
+    var text = Assets.getString(id);
     var data = PropertyList.read(text != null ? text : id);
     if (Reflect.hasField(data, 'frames')) {
       var frames = Reflect.field(data, 'frames');

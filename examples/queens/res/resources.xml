@@ -1,5 +1,0 @@
-<resources path="/examples/queens/res">
-  <resource id="map" src="map.xml"/>
-  <resource id="atlas_queens" src="atlas_queens.png"/>
-  <resource id="atlas_queens_plist" src="atlas_queens.plist"/>
-</resources>

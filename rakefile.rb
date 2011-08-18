@@ -16,8 +16,8 @@ file 'bin/debug.swf' => ['bin'] + SRCS do |task|
     '--flash-use-stage',
     '-swf-version 10',
     "-swf #{task.name}",
-    '-resource examples/queens/res/resources.xml@resources.xml',
     '-cp .',
+    '-resource examples/queens/assets/assets.xml@assets.xml',
     '-main examples.queens.Queens'
   ].join(' ')
 end
@@ -31,8 +31,8 @@ file 'bin/release.swf' => ['bin'] + SRCS do |task|
     '--flash-use-stage',
     '-swf-version 10',
     "-swf #{task.name}",
-    '-resource examples/queens/res/resources.xml@resources.xml',
     '-cp .',
+    '-resource examples/queens/assets/assets.xml@assets.xml',
     '-main examples.queens.Queens'
   ].join(' ')
 end

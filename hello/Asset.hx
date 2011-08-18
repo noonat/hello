@@ -1,6 +1,6 @@
 package hello;
 
-class ResourceData {
+class Asset {
   public var id:String;
   public var path:String;
   public var type:String;
