@@ -41,12 +41,12 @@ class Grid extends Bounds {
     _data = new BitmapData(_cols, _rows, true, 0);
   }
 
-  public function setTile(col:Int, row:Int, solid:Bool) {
+  public function setTile(col:Int, row:Int, isSolid:Bool) {
     if (usePositions) {
       col = Std.int(col / _tileWidth);
       row = Std.int(row / _tileHeight);
     }
-    _data.setPixel32(col, row, solid ? 0xffffffff : 0);
+    _data.setPixel32(col, row, isSolid ? 0xffffffff : 0);
   }
 
   inline public function clearTile(col:Int, row:Int) {
@@ -61,7 +61,7 @@ class Grid extends Bounds {
     return _data.getPixel32(col, row) > 0;
   }
 
-  public function setRect(col:Int, row:Int, width:Int, height:Int, solid:Bool) {
+  public function setRect(col:Int, row:Int, width:Int, height:Int, isSolid:Bool) {
     if (usePositions) {
       col = Std.int(col / _tileWidth);
       row = Std.int(row / _tileHeight);
@@ -72,7 +72,7 @@ class Grid extends Bounds {
     _rect.y = row;
     _rect.width = width;
     _rect.height = height;
-    _data.fillRect(_rect, solid ? 0xFFFFFF : 0);
+    _data.fillRect(_rect, isSolid ? 0xFFFFFF : 0);
   }
 
   inline public function clearRect(col:Int=0, row:Int=0, width:Int=1, height:Int=1) {
