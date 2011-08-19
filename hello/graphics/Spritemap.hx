@@ -87,7 +87,7 @@ class Spritemap extends Graphic {
     var fy = Std.int(_frame / _cols) * _frameHeight;
     var xx = x - Lo.cameraX * scrollX;
     var yy = y - Lo.cameraY * scrollY;
-    if (entity != null && relative) {
+    if (entity != null && isRelative) {
       xx += entity.x;
       yy += entity.y;
     }

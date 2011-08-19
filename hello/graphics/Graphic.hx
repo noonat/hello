@@ -9,9 +9,9 @@ private typedef WorldFriend = {
 
 class Graphic {
   public var entity:Entity;
+  public var isRelative:Bool;
   public var isVisible:Bool;
   public var layer(getLayer, setLayer):Int;
-  public var relative:Bool;
   public var scrollX:Float;
   public var scrollY:Float;
   public var world(getWorld, never):World;
@@ -22,8 +22,8 @@ class Graphic {
 
   public function new() {
     entity = null;
+    isRelative = true;
     isVisible = true;
-    relative = true;
     scrollX = 1;
     scrollY = 1;
     x = 0;

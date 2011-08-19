@@ -13,7 +13,7 @@ class Image extends Graphic {
   override public function render() {
     var px = x - Lo.cameraX * scrollX;
     var py = y - Lo.cameraY * scrollY;
-    if (entity != null && relative) {
+    if (entity != null && isRelative) {
       px += entity.x;
       py += entity.y;
     }
