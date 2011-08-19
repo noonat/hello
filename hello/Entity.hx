@@ -48,6 +48,7 @@ class Entity {
 
   var _bounds:Bounds;
   var _cells:ValueList<SpaceCell>;
+  var _components:Hash<Component>;
   var _graphics:ValueList<Graphic>;
   var _graphicsToAdd:ValueList<Graphic>;
   var _graphicsToRemove:ValueList<Graphic>;
@@ -80,11 +81,19 @@ class Entity {
   }
 
   public function added() {
-
+    if (_components != null) {
+      for (component in _components) {
+        component.addedToWorld();
+      }
+    }
   }
 
   public function removed() {
-
+    if (_components != null) {
+      for (component in _components) {
+        component.removedFromWorld();
+      }
+    }
   }
 
   public function update() {
@@ -133,6 +142,68 @@ class Entity {
     }
     sweep.free();
     return segment;
+  }
+
+  inline public function addComponent(name:String, component:Component):Component {
+    if (component == null) {
+      throw 'Cannot add null "' + name + '" component';
+    }
+    if (_components == null) {
+      _components = new Hash<Component>();
+    }
+    removeComponent(name);
+    _components.set(name, component);
+    component.entity = this;
+    component.reset();
+    component.added();
+    if (world != null) {
+      component.addedToWorld();
+    }
+    return component;
+  }
+
+  inline public function getComponent(name:String, type:Class<Component>):Dynamic {
+    var component:Component = if (_components != null) {
+      _components.get(name);
+    } else {
+      null;
+    }
+    return if (Std.is(component, type)) {
+      component;
+    } else {
+      null;
+    }
+  }
+
+  inline public function hasComponent(name:String):Bool {
+    return _components != null ? _components.exists(name) : false;
+  }
+
+  inline public function removeComponent(name:String):Component {
+    return if (_components != null) {
+      var component = _components.get(name);
+      if (component != null) {
+        _components.remove(name);
+        if (world != null) {
+          component.removedFromWorld();
+        }
+        component.removed();
+        component.entity = null;
+      }
+      component;
+    }
+  }
+
+  inline public function renderComponent(component:Component) {
+    if (component != null && component.isVisible) {
+      component.render();
+    }
+  }
+
+  inline public function updateComponent(component:Component) {
+    if (component != null && component.isActive) {
+      component.update();
+    }
   }
 
   inline public function addGraphic(graphic:Graphic) {
