@@ -110,6 +110,8 @@ class World extends Space {
     while (node != null) {
       var entity = node.value;
       node = node.next;
+      entity.previousX = entity.x;
+      entity.previousY = entity.y;
       if (entity.isActive) {
         entity.update();
         if (!entity.isSynchronized) {

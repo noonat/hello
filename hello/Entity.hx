@@ -31,6 +31,8 @@ class Entity {
   public var world:World;
   public var x(getX, setX):Float;
   public var y(getY, setY):Float;
+  public var previousX:Float;
+  public var previousY:Float;
 
   // These are just shorthand for hitbox values transformed to entity space.
   public var originX(getOriginX, never):Float;
