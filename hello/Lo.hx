@@ -12,6 +12,10 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import flash.Vector;
 
+#if monster
+  import com.demonsters.debugger.MonsterDebugger;
+#end
+
 class Lo {
   static public inline var EPSILON:Float = 1e-8;
   static public inline var DEG:Float = 180.0 / Math.PI;
@@ -47,6 +51,10 @@ class Lo {
   static var _height:Int;
 
   static public function main(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>=null) {
+    #if monster
+      MonsterDebugger.initialize(Lib.current);
+      MonsterDebugger.inspect({Lo: Lo, Render: Render});
+    #end
     var current = Lib.current;
     var onAddedToStage:Event -> Void = null;
     var onAssetsLoaded:Void -> Void = null;
@@ -156,6 +164,24 @@ class Lo {
 
   static inline public function randomRange(min:Float, max:Float):Float {
     return min + Math.random() * (max - min);
+  }
+
+  static inline public function inspect(args:Dynamic) {
+    #if monster
+      MonsterDebugger.inspect(args);
+    #end
+  }
+
+  static inline public function trace(args:Dynamic, target:Dynamic=null) {
+    #if monster
+      MonsterDebugger.trace(target, args);
+    #elseif debug
+      #if flash
+        flash.Lib.trace(args);
+      #else
+        trace(args);
+      #end
+    #end
   }
 
   static function init(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>) {
