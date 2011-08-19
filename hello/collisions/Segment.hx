@@ -24,7 +24,7 @@ class Segment {
   var _signX:Float;
   var _signY:Float;
 
-  public function new(x1:Float, y1:Float, x2:Float, y2:Float) {
+  public function new(x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0) {
     set(x1, y1, x2, y2);
   }
 
@@ -36,6 +36,21 @@ class Segment {
     return (
       (_deltaX * (x - _x1) + _deltaY * (y - _y1)) /
       (_deltaX * _deltaX + _deltaY * _deltaY));
+  }
+
+  /**
+  * Normalize the delta vector for this segment, and return the length of
+  * the segment before it was normalized.
+  */
+  inline public function normalize():Float {
+    return if (_deltaSquared > 0) {
+      var length = Math.sqrt(_deltaSquared);
+      deltaX /= length;
+      deltaY /= length;
+      length;
+    } else {
+      0;
+    }
   }
 
   inline public function set(x1:Float, y1:Float, x2:Float, y2:Float) {
