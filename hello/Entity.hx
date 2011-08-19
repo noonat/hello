@@ -113,6 +113,28 @@ class Entity {
     return sweep;
   }
 
+  public function segmentTo(entity:Entity, segment:Segment=null):Segment {
+    if (segment == null) {
+      segment = new Segment(originX, originY, entity.originX, entity.originY);
+    } else {
+      segment.set(originX, originY, entity.originX, entity.originY);
+    }
+    var sweep = CollisionSweep.create(segment);
+    if (entity.bounds.intersectSegment(sweep)) {
+      segment.x2 = segment.x1 + segment.deltaX * sweep.time;
+      segment.y2 = segment.y1 + segment.deltaY * sweep.time;
+    }
+    _tmpSegment.set(entity.originX, entity.originY, originX, originY);
+    sweep.segment = _tmpSegment;
+    sweep.time = 1;
+    if (bounds.intersectSegment(sweep)) {
+      segment.x1 = _tmpSegment.x1 + _tmpSegment.deltaX * sweep.time;
+      segment.y1 = _tmpSegment.y1 + _tmpSegment.deltaY * sweep.time;
+    }
+    sweep.free();
+    return segment;
+  }
+
   inline public function addGraphic(graphic:Graphic) {
     if (graphic.entity == null) {
       _graphics.add(graphic);
