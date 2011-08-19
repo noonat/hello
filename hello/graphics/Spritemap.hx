@@ -50,7 +50,7 @@ class Spritemap extends Graphic {
     rate = 1;
   }
 
-  override public function render():Void {
+  override public function render() {
     // Update the current frame
     if (_anim != null && isPlaying) {
       _animTimer += (_anim.frameRate * Lo.elapsed) * rate;

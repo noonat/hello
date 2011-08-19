@@ -18,11 +18,11 @@ class SpaceCell {
     return !entities.has(entity) ? entities.add(entity) : null;
   }
 
-  inline public function clear():Void {
+  inline public function clear() {
     entities.clear();
   }
 
-  inline public function free():Void {
+  inline public function free() {
     clear();
     entities.free();
   }

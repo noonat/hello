@@ -112,7 +112,7 @@ class Tilemap extends Graphic {
       _buffer, x, y, tx, ty, _tileRect.width, _tileRect.height, false, false);
   }
 
-  public function setRect(col:Int, row:Int, width:Int = 1, height:Int = 1, index:Int = 0):Void {
+  public function setRect(col:Int, row:Int, width:Int = 1, height:Int = 1, index:Int = 0) {
     if (usePositions) {
       col = Std.int(col / _tileRect.width);
       row = Std.int(row / _tileRect.height);
@@ -149,7 +149,7 @@ class Tilemap extends Graphic {
     _buffer.fillRect(_tileRect, 0);
   }
 
-  public function clearRect(col:Int, row:Int, width:Int, height:Int):Void {
+  public function clearRect(col:Int, row:Int, width:Int, height:Int) {
     if (usePositions) {
       col = Std.int(col / _tileRect.width);
       row = Std.int(row / _tileRect.height);

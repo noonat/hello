@@ -5,7 +5,7 @@ package hello;
  * weight for use with FlashPunk.
  * 
  *    var onHurt:Signal = new Signal();
- *    onHurt.add(function(damage:Number):Void {
+ *    onHurt.add(function(damage:Number) {
  *      trace(damage, 'damage?! ouch!');
  *    });
  *    onHurt.dispatch(42);  // calls the listener
@@ -30,7 +30,7 @@ class Signal<T> {
    * Add a listener to this signal.
    * @param listener Function to add.
    */
-  inline public function add(listener:T):Void {
+  inline public function add(listener:T) {
     if (find(listener) == null) {
       var sl:SignalListener = new SignalListener();
       sl.added = true;
@@ -67,7 +67,7 @@ class Signal<T> {
    * Remove a listener from this signal.
    * @param listener Function to remove.
    */
-  inline public function remove(listener:T):Void {
+  inline public function remove(listener:T) {
     var sl:SignalListener = find(listener);
     if (sl != null) {
       _remove(sl);
@@ -77,7 +77,7 @@ class Signal<T> {
   /**
    * Remove all listeners from this signal.
    */
-  inline public function removeAll():Void {
+  inline public function removeAll() {
     var sl:SignalListener = _listenerHead;
     while (sl != null) {
       var sln:SignalListener = sl.next;
@@ -91,7 +91,7 @@ class Signal<T> {
    * Trigger this signal, invoking all of the listeners in the order they were added.
    * @param args Arguments to pass along to the listeners.
    */
-  public function dispatch(args:Array<Dynamic> = null):Void {
+  public function dispatch(args:Array<Dynamic> = null) {
     _dispatching = true;
     var sl:SignalListener = _listenerHead;
     // This is split up for performance
@@ -142,7 +142,7 @@ class Signal<T> {
    * Remove a signal listener, or mark it for removal if a dispatch is in progress.
    * @param sl Signal listener to remove from the linked list.
    */
-  inline function _remove(sl:SignalListener):Void {
+  inline function _remove(sl:SignalListener) {
     if (sl != null) {
       if (_dispatching && sl.added) {
         if (_removed == null) {
