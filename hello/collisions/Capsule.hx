@@ -9,11 +9,7 @@ class Capsule extends Segment {
   var _circle2:Circle;
   var _radius:Float;
   var _radiusSquared:Float;
-  static var _entity:Entity;
-
-  static function __init__() {
-    _entity = new Entity();
-  }
+  static var _entity:Entity = new Entity();
 
   public function new(x1:Float, y1:Float, x2:Float, y2:Float, radius:Float) {
     _circle1 = new Circle(0, 0);
