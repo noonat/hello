@@ -604,6 +604,48 @@ class Collision {
     }
   }
 
+  static inline public function sweepAABBGrid(sweep:CollisionSweep, aabb:AABB, grid:Grid):Bool {
+    var intersected = false;
+
+    var tileWidth = grid.tileWidth;
+    var tileHeight = grid.tileHeight;
+    var halfTileWidth = tileWidth * 0.5;
+    var halfTileHeight = tileHeight * 0.5;
+    var originX = grid.entity.x + grid.minX;
+    var originY = grid.entity.y + grid.minY;
+
+    var signX = Std.int(Lo.sign(sweep.segment.deltaX));
+    var signY = Std.int(Lo.sign(sweep.segment.deltaY));
+    var x1 = (sweep.segment.x1 - aabb.halfWidth * signX) - originX;
+    var y1 = (sweep.segment.y1 - aabb.halfHeight * signY) - originY;
+    var x2 = (sweep.segment.x2 + aabb.halfWidth * signX) - originX;
+    var y2 = (sweep.segment.y2 + aabb.halfHeight * signY) - originY;
+
+    var col1 = Std.int(x1 / tileWidth);
+    var row1 = Std.int(y1 / tileHeight);
+    var col2 = Std.int(x2 / tileWidth) + signX;
+    var row2 = Std.int(y2 / tileHeight) + signY;
+    var row = row1;
+    while (row != row2) {
+      var col = col1;
+      while (col != col2) {
+        if (grid.getTile(col, row)) {
+          _tmpEntity.x = originX + (col * tileWidth) + halfTileWidth;
+          _tmpEntity.y = originY + (row * tileHeight) + halfTileHeight;
+          _tmpAABB.entity = _tmpEntity;
+          _tmpAABB.set(halfTileWidth, halfTileHeight, 0, 0);
+          if (sweepAABBAABB(sweep, aabb, _tmpAABB)) {
+            intersected = true;
+          }
+        }
+        col += signX;
+      }
+      row += signY;
+    }
+
+    return intersected;
+  }
+
   /**
   * Intersect `circle` into `aabb` along the movement path described by
   * `sweep`. Returns true if an intersection occurs, and updates `sweep`.
@@ -694,6 +736,48 @@ class Collision {
         sweep.hit.y -= sweep.hit.normalY * movingCircle.radius;
       }
     }
+    return intersected;
+  }
+
+  static inline public function sweepCircleGrid(sweep:CollisionSweep, circle:Circle, grid:Grid):Bool {
+    var intersected = false;
+
+    var tileWidth = grid.tileWidth;
+    var tileHeight = grid.tileHeight;
+    var halfTileWidth = tileWidth * 0.5;
+    var halfTileHeight = tileHeight * 0.5;
+    var originX = grid.entity.x + grid.minX;
+    var originY = grid.entity.y + grid.minY;
+
+    var signX = Std.int(Lo.sign(sweep.segment.deltaX));
+    var signY = Std.int(Lo.sign(sweep.segment.deltaY));
+    var x1 = (sweep.segment.x1 - circle.radius * signX) - originX;
+    var y1 = (sweep.segment.y1 - circle.radius * signY) - originY;
+    var x2 = (sweep.segment.x2 + circle.radius * signX) - originX;
+    var y2 = (sweep.segment.y2 + circle.radius * signY) - originY;
+
+    var col1 = Std.int(x1 / tileWidth);
+    var row1 = Std.int(y1 / tileHeight);
+    var col2 = Std.int(x2 / tileWidth) + signX;
+    var row2 = Std.int(y2 / tileHeight) + signY;
+    var row = row1;
+    while (row != row2) {
+      var col = col1;
+      while (col != col2) {
+        if (grid.getTile(col, row)) {
+          _tmpEntity.x = originX + (col * tileWidth) + halfTileWidth;
+          _tmpEntity.y = originY + (row * tileHeight) + halfTileHeight;
+          _tmpAABB.entity = _tmpEntity;
+          _tmpAABB.set(halfTileWidth, halfTileHeight, 0, 0);
+          if (sweepCircleAABB(sweep, circle, _tmpAABB)) {
+            intersected = true;
+          }
+        }
+        col += signX;
+      }
+      row += signY;
+    }
+
     return intersected;
   }
 }

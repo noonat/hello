@@ -102,6 +102,8 @@ class Bounds {
             Collision.sweepAABBAABB(sweep, _aabb, into._aabb);
           case BoundsType.CIRCLE:
             Collision.sweepAABBCircle(sweep, _aabb, into._circle);
+          case BoundsType.GRID:
+            Collision.sweepAABBGrid(sweep, _aabb, into._grid);
           default:
             false;
         }
@@ -112,6 +114,8 @@ class Bounds {
             Collision.sweepCircleAABB(sweep, _circle, into._aabb);
           case BoundsType.CIRCLE:
             Collision.sweepCircleCircle(sweep, _circle, into._circle);
+          case BoundsType.GRID:
+            Collision.sweepCircleGrid(sweep, _circle, into._grid);
           default:
             false;
         }
