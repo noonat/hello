@@ -3,7 +3,7 @@ package hello;
 import flash.Lib;
 
 class Engine {
-  static public inline var MAX_ELAPSED:Float = 1.0 / 10.0;
+  static public inline var MAX_ELAPSED:Float = 1.0 / 20.0;
   public var elapsed:Float;
   public var time:Float;
   public var width:Int;

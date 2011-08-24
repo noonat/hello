@@ -6,7 +6,7 @@ import haxe.rtti.Generic;
 * A generic node class that supports object pooling. This is used by the
 * ValueList class to wrap individual values.
 */
-class ValueNode<T> implements haxe.rtti.Generic {
+class ValueNode<T> implements Generic {
   public var list:ValueList<T>;
   public var next:ValueNode<T>;
   public var prev:ValueNode<T>;

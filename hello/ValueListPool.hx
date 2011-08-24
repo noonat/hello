@@ -5,7 +5,7 @@ import haxe.rtti.Generic;
 /**
 * Object pool for recycling ValueList objects.
 */
-class ValueListPool<T> implements haxe.rtti.Generic {
+class ValueListPool<T> implements Generic {
   public var _first:ValueList<T>;
   public var _nodePool:ValueNodePool<T>;
 

@@ -5,7 +5,7 @@ import haxe.rtti.Generic;
 /**
 * A generic linked list class that supports object pooling.
 */
-class ValueList<T> implements haxe.rtti.Generic {
+class ValueList<T> implements Generic {
   public var first:ValueNode<T>;
   public var _next:ValueList<T>;
   public var _pool:ValueListPool<T>;

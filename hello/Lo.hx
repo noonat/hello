@@ -178,7 +178,7 @@ class Lo {
 
   static inline public function trace(args:Dynamic) {
     #if monster
-      MonsterDebugger.trace(args, null);
+      MonsterDebugger.trace(null, args);
     #elseif debug
       #if flash
         flash.Lib.trace(args);
