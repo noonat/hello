@@ -110,9 +110,9 @@ class Entity {
     }
     if (world != null) {
       if (_tmpSegment == null) {
-        _tmpSegment = new Segment(x, y, x + dx, y + dy);
+        _tmpSegment = new Segment(_x, _y, _x + dx, _y + dy);
       } else {
-        _tmpSegment.set(x, y, x + dx, y + dy);
+        _tmpSegment.set(_x, _y, _x + dx, _y + dy);
       }
       sweep = world.sweep(this, _tmpSegment, mask);
       _x = sweep.x;
