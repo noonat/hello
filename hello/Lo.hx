@@ -212,6 +212,8 @@ class Lo {
       engine.tick();
     }
     Render.flip();
+    _mousePressed = false;
+    _mouseReleased = false;
     while (_keyResetIndex > 0) {
       var index = _keyReset[--_keyResetIndex];
       _keyPressed.set(index, false);
