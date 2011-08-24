@@ -176,15 +176,26 @@ class Lo {
     #end
   }
 
-  static inline public function trace(args:Dynamic, target:Dynamic=null) {
+  static inline public function trace(args:Dynamic) {
     #if monster
-      MonsterDebugger.trace(target, args);
+      MonsterDebugger.trace(args, null);
     #elseif debug
       #if flash
         flash.Lib.trace(args);
       #else
         trace(args);
       #end
+    #end
+  }
+
+  static inline public function breakpoint(caller:Dynamic=null) {
+    #if monster
+      if (caller != null) {
+        inspect(caller);
+      }
+      MonsterDebugger.breakpoint(caller);
+    #elseif (debug && flash)
+      untyped __global__["flash.debugger.enterDebugger"]();
     #end
   }
 
