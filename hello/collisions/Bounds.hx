@@ -89,6 +89,8 @@ class Bounds {
         Collision.intersectSegmentAABB(sweep, _aabb, 0, 0);
       case BoundsType.CIRCLE:
         Collision.intersectSegmentCircle(sweep, _circle, 0);
+      case BoundsType.GRID:
+        Collision.intersectSegmentGrid(sweep, _grid);
       default:
         false;
     }
