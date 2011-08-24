@@ -235,18 +235,22 @@ class Lo {
   static function onKeyDown(event:KeyboardEvent) {
     var index:Int = event.keyCode;
     if (index >= 0 && index < 256) {
-      _keyDown.set(index, true);
-      _keyPressed.set(index, true);
-      _keyReset[_keyResetIndex++] = index;
+      if (!_keyDown.get(index)) {
+        _keyDown.set(index, true);
+        _keyPressed.set(index, true);
+        _keyReset[_keyResetIndex++] = index;
+      }
     }
   }
 
   static function onKeyUp(event:KeyboardEvent) {
     var index:Int = event.keyCode;
     if (index >= 0 && index < 256) {
-      _keyDown.set(index, false);
-      _keyReleased.set(index, true);
-      _keyReset[_keyResetIndex++] = index;
+      if (_keyDown.get(index)) {
+        _keyDown.set(index, false);
+        _keyReleased.set(index, true);
+        _keyReset[_keyResetIndex++] = index;
+      }
     }
   }
 
