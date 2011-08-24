@@ -60,14 +60,9 @@ class Entity {
   var _x:Float;
   var _y:Float;
 
-  public function new(x:Float=0, y:Float=0, bounds:Bounds=null) {
+  public function new(x:Float=0, y:Float=0, bounds:Bounds=null, graphic:Graphic=null) {
     this.x = x;
     this.y = y;
-    if (bounds != null) {
-      this.bounds = bounds;
-    } else {
-      this.bounds = new AABB(0, 0);
-    }
     flags = 0;
     isActive = true;
     isVisible = true;
@@ -78,6 +73,14 @@ class Entity {
     _graphics = Graphic.listPool.create();
     _name = null;
     _tags = new Hash<Bool>();
+    if (bounds != null) {
+      this.bounds = bounds;
+    } else {
+      this.bounds = new AABB(0, 0);
+    }
+    if (graphic != null) {
+      addGraphic(graphic);
+    }
   }
 
   public function added() {
