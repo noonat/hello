@@ -109,6 +109,10 @@ class Lo {
     out.y = Math.sin(angle * RAD) * length + y;
   }
 
+  static inline public function approx(a:Float, b:Float):Bool {
+    return abs(a - b) < EPSILON;
+  }
+
   static inline public function ceil(value:Float):Int {
     var intValue = Std.int(value);
     return if (value != intValue && value >= 0) {
