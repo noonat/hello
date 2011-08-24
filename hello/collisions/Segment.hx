@@ -45,8 +45,8 @@ class Segment {
   inline public function normalize():Float {
     return if (_deltaSquared > 0) {
       var length = Math.sqrt(_deltaSquared);
-      deltaX /= length;
-      deltaY /= length;
+      _deltaX /= length;
+      _deltaY /= length;
       length;
     } else {
       0;

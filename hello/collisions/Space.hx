@@ -104,7 +104,7 @@ class Space {
   */
   inline public function intersectSegment(segment:Segment, mask:Int=0):CollisionSweep {
     ++_stamp;
-    var sweep = CollisionSweep.create(segment);
+    var sweep = CollisionSweep.create(segment, mask);
     var x1 = segment.x1 - _x;
     var y1 = segment.y1 - _y;
     var x2 = segment.x2 - _x;
@@ -226,7 +226,7 @@ class Space {
       segment.x1 + boundsX, segment.y1 + boundsY,
       segment.x2 + boundsX, segment.y2 + boundsY);
 
-    var sweep = CollisionSweep.create(segment);
+    var sweep = CollisionSweep.create(segment, mask);
     var minX = Lo.min(segment.x1, segment.x2);
     var minY = Lo.min(segment.y1, segment.y2);
     var maxX = Lo.max(segment.x1, segment.x2);
