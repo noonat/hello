@@ -112,10 +112,9 @@ class Entity {
       var oldX = _x;
       var oldY = _y;
       if (_tmpSegment == null) {
-        _tmpSegment = new Segment(_x, _y, _x + dx, _y + dy);
-      } else {
-        _tmpSegment.set(_x, _y, _x + dx, _y + dy);
+        _tmpSegment = new Segment();
       }
+      _tmpSegment.set(_x, _y, _x + dx, _y + dy);
       sweep = world.sweep(this, _tmpSegment, mask);
       _x = sweep.x;
       _y = sweep.y;
@@ -154,6 +153,9 @@ class Entity {
     if (entity.bounds.intersectSegment(sweep)) {
       segment.x2 = segment.x1 + segment.deltaX * sweep.time;
       segment.y2 = segment.y1 + segment.deltaY * sweep.time;
+    }
+    if (_tmpSegment == null) {
+      _tmpSegment = new Segment();
     }
     _tmpSegment.set(entity.originX, entity.originY, originX, originY);
     sweep.segment = _tmpSegment;
