@@ -39,7 +39,19 @@ class TextureAtlas {
     return _textures.get(id);
   }
 
-  public function setTexture(id:String, clipRect:Rectangle):Texture {
+  public function setTexture(id:String, x:Float, y:Float, width:Float, height:Float):Texture {
+    var texture = new Texture(id, this);
+    texture.clipRect.x = x;
+    texture.clipRect.y = y;
+    texture.clipRect.width = width;
+    texture.clipRect.height = height;
+    texture.rect.width = width;
+    texture.rect.height = height;
+    _textures.set(texture.id, texture);
+    return texture;
+  }
+
+  public function setTextureFromRect(id:String, clipRect:Rectangle):Texture {
     var texture = new Texture(id, this);
     texture.clipRect.x = clipRect.x;
     texture.clipRect.y = clipRect.y;
