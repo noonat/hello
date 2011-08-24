@@ -103,12 +103,14 @@ class Entity {
 
   }
 
-  inline public function moveBy(dx:Float, dy:Float, mask:Int=0):CollisionSweep {
+  inline public function moveBy(dx:Float, dy:Float, mask:Int=0, updateCells:Bool=true):CollisionSweep {
     if (sweep != null) {
       sweep.free();
       sweep = null;
     }
     if (world != null) {
+      var oldX = _x;
+      var oldY = _y;
       if (_tmpSegment == null) {
         _tmpSegment = new Segment(_x, _y, _x + dx, _y + dy);
       } else {
@@ -117,12 +119,29 @@ class Entity {
       sweep = world.sweep(this, _tmpSegment, mask);
       _x = sweep.x;
       _y = sweep.y;
-      world.updateEntityCells(this);
+      if (updateCells && (_x != oldX || _y != oldY)) {
+        world.updateEntityCells(this);
+      }
     } else {
       _x += dx;
       _y += dy;
     }
     return sweep;
+  }
+
+  inline public function slideMoveBy(dx:Float, dy:Float, mask:Int=0, updateCells:Bool=true) {
+    if (world != null) {
+      var oldX = _x;
+      var oldY = _y;
+      moveBy(dx, 0, mask, false);
+      moveBy(0, dy, mask, false);
+      if (updateCells && (_x != oldX || _y != oldY)) {
+        world.updateEntityCells(this);
+      }
+    } else {
+      _x += dx;
+      _y += dy;
+    }
   }
 
   public function segmentTo(entity:Entity, segment:Segment=null):Segment {
