@@ -146,6 +146,12 @@ class World extends Space {
         for (tag in entity.getTags()) {
           addToTags(entity, tag);
         }
+        var components = getEntityFriend(entity)._components;
+        if (components != null) {
+          for (component in components) {
+            component.addedToWorld();
+          }
+        }
         var node = entity.graphics.first;
         while (node != null) {
           var graphic = node.value;
@@ -173,6 +179,12 @@ class World extends Space {
         while (cells.first != null) {
           var cell = cells.shift();
           cell.entities.remove(entity);
+        }
+        var components = getEntityFriend(entity)._components;
+        if (components != null) {
+          for (component in components) {
+            component.removedFromWorld();
+          }
         }
         var node = entity.graphics.first;
         while (node != null) {

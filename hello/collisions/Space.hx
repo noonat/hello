@@ -1,6 +1,7 @@
 package hello.collisions;
 
 private typedef EntityFriend = {
+  var _components:Hash<Component>;
   var _spaceX:Float;
   var _spaceY:Float;
 };

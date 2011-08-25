@@ -82,19 +82,11 @@ class Entity {
   }
 
   public function added() {
-    if (_components != null) {
-      for (component in _components) {
-        component.addedToWorld();
-      }
-    }
+
   }
 
   public function removed() {
-    if (_components != null) {
-      for (component in _components) {
-        component.removedFromWorld();
-      }
-    }
+
   }
 
   public function update() {
