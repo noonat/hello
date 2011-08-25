@@ -210,7 +210,7 @@ class Lo {
     stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
     stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-    stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseUp);
+    stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
     stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
     _width = width;
     _height = height;
