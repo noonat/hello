@@ -8,7 +8,7 @@ package hello;
  *    onHurt.add(function(damage:Number) {
  *      trace(damage, 'damage?! ouch!');
  *    });
- *    onHurt.dispatch(42);  // calls the listener
+ *    onHurt.dispatch([42]);  // calls the listener
  */
 class Signal<T> {
   public var hasListeners(getHasListeners, never):Bool;
@@ -93,8 +93,6 @@ class Signal<T> {
    * @param args Arguments to pass along to the listeners.
    */
   public function dispatch(args:Array<Dynamic>=null) {
-    removeMarkedNodes();
-    _isDispatching = true;
     // This is split up for performance
     var numArgs = args == null ? 0 : args.length;
     if (numArgs == 0) {
@@ -103,7 +101,11 @@ class Signal<T> {
       dispatch1(args[0]);
     } else if (numArgs == 2) {
       dispatch2(args[0], args[1]);
+    } else if (numArgs == 3) {
+      dispatch3(args[0], args[1], args[2]);
     } else {
+      removeMarkedNodes();
+      _isDispatching = true;
       var node = _listenerHead;
       while (node != null) {
         if (node.isActive) {
@@ -111,12 +113,14 @@ class Signal<T> {
         }
         node = node.next;
       }
+      _isDispatching = false;
+      removeMarkedNodes();
     }
-    _isDispatching = false;
-    removeMarkedNodes();
   }
 
   inline public function dispatch0() {
+    removeMarkedNodes();
+    _isDispatching = true;
     var node = _listenerHead;
     while (node != null) {
       if (node.isActive) {
@@ -124,9 +128,13 @@ class Signal<T> {
       }
       node = node.next;
     }
+    _isDispatching = false;
+    removeMarkedNodes();
   }
 
   inline public function dispatch1(arg:Dynamic) {
+    removeMarkedNodes();
+    _isDispatching = true;
     var node = _listenerHead;
     while (node != null) {
       if (node.isActive) {
@@ -134,9 +142,13 @@ class Signal<T> {
       }
       node = node.next;
     }
+    _isDispatching = false;
+    removeMarkedNodes();
   }
 
   inline public function dispatch2(arg1:Dynamic, arg2:Dynamic) {
+    removeMarkedNodes();
+    _isDispatching = true;
     var node = _listenerHead;
     while (node != null) {
       if (node.isActive) {
@@ -144,6 +156,22 @@ class Signal<T> {
       }
       node = node.next;
     }
+    _isDispatching = false;
+    removeMarkedNodes();
+  }
+
+  inline public function dispatch3(arg1:Dynamic, arg2:Dynamic, arg3:Dynamic) {
+    removeMarkedNodes();
+    _isDispatching = true;
+    var node = _listenerHead;
+    while (node != null) {
+      if (node.isActive) {
+        node.listener(arg1, arg2, arg3);
+      }
+      node = node.next;
+    }
+    _isDispatching = false;
+    removeMarkedNodes();
   }
 
   /**
