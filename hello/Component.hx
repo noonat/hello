@@ -1,15 +1,15 @@
 package hello;
 
+import hello.graphics.Graphic;
+
 class Component {
   public var entity:Entity;
   public var isActive:Bool;
-  public var isVisible:Bool;
   public var world(getWorld, never):World;
 
   public function new() {
     entity = null;
     isActive = false;
-    isVisible = false;
   }
 
   public function added() {
@@ -25,10 +25,6 @@ class Component {
   }
 
   public function removedFromWorld() {
-
-  }
-
-  public function render() {
 
   }
 

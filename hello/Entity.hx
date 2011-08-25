@@ -50,8 +50,6 @@ class Entity {
   var _cells:ValueList<SpaceCell>;
   var _components:Hash<Component>;
   var _graphics:ValueList<Graphic>;
-  var _graphicsToAdd:ValueList<Graphic>;
-  var _graphicsToRemove:ValueList<Graphic>;
   var _name:String;
   var _spaceX:Float;
   var _spaceY:Float;
@@ -215,12 +213,6 @@ class Entity {
         component.entity = null;
       }
       component;
-    }
-  }
-
-  inline public function renderComponent(component:Component) {
-    if (component != null && component.isVisible) {
-      component.render();
     }
   }
 
