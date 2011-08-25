@@ -31,7 +31,7 @@ class Assets {
     getBasePath(Resource.getString('assets.xml'));
     var urlRequest = new URLRequest(basePath + '/assets.xml');
     var urlLoader = new URLLoader();
-    urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
+    urlLoader.addEventListener(Event.COMPLETE, function(event:Event) {
       Assets.load(urlLoader.data);
     });
     urlLoader.load(urlRequest);
@@ -167,7 +167,7 @@ class Assets {
     switch (asset.type) {
       case 'bitmap':
         var loader = new Loader();
-        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):Void {
+        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event) {
           var bitmap = cast(loader.contentLoaderInfo.content, Bitmap);
           asset.content = bitmap.bitmapData;
           asset.contentLoaded = true;
@@ -181,7 +181,7 @@ class Assets {
       case 'sound':
         var sound = new Sound();
         asset.content = sound;
-        sound.addEventListener(Event.COMPLETE, function(event:Event):Void {
+        sound.addEventListener(Event.COMPLETE, function(event:Event) {
           asset.contentLoaded = true;
           loadedAsset(asset);
           if (listener != null) {
@@ -193,7 +193,7 @@ class Assets {
       default:
         var urlLoader = new URLLoader();
         urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-        urlLoader.addEventListener(Event.COMPLETE, function(event:Event):Void {
+        urlLoader.addEventListener(Event.COMPLETE, function(event:Event) {
           asset.content = urlLoader.data;
           asset.contentLoaded = true;
           loadedAsset(asset);

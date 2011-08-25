@@ -23,6 +23,8 @@ class Lo {
 
   static public var cameraX:Float = 0;
   static public var cameraY:Float = 0;
+  static public var cameraMouseX(getCameraMouseX, never):Float;
+  static public var cameraMouseY(getCameraMouseY, never):Float;
   static public var elapsed(getElapsed, never):Float;
   static public var engine:Engine;
   static public var time(getTime, never):Float;
@@ -262,6 +264,14 @@ class Lo {
   static function onMouseUp(event:MouseEvent) {
     _mouseDown = false;
     _mouseReleased = true;
+  }
+
+  static inline function getCameraMouseX():Float {
+    return _mouseX - cameraX;
+  }
+
+  static inline function getCameraMouseY():Float {
+    return _mouseY - cameraY;
   }
 
   static inline function getTime():Float {
