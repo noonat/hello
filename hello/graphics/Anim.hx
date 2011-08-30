@@ -11,15 +11,15 @@ class Anim {
   public var frames:Array<Int>;
   public var frameRate:Float;
   public var frameCount:Int;
-  public var loop:Bool;
-  public var flip:Bool;
+  public var isFlipped:Bool;
+  public var isLooping:Bool;
 
-  public function new(name:String, frames:Array<Int>, frameRate:Float=0, loop:Bool=true, flip:Bool=false) {
+  public function new(name:String, frames:Array<Int>, frameRate:Float=0, isLooping:Bool=true, isFlipped:Bool=false) {
     this.name = name;
     this.frames = frames;
     this.frameRate = frameRate;
-    this.loop = loop;
-    this.flip = flip;
+    this.isFlipped = isFlipped;
+    this.isLooping = isLooping;
     frameCount = frames.length;
     namePrefix = name.split('_')[0];
   }
