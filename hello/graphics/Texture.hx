@@ -67,8 +67,8 @@ class Texture {
   }
 
   inline public function copyInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
-    _point.x = x;
-    _point.y = y + clipOffset.y;
+    _point.x = Std.int(x);
+    _point.y = Std.int(y) + clipOffset.y;
     _rect.x = clipRect.x;
     _rect.y = clipRect.y;
     _rect.width = clipRect.width;
@@ -83,8 +83,8 @@ class Texture {
   }
 
   inline public function copyRectInto(destBitmapData:BitmapData, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
-    _point.x = x;
-    _point.y = y;
+    _point.x = Std.int(x);
+    _point.y = Std.int(y);
     _rect.x = (clipRect.x - clipOffset.x) + sourceX;
     _rect.y = (clipRect.y - clipOffset.y) + sourceY;
     _rect.width = sourceWidth;
@@ -114,8 +114,8 @@ class Texture {
 
   inline public function drawInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
     _matrix.identity();
-    _matrix.tx = x;
-    _matrix.ty = y + clipOffset.y;
+    _matrix.tx = Std.int(x);
+    _matrix.ty = Std.int(y) + clipOffset.y;
     _rect.x = clipRect.x;
     _rect.y = clipRect.y;
     _rect.width = clipRect.width;
@@ -135,8 +135,8 @@ class Texture {
 
   inline public function drawRectInto(destBitmapData:BitmapData, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
     _matrix.identity();
-    _matrix.tx = x;
-    _matrix.ty = y;
+    _matrix.tx = Std.int(x);
+    _matrix.ty = Std.int(y);
     _rect.x = (clipRect.x - clipOffset.x) + sourceX;
     _rect.y = (clipRect.y - clipOffset.y) + sourceY;
     _rect.width = sourceWidth;
