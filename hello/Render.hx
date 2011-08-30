@@ -137,6 +137,26 @@ class Render {
     }
   }
 
+  static inline public function fillCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0) {
+    graphicsDirty = true;
+    graphics.beginFill(color, alpha);
+    graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
+    graphics.endFill();
+  }
+
+  static inline public function fillRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, roundedWidth:Float=0, roundedHeight:Float=0) {
+    x -= Lo.cameraX;
+    y -= Lo.cameraY;
+    graphicsDirty = true;
+    graphics.beginFill(color, alpha);
+    if (roundedWidth != 0 || roundedHeight != 0) {
+      graphics.drawRoundRect(x, y, width, height, roundedWidth, roundedHeight == 0 ? roundedWidth : roundedHeight);
+    } else {
+      graphics.drawRect(x, y, width, height);
+    }
+    graphics.endFill();
+  }
+
   static inline function getBuffer():BitmapData {
     return _buffer;
   }
@@ -248,7 +268,7 @@ class Render {
 
   static public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
     _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
-    _debug.graphics.drawCircle(x, y, radius);
+    _debug.graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
   }
 
   static public function debugHit(hit:CollisionHit, bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
