@@ -11,6 +11,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.Vector;
+import hello.graphics.TextureAtlas;
 
 #if monster
   import com.demonsters.debugger.MonsterDebugger;
@@ -18,9 +19,10 @@ import flash.Vector;
 
 class Lo {
   static public inline var EPSILON:Float = 1e-8;
-  static public inline var DEG:Float = 180.0 / Math.PI;
-  static public inline var RAD:Float = Math.PI / 180.0;
+  static public inline var DEG:Float = 180.0 / Math.PI;  // radians to degrees
+  static public inline var RAD:Float = Math.PI / 180.0;  // degrees to radians
 
+  static public var atlas:TextureAtlas;
   static public var cameraX:Float = 0;
   static public var cameraY:Float = 0;
   static public var cameraMouseX(getCameraMouseX, never):Float;
