@@ -2,9 +2,11 @@ package hello;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.Graphics;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.display.StageQuality;
+import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -18,6 +20,9 @@ class Render {
   static public var angle(getAngle, setAngle):Float;
   static public var backgroundColor:Int = 0x000000;
   static public var buffer(getBuffer, never):BitmapData;
+  static public var graphics(getGraphics, never):Graphics;
+  static public var graphicsDirty(getGraphicsDirty, setGraphicsDirty):Bool;
+  static public var highQuality:Bool = true;
   static public var originX(getOriginX, setOriginX):Float;
   static public var originY(getOriginY, setOriginY):Float;
   static public var scale(getScale, setScale):Float;
@@ -33,6 +38,9 @@ class Render {
   static var _originX:Float;
   static var _originY:Float;
   static var _scale:Float;
+  static var _shape:Shape;
+  static var _shapeGraphics:Graphics;
+  static var _shapeGraphicsDirty:Bool;
   static var _sprite:Sprite;
   static var _x:Float;
   static var _y:Float;
@@ -54,6 +62,9 @@ class Render {
     _originX = 0;
     _originY = 0;
     _scale = 1;
+    _shape = new Shape();
+    _shapeGraphics = _shape.graphics;
+    _shapeGraphicsDirty = false;
     _sprite = new Sprite();
     _sprite.addChild(_bitmaps[0]);
     _sprite.addChild(_bitmaps[1]);
@@ -68,6 +79,7 @@ class Render {
 
   static public function flip() {
     flush();
+
     if (_matrixNeedsUpdate) {
       _matrix.b = _matrix.c = 0;
       _matrix.a = _scale;
@@ -81,12 +93,14 @@ class Render {
       _matrix.ty += _originY * _scale + _y;
       _sprite.transform.matrix = _matrix;
     }
+
     #if debug
     Lo.stage.quality = StageQuality.HIGH;
     _buffer.draw(_debug);
     _debug.graphics.clear();
     Lo.stage.quality = StageQuality.LOW;
     #end
+
     _bitmaps[_bitmapIndex].visible = true;
     _bitmapIndex = (_bitmapIndex + 1) % 2;
     _bitmaps[_bitmapIndex].visible = false;
@@ -95,7 +109,16 @@ class Render {
   }
 
   static public function flush() {
-
+    if (_shapeGraphicsDirty) {
+      if (highQuality) {
+        Lo.stage.quality = StageQuality.HIGH;
+        _buffer.draw(_shape);
+        Lo.stage.quality = StageQuality.LOW;
+      } else {
+        _buffer.draw(_shape);
+      }
+      _shapeGraphics.clear();
+    }
   }
 
   static inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, mergeAlpha:Bool=true) {
@@ -108,6 +131,18 @@ class Render {
 
   static inline function getBuffer():BitmapData {
     return _buffer;
+  }
+
+  static inline function getGraphics():Graphics {
+    return _shapeGraphics;
+  }
+
+  static inline function getGraphicsDirty():Bool {
+    return _shapeGraphicsDirty;
+  }
+
+  static inline function setGraphicsDirty(value:Bool):Bool {
+    return _shapeGraphicsDirty = value;
   }
 
   static inline function getAngle():Float {
