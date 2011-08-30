@@ -1,6 +1,8 @@
 package hello.graphics;
 
 import flash.display.BitmapData;
+import flash.geom.ColorTransform;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -46,6 +48,7 @@ class Texture {
   */
   public var sourceRect(getSourceRect, never):Rectangle;
 
+  static var _matrix:Matrix = new Matrix();
   static var _point:Point = new Point();
   static var _rect:Rectangle = new Rectangle();
 
@@ -107,6 +110,62 @@ class Texture {
     }
     destBitmapData.copyPixels(
       flipped ? sourceFlipped : source, _rect, _point, null, null, mergeAlpha);
+  }
+
+  inline public function drawInto(destBitmapData:BitmapData, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+    _matrix.identity();
+    _matrix.tx = x;
+    _matrix.ty = y + clipOffset.y;
+    _rect.x = clipRect.x;
+    _rect.y = clipRect.y;
+    _rect.width = clipRect.width;
+    _rect.height = clipRect.height;
+    if (flipped) {
+      _rect.x = sourceRect.width - _rect.x - _rect.width;
+    } else {
+      _matrix.tx += clipOffset.x;
+    }
+    _matrix.tx -= _rect.x;
+    _matrix.ty -= _rect.y;
+    _rect.x += _matrix.tx;
+    _rect.y += _matrix.ty;
+    destBitmapData.draw(
+      flipped ? sourceFlipped : source, _matrix, colorTransform, null, _rect);
+  }
+
+  inline public function drawRectInto(destBitmapData:BitmapData, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+    _matrix.identity();
+    _matrix.tx = x;
+    _matrix.ty = y;
+    _rect.x = (clipRect.x - clipOffset.x) + sourceX;
+    _rect.y = (clipRect.y - clipOffset.y) + sourceY;
+    _rect.width = sourceWidth;
+    _rect.height = sourceHeight;
+     if (_rect.x < clipRect.x) {
+      if (!flipped) {
+        _matrix.tx += clipRect.x - _rect.x;
+      }
+      _rect.left = clipRect.x;
+    }
+    if (_rect.y < clipRect.y) {
+      _matrix.ty += clipRect.y - _rect.y;
+      _rect.top = clipRect.y;
+    }
+    if (_rect.right > clipRect.right) {
+      _rect.right = clipRect.right;
+    }
+    if (_rect.bottom > clipRect.bottom) {
+      _rect.bottom = clipRect.bottom;
+    }
+    if (flipped) {
+      _rect.x = sourceRect.width - _rect.x - _rect.width;
+    }
+    _matrix.tx -= _rect.x;
+    _matrix.ty -= _rect.y;
+    _rect.x += _matrix.tx;
+    _rect.y += _matrix.ty;
+    destBitmapData.draw(
+      flipped ? sourceFlipped : source, _matrix, colorTransform, null, _rect);
   }
 
   inline function getSource():BitmapData {

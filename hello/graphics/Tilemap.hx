@@ -108,8 +108,8 @@ class Tilemap extends Graphic {
     var x = col * _tileRect.width;
     var y = row * _tileRect.height;
     _tilemap.setPixel(col, row, index);
-    _tileset.copyRectInto(
-      _buffer, x, y, tx, ty, _tileRect.width, _tileRect.height, false, false);
+    _tileset.drawRectInto(
+      _buffer, x, y, tx, ty, _tileRect.width, _tileRect.height, false);
   }
 
   public function setRect(col:Int, row:Int, width:Int = 1, height:Int = 1, index:Int = 0) {
