@@ -41,6 +41,7 @@ class Lo {
   static public var stage:Stage;
   static public var width(getWidth, never):Int;
   static public var height(getHeight, never):Int;
+  static public var zero:Point = new Point();
   static var _keyDown:IntHash<Bool> = new IntHash<Bool>();
   static var _keyPressed:IntHash<Bool> = new IntHash<Bool>();
   static var _keyReleased:IntHash<Bool> = new IntHash<Bool>();
