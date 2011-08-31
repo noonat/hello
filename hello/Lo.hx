@@ -151,6 +151,11 @@ class Lo {
     return a > b ? a : b;
   }
 
+  static inline public function scaleClamp(value:Float, min1:Float, max1:Float, min2:Float, max2:Float):Float {
+    var value = min2 + ((value - min1) / (max1 - min1)) * (max2 - min2);
+    return Lo.clamp(value, min2, max2);
+  }
+
   static inline public function sign(value:Float):Float {
     return value > 0 ? 1 : -1;
   }
