@@ -38,10 +38,11 @@ class Render {
   static var _originX:Float;
   static var _originY:Float;
   static var _scale:Float;
-  static var _shape:Shape;
-  static var _shapeGraphics:Graphics;
-  static var _shapeGraphicsDirty:Bool;
   static var _sprite:Sprite;
+  static var _tmpMatrix:Matrix;
+  static var _tmpShape:Shape;
+  static var _tmpGraphics:Graphics;
+  static var _tmpGraphicsDirty:Bool;
   static var _x:Float;
   static var _y:Float;
   #if debug
@@ -62,12 +63,13 @@ class Render {
     _originX = 0;
     _originY = 0;
     _scale = 1;
-    _shape = new Shape();
-    _shapeGraphics = _shape.graphics;
-    _shapeGraphicsDirty = false;
     _sprite = new Sprite();
     _sprite.addChild(_bitmaps[0]);
     _sprite.addChild(_bitmaps[1]);
+    _tmpMatrix = new Matrix();
+    _tmpShape = new Shape();
+    _tmpGraphics = _tmpShape.graphics;
+    _tmpGraphicsDirty = false;
     _x = 0;
     _y = 0;
     #if debug
@@ -109,15 +111,15 @@ class Render {
   }
 
   static public function flush() {
-    if (_shapeGraphicsDirty) {
+    if (_tmpGraphicsDirty) {
       if (highQuality) {
         Lo.stage.quality = StageQuality.HIGH;
-        _buffer.draw(_shape);
+        _buffer.draw(_tmpShape);
         Lo.stage.quality = StageQuality.LOW;
       } else {
-        _buffer.draw(_shape);
+        _buffer.draw(_tmpShape);
       }
-      _shapeGraphics.clear();
+      _tmpGraphics.clear();
     }
   }
 
@@ -135,6 +137,21 @@ class Render {
     } else {
       texture.copyRectInto(_buffer, x, y, sourceX, sourceY, sourceWidth, sourceHeight, flipped);
     }
+  }
+
+  static inline public function fillBitmap(bitmap:BitmapData, x:Float, y:Float, width:Float, height:Float) {
+    x -= Lo.cameraX;
+    y -= Lo.cameraY;
+    graphicsDirty = true;
+    _tmpMatrix.a = 1;
+    _tmpMatrix.b = 0;
+    _tmpMatrix.c = 0;
+    _tmpMatrix.d = 1;
+    _tmpMatrix.tx = x;
+    _tmpMatrix.ty = y;
+    graphics.beginBitmapFill(bitmap, _tmpMatrix);
+    graphics.drawRect(x, y, width, height);
+    graphics.endFill();
   }
 
   static inline public function fillCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0) {
@@ -162,15 +179,15 @@ class Render {
   }
 
   static inline function getGraphics():Graphics {
-    return _shapeGraphics;
+    return _tmpGraphics;
   }
 
   static inline function getGraphicsDirty():Bool {
-    return _shapeGraphicsDirty;
+    return _tmpGraphicsDirty;
   }
 
   static inline function setGraphicsDirty(value:Bool):Bool {
-    return _shapeGraphicsDirty = value;
+    return _tmpGraphicsDirty = value;
   }
 
   static inline function getAngle():Float {
