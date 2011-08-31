@@ -31,7 +31,7 @@ class World extends Space {
   }
 
   public function begin() {
-    
+
   }
 
   public function end() {
@@ -64,6 +64,18 @@ class World extends Space {
     while (node != null) {
       _entitiesToRemove.add(node.value);
       node = node.next;
+    }
+  }
+
+  /**
+  * Return the first entity with the given name, or null.
+  */
+  inline public function getNamed(name:String):Entity {
+    if (_names.exists(name)) {
+      var node = _names.get(name).first;
+      return node != null ? node.value : null;
+    } else {
+      return null;
     }
   }
 
