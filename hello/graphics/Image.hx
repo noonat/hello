@@ -18,6 +18,8 @@ class Image extends Graphic {
   public var originY:Float;
   public var smooth:Bool;
   public var texture:Texture;
+  public var width(getWidth, never):Float;
+  public var height(getHeight, never):Float;
   var _alpha:Float;
   var _angle:Float;
   var _angleBitmap:Bitmap;
@@ -160,5 +162,13 @@ class Image extends Graphic {
       }
     }
     return value;
+  }
+
+  inline function getWidth():Float {
+    return (clipRect != null ? clipRect : texture.rect).width;
+  }
+
+  inline function getHeight():Float {
+    return (clipRect != null ? clipRect : texture.rect).height;
   }
 }
