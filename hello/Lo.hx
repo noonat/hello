@@ -275,11 +275,11 @@ class Lo {
   }
 
   static inline function getCameraMouseX():Float {
-    return _mouseX - cameraX;
+    return _mouseX + cameraX;
   }
 
   static inline function getCameraMouseY():Float {
-    return _mouseY - cameraY;
+    return _mouseY + cameraY;
   }
 
   static inline function getTime():Float {
