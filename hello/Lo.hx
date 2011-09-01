@@ -135,6 +135,10 @@ class Lo {
     return value < min ? min : (value > max ? max : value);
   }
 
+  static inline public function lerp(value:Float, min:Float, max:Float):Float {
+    return min + value * (max - min);
+  }
+
   static inline public function min(a:Float, b:Float):Float {
     return a < b ? a : b;
   }
