@@ -40,6 +40,8 @@ class Render {
   static var _scale:Float;
   static var _sprite:Sprite;
   static var _tmpMatrix:Matrix;
+  static var _tmpPoint:Point;
+  static var _tmpRect:Rectangle;
   static var _tmpShape:Shape;
   static var _tmpGraphics:Graphics;
   static var _tmpGraphicsDirty:Bool;
@@ -67,6 +69,8 @@ class Render {
     _sprite.addChild(_bitmaps[0]);
     _sprite.addChild(_bitmaps[1]);
     _tmpMatrix = new Matrix();
+    _tmpPoint = new Point();
+    _tmpRect = new Rectangle();
     _tmpShape = new Shape();
     _tmpGraphics = _tmpShape.graphics;
     _tmpGraphicsDirty = false;
@@ -123,6 +127,34 @@ class Render {
     }
   }
 
+  static inline public function copyPixels(source:BitmapData, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, destX:Float, destY:Float, mergeAlpha:Bool=true) {
+    destX = Std.int(destX - Lo.cameraX);
+    destY = Std.int(destY - Lo.cameraY);
+    if (destX < 0) {
+      sourceX -= destX;
+      sourceWidth += destX;
+      destX = 0;
+    }
+    if (destY < 0) {
+      sourceY -= destY;
+      sourceHeight += destY;
+      destY = 0;
+    }
+    sourceWidth = Std.int(Lo.min(sourceWidth, Lo.width - destX));
+    if (sourceWidth > 0) {
+      sourceHeight = Std.int(Lo.min(sourceHeight, Lo.height - destY));
+      if (sourceHeight > 0) {
+        _tmpPoint.x = destX;
+        _tmpPoint.y = destY;
+        _tmpRect.x = sourceX;
+        _tmpRect.y = sourceY;
+        _tmpRect.width = sourceWidth;
+        _tmpRect.height = sourceHeight;
+        _buffer.copyPixels(source, _tmpRect, _tmpPoint, null, null, mergeAlpha);
+      }
+    }
+  }
+
   static inline public function drawCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
     graphicsDirty = true;
     graphics.lineStyle(thickness, color, alpha);
@@ -138,6 +170,8 @@ class Render {
   }
 
   static inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+    x -= Lo.cameraX;
+    y -= Lo.cameraY;
     if (colorTransform != null) {
       texture.drawInto(_buffer, x, y, flipped, colorTransform);
     } else {
@@ -146,6 +180,8 @@ class Render {
   }
 
   static inline public function drawTextureRect(texture:Texture, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+    x -= Lo.cameraX;
+    y -= Lo.cameraY;
     if (colorTransform != null) {
       texture.drawRectInto(_buffer, x, y, sourceX, sourceY, sourceWidth, sourceHeight, flipped, colorTransform);
     } else {

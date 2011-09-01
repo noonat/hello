@@ -12,8 +12,6 @@ class Graphic {
   public var isRelative:Bool;
   public var isVisible:Bool;
   public var layer(getLayer, setLayer):Int;
-  public var scrollX:Float;
-  public var scrollY:Float;
   public var world(getWorld, never):World;
   public var x:Float;
   public var y:Float;
@@ -24,8 +22,6 @@ class Graphic {
     entity = null;
     isRelative = true;
     isVisible = true;
-    scrollX = 1;
-    scrollY = 1;
     x = 0;
     y = 0;
     _layer = 0;

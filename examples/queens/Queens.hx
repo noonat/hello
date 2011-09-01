@@ -311,30 +311,18 @@ class BlockGraphic extends Graphic {
   }
 
   override public function render() {
-    var px = x - Lo.cameraX * scrollX;
-    var py = y - Lo.cameraY * scrollY;
+    var px = x;
+    var py = y;
     if (entity != null && isRelative) {
       px += entity.x;
       py += entity.y;
     }
-    if (px > Lo.width || py > Lo.height || (px + _width) < 0 || (py + _height) < 0) {
-      // offscreen
-      return;
-    }
     var row = 0;
     while (row < _rows) {
       var yy = py + (row * _tileSize);
-      if (yy > Lo.height || (yy + _tileSize) < 0) {
-        row++;
-        continue;
-      }
       var col = 0;
       while (col < _cols) {
         var xx = px + (col * _tileSize);
-        if (xx > Lo.width || (xx + _tileSize) < 0) {
-          col++;
-          continue;
-        }
         var rect = _rects[row * _cols + col];
         Render.drawTextureRect(
           _texture, xx, yy, rect.x, rect.y, rect.width, rect.height);

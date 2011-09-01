@@ -49,8 +49,8 @@ class Image extends Graphic {
   }
 
   override public function render() {
-    var x = this.x - Lo.cameraX * scrollX;
-    var y = this.y - Lo.cameraY * scrollY;
+    var x = this.x;
+    var y = this.y;
     if (entity != null && isRelative) {
       x += entity.x;
       y += entity.y;
@@ -67,8 +67,8 @@ class Image extends Graphic {
       _matrix.tx = -originX * _matrix.a;
       _matrix.ty = -originY * _matrix.d;
       _matrix.rotate(_angle * Lo.RAD);
-      _matrix.tx += originX + x;
-      _matrix.ty += originY + y;
+      _matrix.tx += originX + x - Lo.cameraX;
+      _matrix.ty += originY + y - Lo.cameraY;
       _angleBitmap.smoothing = smooth;
       if (smooth) {
         Lo.stage.quality = StageQuality.HIGH;

@@ -58,33 +58,13 @@ class Tilemap extends Graphic {
   }
 
   override public function render() {
-    var px = x - Lo.cameraX * scrollX;
-    var py = y - Lo.cameraY * scrollY;
+    var x = this.x;
+    var y = this.y;
     if (entity != null && isRelative) {
-      px += entity.x;
-      py += entity.y;
+      x += entity.x;
+      y += entity.y;
     }
-    var rx = 0.0;
-    var ry = 0.0;
-    if (px < 0) {
-      rx -= px;
-      px = 0.0;
-    }
-    if (py < 0) {
-      ry -= py;
-      py = 0.0;
-    }
-    var rw = Lo.min(_bufferRect.width, Lo.width - px);
-    var rh = Lo.min(_bufferRect.height, Lo.height - py);
-    if (rw > 0 && rh > 0) {
-      _point.x = px;
-      _point.y = py;
-      _rect.x = rx;
-      _rect.y = ry;
-      _rect.width = rw;
-      _rect.height = rh;
-      Render.buffer.copyPixels(_buffer, _rect, _point, null, null, true);
-    }
+    Render.copyPixels(_buffer, 0, 0, _width, _height, x, y);
   }
 
   inline public function getTile(col:Int, row:Int) {
