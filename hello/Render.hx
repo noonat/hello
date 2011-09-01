@@ -123,6 +123,20 @@ class Render {
     }
   }
 
+  static inline public function drawCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+    graphicsDirty = true;
+    graphics.lineStyle(thickness, color, alpha);
+    graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
+    graphics.lineStyle(Math.NaN);
+  }
+
+  static inline public function drawRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+    graphicsDirty = true;
+    graphics.lineStyle(thickness, color, alpha);
+    graphics.drawRect(x - Lo.cameraX, y - Lo.cameraY, width, height);
+    graphics.lineStyle(Math.NaN);
+  }
+
   static inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
     if (colorTransform != null) {
       texture.drawInto(_buffer, x, y, flipped, colorTransform);
