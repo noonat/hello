@@ -96,6 +96,14 @@ class World extends Space {
   * Render all the visible graphics in the world, layer by layer.
   */
   public function render() {
+    var node = _entities.first;
+    while (node != null) {
+      var entity = node.value;
+      node = node.next;
+      if (entity.isVisible) {
+        entity.preRender();
+      }
+    }
     var i = _layersKeys.length;
     while (i-- > 0) {
       var layer = _layersKeys[i];

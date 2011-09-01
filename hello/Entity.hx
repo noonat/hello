@@ -93,6 +93,10 @@ class Entity {
 
   }
 
+  public function preRender() {
+
+  }
+
   inline public function moveBy(dx:Float, dy:Float, mask:Int=0, updateCells:Bool=true):CollisionSweep {
     if (sweep != null) {
       sweep.free();
