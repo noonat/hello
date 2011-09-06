@@ -105,8 +105,7 @@ class Lo {
   }
 
   static inline public function angle(x:Float, y:Float):Float {
-    var a = Math.atan2(y, x) * DEG;
-    return a < 0 ? a + 360 : a;
+    return normalizeAngle(Math.atan2(y, x) * DEG);
   }
 
   static inline public function angleXY(out:Dynamic, angle:Float, length:Float=1, x:Float=0, y:Float=0) {
@@ -135,6 +134,10 @@ class Lo {
     return value < min ? min : (value > max ? max : value);
   }
 
+  static inline public function distance(x1:Float, y1:Float, x2:Float, y2:Float):Float {
+    return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+  }
+
   static inline public function lerp(value:Float, min:Float, max:Float):Float {
     return min + value * (max - min);
   }
@@ -153,6 +156,11 @@ class Lo {
 
   static inline public function maxInt(a:Int, b:Int):Int {
     return a > b ? a : b;
+  }
+
+  static inline public function normalizeAngle(angle:Float):Float {
+    var a = angle % 360;
+    return a < 0 ? a + 360 : a;
   }
 
   static inline public function scaleClamp(value:Float, min1:Float, max1:Float, min2:Float, max2:Float):Float {
