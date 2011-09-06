@@ -16,6 +16,7 @@ class Text extends Graphic {
   public static var defaultFont:String = 'Arial';
   public static var defaultSize:Int = 16;
   public static var defaultSmooth:Bool = true;
+  static var _fontCache:Array<String>;
   static var _fontEmbeddedCache:Hash<Bool>;
 
   public var alpha(getAlpha, setAlpha):Float;
@@ -202,10 +203,10 @@ class Text extends Graphic {
     return _font;
   }
 
-  inline function setFont(value:String):String {
+  function setFont(value:String):String {
     if (_font != value) {
-      if (!_fontEmbeddedCache.exists(_font)) {
-        throw 'value "' + _font + '" is not a valid font';
+      if (!_fontEmbeddedCache.exists(value)) {
+        throw 'value "' + value + '" is not a valid font';
       }
       _format.font = _font = value;
       _field.embedFonts = isEmbeddedFont(_font);
@@ -218,7 +219,7 @@ class Text extends Graphic {
     return _size;
   }
 
-  inline function setSize(value:Int):Int {
+  function setSize(value:Int):Int {
     if (value < 0) {
       throw 'size value must be >= 0';
     }
@@ -255,8 +256,15 @@ class Text extends Graphic {
 
   static public function updateFontCache() {
     _fontEmbeddedCache = new Hash<Bool>();
-    for (font in Font.enumerateFonts()) {
+    _fontEmbeddedCache.set('_sans', false);
+    _fontEmbeddedCache.set('_serif', false);
+    _fontEmbeddedCache.set('_typewriter', false);
+    for (font in Font.enumerateFonts(true)) {
       _fontEmbeddedCache.set(font.fontName, font.fontType != FontType.DEVICE);
+    }
+    _fontCache = new Array<String>();
+    for (font in _fontEmbeddedCache.keys()) {
+      _fontCache.push(font);
     }
   }
 }
