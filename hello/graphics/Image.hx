@@ -8,6 +8,9 @@ import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
 class Image extends Graphic {
+  static public var defaultSmooth:Bool = true;
+  static var _matrix:Matrix = new Matrix();
+
   public var alpha(getAlpha, setAlpha):Float;
   public var angle(getAngle, setAngle):Float;
   public var clipRect:Rectangle;
@@ -28,7 +31,6 @@ class Image extends Graphic {
   var _color:Int;
   var _colorTransform:ColorTransform;
   var _isFlipped:Bool;
-  static var _matrix:Matrix = new Matrix();
 
   public function new(texture:Texture, clipRect:Rectangle=null) {
     super();
@@ -41,6 +43,7 @@ class Image extends Graphic {
       originX = texture.rect.width / 2;
       originY = texture.rect.height / 2;
     }
+    smooth = defaultSmooth;
     _alpha = 1.0;
     _angle = 0;
     _color = 0xffffff;
@@ -137,6 +140,7 @@ class Image extends Graphic {
   }
 
   inline function setColor(value:Int):Int {
+    value &= 0xffffff;
     if (_color != value) {
       _color = value;
       _colorTransform.redMultiplier   = (_color >> 16 & 255) / 255.0;
