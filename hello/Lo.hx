@@ -10,6 +10,7 @@ import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+import flash.utils.ByteArray;
 import flash.Vector;
 import hello.graphics.TextureAtlas;
 
@@ -190,6 +191,20 @@ class Lo {
 
   static inline public function randomRange(min:Float, max:Float):Float {
     return min + Math.random() * (max - min);
+  }
+
+  static public function xml(value:Dynamic):Xml {
+    if (Std.is(value, Class)) {
+       value = Type.createInstance(value, []);
+    }
+    if (Std.is(value, ByteArray)) {
+       value.position = 0;
+       value = value.readUTFBytes(value.length);
+    }
+    if (!Std.is(value, String)) {
+       throw 'xml() value must be Class, ByteArray, or String';
+    }
+    return Xml.parse(value).firstElement();
   }
 
   static inline public function inspect(args:Dynamic) {
