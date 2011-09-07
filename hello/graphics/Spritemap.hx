@@ -9,6 +9,7 @@ class Spritemap extends Image {
   public var animName(getAnimName, never):String;
   public var completeFunction:CompleteFunction;
   public var frame(getFrame, setFrame):Int;
+  public var frameCount(getFrameCount, never):Int;
   public var isPlaying:Bool;
   public var rate:Float;
   var _anim:Anim;
@@ -146,6 +147,10 @@ class Spritemap extends Image {
       }
     }
     return value;
+  }
+
+  inline function getFrameCount():Int {
+    return _frameCount;
   }
 
   override function getIsFlipped():Bool {
