@@ -162,7 +162,7 @@ class Assets {
     }
   }
 
-  static function loadAsset(asset:Asset, listener:LoadedAssetListener=null) {
+  static public function loadAsset(asset:Asset, listener:LoadedAssetListener=null) {
     var urlRequest = new URLRequest(basePath + '/' + asset.path);
     switch (asset.type) {
       case 'bitmap':
