@@ -80,6 +80,21 @@ class World extends Space {
   }
 
   /**
+  * Return a list of entities with the given tag.
+  */
+  inline public function getTagged(tag:String):ValueList<Entity> {
+    var list = Entity.listPool.create();
+    if (_tags.exists(tag)) {
+      var node = _tags.get(tag).first;
+      while (node != null) {
+        list.add(node.value);
+        node = node.next;
+      }
+    }
+    return list;
+  }
+
+  /**
   * Process one frame of the world.
   */
   public function tick() {
