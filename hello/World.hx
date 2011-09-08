@@ -70,7 +70,7 @@ class World extends Space {
   /**
   * Return the first entity with the given name, or null.
   */
-  inline public function getNamed(name:String):Entity {
+  inline public function getNamedEntity(name:String):Entity {
     if (_names.exists(name)) {
       var node = _names.get(name).first;
       return node != null ? node.value : null;
@@ -80,9 +80,25 @@ class World extends Space {
   }
 
   /**
+  * Return the first entity with the given tag, or null.
+  */
+  inline public function getTaggedEntity(tag:String):Entity {
+    return if (_tags.exists(tag)) {
+      var node = _tags.get(tag).first;
+      if (node != null) {
+        node.value;
+      } else {
+        null;
+      }
+    } else {
+      null;
+    }
+  }
+
+  /**
   * Return a list of entities with the given tag.
   */
-  inline public function getTagged(tag:String):ValueList<Entity> {
+  inline public function getTaggedEntities(tag:String):ValueList<Entity> {
     var list = Entity.listPool.create();
     if (_tags.exists(tag)) {
       var node = _tags.get(tag).first;
