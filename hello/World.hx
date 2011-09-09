@@ -183,7 +183,7 @@ class World extends Space {
   }
 
   function sortLayersCallback(a:Int, b:Int):Int {
-    return a - b;
+    return b - a;
   }
 
   function resolvePendingAdds() {

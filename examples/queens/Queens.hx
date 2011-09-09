@@ -207,7 +207,7 @@ class Crusher extends Platform {
   public function new() {
     super();
     _image.texture = Queens.atlas.getTexture('crusher.png');
-    _image.layer = 3;
+    _image.layer = 0;
   }
 }
 
@@ -219,7 +219,7 @@ class Gear extends Entity {
   public function new() {
     super();
     _image = new Image(Queens.atlas.getTexture('gear.png'));
-    _image.layer = 3;
+    _image.layer = 0;
     addGraphic(_image);
   }
 
@@ -287,7 +287,7 @@ class BlockGraphic extends Graphic {
 
   public function new(x:Float, y:Float, width:Float, height:Float, texture:Texture, empty:Int) {
     super();
-    layer = 2;
+    layer = 1;
     this.x = x;
     this.y = y;
     _texture = texture;
@@ -375,7 +375,7 @@ class Player extends Entity {
     _spritemap.add('stand', [4, 5, 6], 2, false);
     _spritemap.add('dead_left', [4], 1, false, true);
     _spritemap.add('dead_right', [4], 1, false);
-    _spritemap.layer = 0;
+    _spritemap.layer = 2;
     addGraphic(_spritemap);
   }
 
