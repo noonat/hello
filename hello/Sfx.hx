@@ -40,6 +40,9 @@ class Sfx {
     _type = type;
     _vol = 1;
 
+    if (Std.is(source, String)) {
+      source = Assets.getSound(source);
+    }
     if (Std.is(source, Class)) {
       var className:String = Type.getClassName(source);
       _sound = _sounds.get(className);
@@ -47,8 +50,7 @@ class Sfx {
         _sound = cast(Type.createInstance(source, []), Sound);
         _sounds.set(className, _sound);
       }
-    }
-    else if (Std.is(source, Sound)) {
+    } else if (Std.is(source, Sound)) {
       _sound = source;
     } else {
       throw "Sfx source needs to be of type Class or Sound";
