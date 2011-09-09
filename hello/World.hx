@@ -150,6 +150,7 @@ class World extends Space {
           graphic.render();
         }
       }
+      Render.flush();
     }
   }
 
