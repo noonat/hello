@@ -97,11 +97,11 @@ class Text extends Graphic {
       _matrix.tx += originX + x - Lo.cameraX;
       _matrix.ty += originY + y - Lo.cameraY;
       if (smooth) {
-        Lo.stage.quality = StageQuality.HIGH;
+        Render.quality = StageQuality.HIGH;
       }
       Render.buffer.draw(_colorBitmapData, _matrix, null, null, null, smooth);
       if (smooth) {
-        Lo.stage.quality = StageQuality.LOW;
+        Render.resetQuality();
       }
     } else {
       Render.copyPixels(_colorBitmapData, 0, 0, _width, _height, x, y);

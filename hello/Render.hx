@@ -18,13 +18,14 @@ import hello.graphics.Texture;
 
 class Render {
   static public var angle(getAngle, setAngle):Float;
-  static public var backgroundColor:Int = 0x000000;
+  static public var backgroundColor:Int;
   static public var buffer(getBuffer, never):BitmapData;
   static public var graphics(getGraphics, never):Graphics;
   static public var graphicsDirty(getGraphicsDirty, setGraphicsDirty):Bool;
-  static public var highQuality:Bool = true;
+  static public var graphicsQuality:StageQuality = StageQuality.HIGH;
   static public var originX(getOriginX, setOriginX):Float;
   static public var originY(getOriginY, setOriginY):Float;
+  static public var quality(getQuality, setQuality):StageQuality;
   static public var scale(getScale, setScale):Float;
   static public var x(getX, setX):Float;
   static public var y(getY, setY):Float;
@@ -37,14 +38,16 @@ class Render {
   static var _matrixNeedsUpdate:Bool;
   static var _originX:Float;
   static var _originY:Float;
+  static var _quality:StageQuality;
   static var _scale:Float;
   static var _sprite:Sprite;
-  static var _tmpMatrix:Matrix;
-  static var _tmpPoint:Point;
-  static var _tmpRect:Rectangle;
-  static var _tmpShape:Shape;
   static var _tmpGraphics:Graphics;
   static var _tmpGraphicsDirty:Bool;
+  static var _tmpMatrix:Matrix;
+  static var _tmpPoint:Point;
+  static var _tmpQuality:StageQuality;
+  static var _tmpRect:Rectangle;
+  static var _tmpShape:Shape;
   static var _x:Float;
   static var _y:Float;
   #if debug
@@ -52,6 +55,8 @@ class Render {
   #end
 
   static public function init() {
+    backgroundColor = 0x000000;
+    graphicsQuality = StageQuality.HIGH;
     _angle = 0;
     _buffer = new BitmapData(Lo.width, Lo.height, false, 0);
     _bufferRect = _buffer.rect;
@@ -64,12 +69,14 @@ class Render {
     _matrixNeedsUpdate = true;
     _originX = 0;
     _originY = 0;
+    _quality = StageQuality.LOW;
     _scale = 1;
     _sprite = new Sprite();
     _sprite.addChild(_bitmaps[0]);
     _sprite.addChild(_bitmaps[1]);
     _tmpMatrix = new Matrix();
     _tmpPoint = new Point();
+    _tmpQuality = _quality;
     _tmpRect = new Rectangle();
     _tmpShape = new Shape();
     _tmpGraphics = _tmpShape.graphics;
@@ -101,10 +108,10 @@ class Render {
     }
 
     #if debug
-    Lo.stage.quality = StageQuality.HIGH;
+    quality = graphicsQuality;
     _buffer.draw(_debug);
     _debug.graphics.clear();
-    Lo.stage.quality = StageQuality.LOW;
+    resetQuality();
     #end
 
     _bitmaps[_bitmapIndex].visible = true;
@@ -116,13 +123,9 @@ class Render {
 
   static public function flush() {
     if (_tmpGraphicsDirty) {
-      if (highQuality) {
-        Lo.stage.quality = StageQuality.HIGH;
-        _buffer.draw(_tmpShape);
-        Lo.stage.quality = StageQuality.LOW;
-      } else {
-        _buffer.draw(_tmpShape);
-      }
+      quality = graphicsQuality;
+      _buffer.draw(_tmpShape);
+      resetQuality();
       _tmpGraphics.clear();
     }
   }
@@ -224,6 +227,16 @@ class Render {
     graphics.endFill();
   }
 
+  static inline public function resetQuality(value:Null<StageQuality>=null) {
+    if (value != null) {
+      _quality = value;
+    }
+    if (_tmpQuality != _quality) {
+      Lo.stage.quality = _quality;
+    }
+    _tmpQuality = _quality;
+  }
+
   static inline function getBuffer():BitmapData {
     return _buffer;
   }
@@ -272,6 +285,18 @@ class Render {
     if (_originY != value) {
       _originY = value;
       _matrixNeedsUpdate = true;
+    }
+    return value;
+  }
+
+  static inline function getQuality():StageQuality {
+    return _tmpQuality;
+  }
+
+  static inline function setQuality(value:StageQuality):StageQuality {
+    if (_tmpQuality != value) {
+      _tmpQuality = value;
+      Lo.stage.quality = _tmpQuality;
     }
     return value;
   }

@@ -74,11 +74,11 @@ class Image extends Graphic {
       _matrix.ty += originY + y - Lo.cameraY;
       _angleBitmap.smoothing = smooth;
       if (smooth) {
-        Lo.stage.quality = StageQuality.HIGH;
+        Render.quality = StageQuality.HIGH;
       }
       Render.buffer.draw(_angleBitmap, _matrix, colorTransform, null, null, smooth);
       if (smooth) {
-        Lo.stage.quality = StageQuality.LOW;
+        Render.resetQuality();
       }
     } else {
       if (clipRect != null) {
