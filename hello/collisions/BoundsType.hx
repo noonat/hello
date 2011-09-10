@@ -1,7 +1,7 @@
 package hello.collisions;
 
 enum BoundsType {
-  AABB;
-  CIRCLE;
-  GRID;
+   AABB;
+   CIRCLE;
+   GRID;
 }

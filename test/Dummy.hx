@@ -1,4 +1,4 @@
 class Dummy {
-  public function new() {
-  }
+   public function new() {
+   }
 }

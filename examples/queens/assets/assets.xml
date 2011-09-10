@@ -1,5 +1,5 @@
 <assets path="/examples/queens/assets">
-  <asset id="map" src="map.xml"/>
-  <asset id="atlas_queens" src="atlas_queens.png"/>
-  <asset id="atlas_queens_plist" src="atlas_queens.plist"/>
+   <asset id="map" src="map.xml"/>
+   <asset id="atlas_queens" src="atlas_queens.png"/>
+   <asset id="atlas_queens_plist" src="atlas_queens.plist"/>
 </assets>
