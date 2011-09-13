@@ -9,6 +9,7 @@ private typedef WorldFriend = {
 
 class Graphic {
    public var entity:Entity;
+   public var isActive:Bool;
    public var isRelative:Bool;
    public var isVisible:Bool;
    public var layer(getLayer, setLayer):Int;
@@ -20,6 +21,7 @@ class Graphic {
 
    public function new() {
       entity = null;
+      isActive = false;
       isRelative = true;
       isVisible = true;
       x = 0;
@@ -37,6 +39,10 @@ class Graphic {
    }
 
    public function render() {
+
+   }
+
+   public function update() {
 
    }
 

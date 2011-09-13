@@ -171,6 +171,22 @@ class World extends Space {
             }
          }
       }
+      var i = _layersKeys.length;
+      while (i-- > 0) {
+         var layer = _layersKeys[i];
+         var graphics = _layers.get(layer);
+         if (graphics == null) {
+            continue;
+         }
+         var node = graphics.first;
+         while (node != null) {
+            var graphic = node.value;
+            node = node.next;
+            if (graphic.isActive) {
+               graphic.update();
+            }
+         }
+      }
    }
 
    function resolvePending() {
