@@ -57,14 +57,14 @@ class Tilemap extends Graphic {
       _tilesetCount = _tilesetCols * _tilesetRows;
    }
 
-   override public function render() {
+   override public function render(target:Renderer) {
       var x = this.x;
       var y = this.y;
       if (entity != null && isRelative) {
          x += entity.x;
          y += entity.y;
       }
-      Render.copyPixels(_buffer, 0, 0, _width, _height, x, y);
+      target.copyPixels(_buffer, 0, 0, _width, _height, x, y);
    }
 
    inline public function getTile(col:Int, row:Int) {

@@ -51,7 +51,7 @@ class Image extends Graphic {
       _isFlipped = false;
    }
 
-   override public function render() {
+   override public function render(target:Renderer) {
       var x = this.x;
       var y = this.y;
       if (entity != null && isRelative) {
@@ -74,17 +74,17 @@ class Image extends Graphic {
          _matrix.ty += originY + y - Lo.cameraY;
          _angleBitmap.smoothing = smooth;
          if (smooth) {
-            Render.quality = StageQuality.HIGH;
+            target.quality = StageQuality.HIGH;
          }
-         Render.buffer.draw(_angleBitmap, _matrix, colorTransform, null, null, smooth);
+         target.buffer.draw(_angleBitmap, _matrix, colorTransform, null, null, smooth);
          if (smooth) {
-            Render.resetQuality();
+            target.resetQuality();
          }
       } else {
          if (clipRect != null) {
-            Render.drawTextureRect(texture, x, y, clipRect.x, clipRect.y, clipRect.width, clipRect.height, isFlipped, colorTransform);
+            target.drawTextureRect(texture, x, y, clipRect.x, clipRect.y, clipRect.width, clipRect.height, isFlipped, colorTransform);
          } else {
-            Render.drawTexture(texture, x, y, isFlipped, colorTransform);
+            target.drawTexture(texture, x, y, isFlipped, colorTransform);
          }
       }
    }

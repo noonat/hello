@@ -113,12 +113,12 @@ class World extends Space {
    /**
    * Process one frame of the world.
    */
-   public function tick() {
+   public function tick(target:Renderer) {
       if (isActive) {
          update();
       }
       if (isVisible) {
-         render();
+         render(target);
       }
       resolvePending();
    }
@@ -126,13 +126,13 @@ class World extends Space {
    /**
    * Render all the visible graphics in the world, layer by layer.
    */
-   public function render() {
+   public function render(target:Renderer) {
       var node = _entities.first;
       while (node != null) {
          var entity = node.value;
          node = node.next;
          if (entity.isVisible) {
-            entity.preRender();
+            entity.preRender(target);
          }
       }
       var i = _layersKeys.length;
@@ -147,10 +147,10 @@ class World extends Space {
             var graphic = node.value;
             node = node.next;
             if (graphic.isVisible && graphic.entity.isVisible) {
-               graphic.render();
+               graphic.render(target);
             }
          }
-         Render.flush();
+         target.flush();
       }
    }
 

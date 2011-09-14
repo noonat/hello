@@ -22,12 +22,12 @@ class Engine {
       time = Lib.getTimer() / 1000.0;
    }
 
-   public function tick() {
+   public function tick(target:Renderer) {
       var newTime = Lib.getTimer() / 1000.0;
       elapsed = Lo.min(newTime - time, MAX_ELAPSED);
       time = newTime;
       if (_world != null) {
-         _world.tick();
+         _world.tick(target);
       }
       if (_pendingWorld != null) {
          if (_world != null) {

@@ -79,7 +79,7 @@ class Text extends Graphic {
       originY = _height * 0.5;
    }
 
-   override public function render() {
+   override public function render(target:Renderer) {
       var x = this.x;
       var y = this.y;
       if (entity != null && isRelative) {
@@ -97,14 +97,14 @@ class Text extends Graphic {
          _matrix.tx += originX + x - Lo.cameraX;
          _matrix.ty += originY + y - Lo.cameraY;
          if (smooth) {
-            Render.quality = StageQuality.HIGH;
+            target.quality = StageQuality.HIGH;
          }
-         Render.buffer.draw(_colorBitmapData, _matrix, null, null, null, smooth);
+         target.buffer.draw(_colorBitmapData, _matrix, null, null, null, smooth);
          if (smooth) {
-            Render.resetQuality();
+            target.resetQuality();
          }
       } else {
-         Render.copyPixels(_colorBitmapData, 0, 0, _width, _height, x, y);
+         target.copyPixels(_colorBitmapData, 0, 0, _width, _height, x, y);
       }
    }
 

@@ -39,6 +39,7 @@ class Lo {
    static public var mouseY(getMouseY, never):Int;
    static public var point:Point = new Point();
    static public var rect:Rectangle = new Rectangle();
+   static public var renderer(getRenderer, never):Renderer;
    static public var stage:Stage;
    static public var width(getWidth, never):Int;
    static public var height(getHeight, never):Int;
@@ -53,13 +54,14 @@ class Lo {
    static var _mouseReleased:Bool = false;
    static var _mouseX:Int = 0;
    static var _mouseY:Int = 0;
+   static var _renderer:Renderer;
    static var _width:Int;
    static var _height:Int;
 
    static public function main(width:Int, height:Int, frameRate:Int, cls:Class<Engine>, args:Array<Dynamic>=null) {
       #if monster
          MonsterDebugger.initialize(Lib.current);
-         MonsterDebugger.inspect({Lo: Lo, Render: Render});
+         MonsterDebugger.inspect({Lo: Lo});
       #end
       var current = Lib.current;
       var onAddedToStage:Event -> Void = null;
@@ -249,7 +251,7 @@ class Lo {
       stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
       _width = width;
       _height = height;
-      Render.init();
+      _renderer = new Renderer(width, height);
       Lo.engine = Type.createInstance(cls, args);
    }
 
@@ -257,9 +259,9 @@ class Lo {
       _mouseX = Std.int(stage.mouseX);
       _mouseY = Std.int(stage.mouseY);
       if (engine != null) {
-         engine.tick();
+         engine.tick(_renderer);
       }
-      Render.flip();
+      _renderer.flip();
       _mousePressed = false;
       _mouseReleased = false;
       while (_keyResetIndex > 0) {
@@ -339,6 +341,10 @@ class Lo {
 
    static inline function getMouseY():Int {
       return _mouseY;
+   }
+
+   static inline function getRenderer():Renderer {
+      return _renderer;
    }
 
    static inline function getWidth():Int {

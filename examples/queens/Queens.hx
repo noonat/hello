@@ -14,7 +14,7 @@ import hello.graphics.Texture;
 import hello.graphics.TextureAtlas;
 import hello.Key;
 import hello.Lo;
-import hello.Render;
+import hello.Renderer;
 import hello.World;
 import Type;
 using hello.Mixins;
@@ -28,8 +28,8 @@ class Queens extends Engine {
 
    public function new() {
       super();
-      Render.backgroundColor = 0x0f110b;
-      Render.scale = 2;
+      Lo.renderer.backgroundColor = 0x0f110b;
+      Lo.renderer.scale = 2;
       atlas = new TextureAtlas('atlas_queens');
       atlas.setTexturesFromPropertyList('atlas_queens_plist');
       world = new Game();
@@ -310,7 +310,7 @@ class BlockGraphic extends Graphic {
       }
    }
 
-   override public function render() {
+   override public function render(target:Renderer) {
       var px = x;
       var py = y;
       if (entity != null && isRelative) {
@@ -324,7 +324,7 @@ class BlockGraphic extends Graphic {
          while (col < _cols) {
             var xx = px + (col * _tileSize);
             var rect = _rects[row * _cols + col];
-            Render.drawTextureRect(
+            target.drawTextureRect(
                _texture, xx, yy, rect.x, rect.y, rect.width, rect.height);
             col++;
          }

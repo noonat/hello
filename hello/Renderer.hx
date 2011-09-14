@@ -16,49 +16,53 @@ import hello.collisions.CollisionHit;
 import hello.collisions.CollisionSweep;
 import hello.graphics.Texture;
 
-class Render {
-   static public var angle(getAngle, setAngle):Float;
-   static public var backgroundColor:Int;
-   static public var buffer(getBuffer, never):BitmapData;
-   static public var graphics(getGraphics, never):Graphics;
-   static public var graphicsDirty(getGraphicsDirty, setGraphicsDirty):Bool;
-   static public var graphicsQuality:StageQuality = StageQuality.HIGH;
-   static public var originX(getOriginX, setOriginX):Float;
-   static public var originY(getOriginY, setOriginY):Float;
-   static public var quality(getQuality, setQuality):StageQuality;
-   static public var scale(getScale, setScale):Float;
-   static public var x(getX, setX):Float;
-   static public var y(getY, setY):Float;
-   static var _angle:Float;
-   static var _bitmapIndex:Int;
-   static var _bitmaps:Array<Bitmap>;
-   static var _buffer:BitmapData;
-   static var _bufferRect:Rectangle;
-   static var _matrix:Matrix;
-   static var _matrixNeedsUpdate:Bool;
-   static var _originX:Float;
-   static var _originY:Float;
-   static var _quality:StageQuality;
-   static var _scale:Float;
-   static var _sprite:Sprite;
-   static var _tmpGraphics:Graphics;
-   static var _tmpGraphicsDirty:Bool;
-   static var _tmpMatrix:Matrix;
-   static var _tmpPoint:Point;
-   static var _tmpQuality:StageQuality;
-   static var _tmpRect:Rectangle;
-   static var _tmpShape:Shape;
-   static var _x:Float;
-   static var _y:Float;
-   #if debug
-   static var _debug:Shape;
-   #end
+class Renderer {
+   public var angle(getAngle, setAngle):Float;
+   public var backgroundColor:Int;
+   public var buffer(getBuffer, never):BitmapData;
+   public var graphics(getGraphics, never):Graphics;
+   public var graphicsDirty(getGraphicsDirty, setGraphicsDirty):Bool;
+   public var graphicsQuality:StageQuality;
+   public var originX(getOriginX, setOriginX):Float;
+   public var originY(getOriginY, setOriginY):Float;
+   public var quality(getQuality, setQuality):StageQuality;
+   public var scale(getScale, setScale):Float;
+   public var width(getWidth, never):Int;
+   public var height(getHeight, never):Int;
+   public var x(getX, setX):Float;
+   public var y(getY, setY):Float;
+   var _angle:Float;
+   var _bitmapIndex:Int;
+   var _bitmaps:Array<Bitmap>;
+   var _buffer:BitmapData;
+   var _bufferRect:Rectangle;
+   var _matrix:Matrix;
+   var _matrixNeedsUpdate:Bool;
+   var _originX:Float;
+   var _originY:Float;
+   var _quality:StageQuality;
+   var _scale:Float;
+   var _sprite:Sprite;
+   var _tmpGraphics:Graphics;
+   var _tmpGraphicsDirty:Bool;
+   var _tmpMatrix:Matrix;
+   var _tmpPoint:Point;
+   var _tmpQuality:StageQuality;
+   var _tmpRect:Rectangle;
+   var _tmpShape:Shape;
+   var _width:Int;
+   var _height:Int;
+   var _x:Float;
+   var _y:Float;
+#if debug
+   var _debug:Shape;
+#end
 
-   static public function init() {
+   public function new(width:Int, height:Int) {
       backgroundColor = 0x000000;
       graphicsQuality = StageQuality.HIGH;
       _angle = 0;
-      _buffer = new BitmapData(Lo.width, Lo.height, false, 0);
+      _buffer = new BitmapData(width, height, false, 0);
       _bufferRect = _buffer.rect;
       _bitmaps = new Array<Bitmap>();
       _bitmaps[0] = new Bitmap(_buffer);
@@ -81,16 +85,18 @@ class Render {
       _tmpShape = new Shape();
       _tmpGraphics = _tmpShape.graphics;
       _tmpGraphicsDirty = false;
+      _width = width;
+      _height = height;
       _x = 0;
       _y = 0;
-      #if debug
+#if debug
       _debug = new Shape();
       _sprite.addChild(_debug);
-      #end
+#end
       Lib.current.addChild(_sprite);
    }
 
-   static public function flip() {
+   public function flip() {
       flush();
 
       if (_matrixNeedsUpdate) {
@@ -107,12 +113,12 @@ class Render {
          _sprite.transform.matrix = _matrix;
       }
 
-      #if debug
+#if debug
       quality = graphicsQuality;
       _buffer.draw(_debug);
       _debug.graphics.clear();
       resetQuality();
-      #end
+#end
 
       _bitmaps[_bitmapIndex].visible = true;
       _bitmapIndex = (_bitmapIndex + 1) % 2;
@@ -121,7 +127,7 @@ class Render {
       _buffer.fillRect(_bufferRect, backgroundColor);
    }
 
-   static public function flush() {
+   public function flush() {
       if (_tmpGraphicsDirty) {
          quality = graphicsQuality;
          _buffer.draw(_tmpShape);
@@ -130,7 +136,7 @@ class Render {
       }
    }
 
-   static inline public function copyPixels(source:BitmapData, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, destX:Float, destY:Float, mergeAlpha:Bool=true) {
+   inline public function copyPixels(source:BitmapData, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, destX:Float, destY:Float, mergeAlpha:Bool=true) {
       destX = Std.int(destX - Lo.cameraX);
       destY = Std.int(destY - Lo.cameraY);
       if (destX < 0) {
@@ -143,9 +149,9 @@ class Render {
          sourceHeight += destY;
          destY = 0;
       }
-      sourceWidth = Std.int(Lo.min(sourceWidth, Lo.width - destX));
+      sourceWidth = Std.int(Lo.min(sourceWidth, _width - destX));
       if (sourceWidth > 0) {
-         sourceHeight = Std.int(Lo.min(sourceHeight, Lo.height - destY));
+         sourceHeight = Std.int(Lo.min(sourceHeight, _height - destY));
          if (sourceHeight > 0) {
             _tmpPoint.x = destX;
             _tmpPoint.y = destY;
@@ -158,21 +164,21 @@ class Render {
       }
    }
 
-   static inline public function drawCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+   inline public function drawCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
       graphicsDirty = true;
       graphics.lineStyle(thickness, color, alpha);
       graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
       graphics.lineStyle(Math.NaN);
    }
 
-   static inline public function drawRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+   inline public function drawRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
       graphicsDirty = true;
       graphics.lineStyle(thickness, color, alpha);
       graphics.drawRect(x - Lo.cameraX, y - Lo.cameraY, width, height);
       graphics.lineStyle(Math.NaN);
    }
 
-   static inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+   inline public function drawTexture(texture:Texture, x:Float, y:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
       x -= Lo.cameraX;
       y -= Lo.cameraY;
       if (colorTransform != null) {
@@ -182,7 +188,7 @@ class Render {
       }
    }
 
-   static inline public function drawTextureRect(texture:Texture, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
+   inline public function drawTextureRect(texture:Texture, x:Float, y:Float, sourceX:Float, sourceY:Float, sourceWidth:Float, sourceHeight:Float, flipped:Bool=false, colorTransform:ColorTransform=null) {
       x -= Lo.cameraX;
       y -= Lo.cameraY;
       if (colorTransform != null) {
@@ -192,7 +198,7 @@ class Render {
       }
    }
 
-   static inline public function fillBitmap(bitmap:BitmapData, x:Float, y:Float, width:Float, height:Float) {
+   inline public function fillBitmap(bitmap:BitmapData, x:Float, y:Float, width:Float, height:Float) {
       x -= Lo.cameraX;
       y -= Lo.cameraY;
       graphicsDirty = true;
@@ -207,14 +213,14 @@ class Render {
       graphics.endFill();
    }
 
-   static inline public function fillCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0) {
+   inline public function fillCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0) {
       graphicsDirty = true;
       graphics.beginFill(color, alpha);
       graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
       graphics.endFill();
    }
 
-   static inline public function fillRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, roundedWidth:Float=0, roundedHeight:Float=0) {
+   inline public function fillRect(x:Float, y:Float, width:Float, height:Float, color:Int=0xffffff, alpha:Float=1.0, roundedWidth:Float=0, roundedHeight:Float=0) {
       x -= Lo.cameraX;
       y -= Lo.cameraY;
       graphicsDirty = true;
@@ -227,7 +233,7 @@ class Render {
       graphics.endFill();
    }
 
-   static inline public function resetQuality(value:Null<StageQuality>=null) {
+   inline public function resetQuality(value:Null<StageQuality>=null) {
       if (value != null) {
          _quality = value;
       }
@@ -237,27 +243,27 @@ class Render {
       _tmpQuality = _quality;
    }
 
-   static inline function getBuffer():BitmapData {
+   inline function getBuffer():BitmapData {
       return _buffer;
    }
 
-   static inline function getGraphics():Graphics {
+   inline function getGraphics():Graphics {
       return _tmpGraphics;
    }
 
-   static inline function getGraphicsDirty():Bool {
+   inline function getGraphicsDirty():Bool {
       return _tmpGraphicsDirty;
    }
 
-   static inline function setGraphicsDirty(value:Bool):Bool {
+   inline function setGraphicsDirty(value:Bool):Bool {
       return _tmpGraphicsDirty = value;
    }
 
-   static inline function getAngle():Float {
+   inline function getAngle():Float {
       return _angle;
    }
 
-   static inline function setAngle(value:Float):Float {
+   inline function setAngle(value:Float):Float {
       if (_angle != value * Lo.RAD) {
          _angle = value * Lo.RAD;
          _matrixNeedsUpdate = true;
@@ -265,11 +271,11 @@ class Render {
       return value;
    }
 
-   static inline function getOriginX():Float {
+   inline function getOriginX():Float {
       return _originX;
    }
 
-   static inline function setOriginX(value:Float):Float {
+   inline function setOriginX(value:Float):Float {
       if (_originX != value) {
          _originX = value;
          _matrixNeedsUpdate = true;
@@ -277,11 +283,11 @@ class Render {
       return value;
    }
 
-   static inline function getOriginY():Float {
+   inline function getOriginY():Float {
       return _originY;
    }
 
-   static inline function setOriginY(value:Float):Float {
+   inline function setOriginY(value:Float):Float {
       if (_originY != value) {
          _originY = value;
          _matrixNeedsUpdate = true;
@@ -289,11 +295,11 @@ class Render {
       return value;
    }
 
-   static inline function getQuality():StageQuality {
+   inline function getQuality():StageQuality {
       return _tmpQuality;
    }
 
-   static inline function setQuality(value:StageQuality):StageQuality {
+   inline function setQuality(value:StageQuality):StageQuality {
       if (_tmpQuality != value) {
          _tmpQuality = value;
          Lo.stage.quality = _tmpQuality;
@@ -301,11 +307,11 @@ class Render {
       return value;
    }
 
-   static inline function getScale():Float {
+   inline function getScale():Float {
       return _scale;
    }
 
-   static inline function setScale(value:Float):Float {
+   inline function setScale(value:Float):Float {
       if (_scale != value) {
          _scale = value;
          _matrixNeedsUpdate = true;
@@ -313,11 +319,19 @@ class Render {
       return value;
    }
 
-   static inline function getX():Float {
+   inline function getWidth():Int {
+      return _width;
+   }
+
+   inline function getHeight():Int {
+      return _height;
+   }
+
+   inline function getX():Float {
       return _x;
    }
 
-   static inline function setX(value:Float):Float {
+   inline function setX(value:Float):Float {
       if (_x != value) {
          _x = value;
          _matrixNeedsUpdate = true;
@@ -325,11 +339,11 @@ class Render {
       return value;
    }
 
-   static inline function getY():Float {
+   inline function getY():Float {
       return _y;
    }
 
-   static inline function setY(value:Float):Float {
+   inline function setY(value:Float):Float {
       if (_y != value) {
          _y = value;
          _matrixNeedsUpdate = true;
@@ -337,8 +351,8 @@ class Render {
       return value;
    }
 
-   #if debug
-   static public function debugBounds(bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
+#if debug
+   public function debugBounds(bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
       if (x == null) {
          x = bounds.entity != null ? bounds.entity.x : 0;
       }
@@ -358,12 +372,12 @@ class Render {
       }
    }
 
-   static public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+   public function debugCircle(x:Float, y:Float, radius:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
       _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
       _debug.graphics.drawCircle(x - Lo.cameraX, y - Lo.cameraY, radius);
    }
 
-   static public function debugHit(hit:CollisionHit, bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
+   public function debugHit(hit:CollisionHit, bounds:Bounds, ?x:Float, ?y:Float, color:Int=0xffff00, alpha:Float=1.0, thickness:Float=0) {
       if (x == null) {
          x = (bounds.entity != null ? bounds.entity.x : 0) + hit.deltaX;
       }
@@ -374,18 +388,18 @@ class Render {
       debugLine(hit.x, hit.y, hit.x + hit.normalX * 4, hit.y + hit.normalY * 4, color, alpha);
    }
 
-   static public function debugLine(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+   public function debugLine(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
       _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
       _debug.graphics.moveTo(x1 - Lo.cameraX, y1 - Lo.cameraY);
       _debug.graphics.lineTo(x2 - Lo.cameraX, y2 - Lo.cameraY);
    }
 
-   static public function debugRect(x:Float, y:Float, w:Float, h:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
+   public function debugRect(x:Float, y:Float, w:Float, h:Float, color:Int=0xffffff, alpha:Float=1.0, thickness:Float=0) {
       _debug.graphics.lineStyle(thickness, color & 0xffffff, alpha);
       _debug.graphics.drawRect(x - Lo.cameraX, y - Lo.cameraY, w, h);
    }
 
-   static public function debugSweep(sweep:CollisionSweep, entity:Entity) {
+   public function debugSweep(sweep:CollisionSweep, entity:Entity) {
       var bounds = entity.bounds;
       var segment = sweep.segment;
       var x1 = segment.x1 + bounds.x;
@@ -434,5 +448,5 @@ class Render {
       }
       debugBounds(bounds, x2 - bounds.x, y2 - bounds.y, color);
    }
-   #end
+#end
 }
