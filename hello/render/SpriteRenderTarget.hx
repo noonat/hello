@@ -25,8 +25,8 @@ class SpriteRenderTarget extends RenderTarget {
    var _x:Float;
    var _y:Float;
 
-   public function new(width:Int, height:Int) {
-      super(width, height);
+   public function new(width:Int, height:Int, transparent:Bool=true) {
+      super(width, height, transparent);
       _angle = 0;
       _bitmaps = new Array<Bitmap>();
       _bitmaps[0] = new Bitmap(_buffer);

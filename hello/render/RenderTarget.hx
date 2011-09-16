@@ -8,6 +8,7 @@ import flash.geom.Rectangle;
 class RenderTarget {
    public var backgroundColor:Int;
    public var buffer(getBuffer, never):BitmapData;
+   public var bufferRect(getBufferRect, never):Rectangle;
    public var width(getWidth, never):Int;
    public var height(getHeight, never):Int;
    var _buffer:BitmapData;
@@ -18,9 +19,9 @@ class RenderTarget {
    var _debug:Shape;
 #end
 
-   public function new(width:Int, height:Int) {
+   public function new(width:Int, height:Int, transparent:Bool=false) {
       backgroundColor = 0x000000;
-      _buffer = new BitmapData(width, height, false, 0);
+      _buffer = new BitmapData(width, height, transparent, 0);
       _bufferRect = _buffer.rect;
       _width = width;
       _height = height;
