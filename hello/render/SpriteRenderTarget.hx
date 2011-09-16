@@ -48,6 +48,12 @@ class SpriteRenderTarget extends RenderTarget {
 #end
    }
 
+   override public function dispose() {
+      _sprite.parent.removeChild(_sprite);
+      _bitmaps[0].bitmapData.dispose();
+      _bitmaps[1].bitmapData.dispose();
+   }
+
    override public function flip() {
       if (_matrixNeedsUpdate) {
          _matrix.b = _matrix.c = 0;

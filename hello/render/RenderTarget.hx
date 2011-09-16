@@ -29,6 +29,11 @@ class RenderTarget {
 #end
    }
 
+   public function dispose() {
+      _buffer.dispose();
+      _buffer = null;
+   }
+
    public function flip() {
 #if debug
       Lo.quality = StageQuality.HIGH;
