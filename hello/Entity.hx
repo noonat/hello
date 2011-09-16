@@ -93,7 +93,7 @@ class Entity {
 
    }
 
-   public function preRender(target:Renderer) {
+   public function preRender(renderer:Render) {
 
    }
 

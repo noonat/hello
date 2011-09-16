@@ -13,9 +13,9 @@ import flash.text.TextFormat;
 import hello.Lo;
 
 class Text extends Graphic {
-   public static var defaultFont:String = 'Arial';
-   public static var defaultSize:Int = 16;
-   public static var defaultSmooth:Bool = true;
+   static public var defaultFont:String = 'Arial';
+   static public var defaultSize:Int = 16;
+   static public var defaultSmooth:Bool = true;
    static var _fontCache:Array<String>;
    static var _fontEmbeddedCache:Hash<Bool>;
 
@@ -79,7 +79,7 @@ class Text extends Graphic {
       originY = _height * 0.5;
    }
 
-   override public function render(target:Renderer) {
+   override public function render(renderer:Render) {
       var x = this.x;
       var y = this.y;
       if (entity != null && isRelative) {
@@ -97,14 +97,14 @@ class Text extends Graphic {
          _matrix.tx += originX + x - Lo.cameraX;
          _matrix.ty += originY + y - Lo.cameraY;
          if (smooth) {
-            target.quality = StageQuality.HIGH;
+            Lo.quality = StageQuality.HIGH;
          }
-         target.buffer.draw(_colorBitmapData, _matrix, null, null, null, smooth);
+         renderer.draw(_colorBitmapData, _matrix, null, null, null, smooth);
          if (smooth) {
-            target.resetQuality();
+            Lo.resetQuality();
          }
       } else {
-         target.copyPixels(_colorBitmapData, 0, 0, _width, _height, x, y);
+         renderer.copyPixels(_colorBitmapData, 0, 0, _width, _height, x, y);
       }
    }
 

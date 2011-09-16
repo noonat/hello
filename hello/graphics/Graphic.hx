@@ -38,7 +38,7 @@ class Graphic {
 
    }
 
-   public function render(target:Renderer) {
+   public function render(renderer:Render) {
 
    }
 

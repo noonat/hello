@@ -13,6 +13,7 @@ import flash.Lib;
 import flash.utils.ByteArray;
 import flash.Vector;
 import hello.graphics.TextureAtlas;
+import hello.render.SpriteRenderTarget;
 
 #if monster
    import com.demonsters.debugger.MonsterDebugger;
@@ -38,8 +39,10 @@ class Lo {
    static public var mouseX(getMouseX, never):Int;
    static public var mouseY(getMouseY, never):Int;
    static public var point:Point = new Point();
+   static public var quality(getQuality, setQuality):StageQuality;
    static public var rect:Rectangle = new Rectangle();
-   static public var renderer(getRenderer, never):Renderer;
+   static public var render(getRender, never):Render;
+   static public var renderTarget(getRenderTarget, never):SpriteRenderTarget;
    static public var stage:Stage;
    static public var width(getWidth, never):Int;
    static public var height(getHeight, never):Int;
@@ -54,7 +57,10 @@ class Lo {
    static var _mouseReleased:Bool = false;
    static var _mouseX:Int = 0;
    static var _mouseY:Int = 0;
-   static var _renderer:Renderer;
+   static var _quality:StageQuality = StageQuality.LOW;
+   static var _render:Render;
+   static var _renderTarget:SpriteRenderTarget;
+   static var _tmpQuality:StageQuality;
    static var _width:Int;
    static var _height:Int;
 
@@ -242,7 +248,6 @@ class Lo {
       stage = Lib.current.stage;
       stage.align = StageAlign.TOP_LEFT;
       stage.frameRate = frameRate;
-      stage.quality = StageQuality.LOW;
       stage.scaleMode = StageScaleMode.NO_SCALE;
       stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
       stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -251,17 +256,21 @@ class Lo {
       stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
       _width = width;
       _height = height;
-      _renderer = new Renderer(width, height);
+      _renderTarget = new SpriteRenderTarget(width, height);
+      _render = new Render(_renderTarget);
+      Lib.current.addChild(_renderTarget.sprite);
       Lo.engine = Type.createInstance(cls, args);
+      stage.quality = _quality;
+      _tmpQuality = _quality;
    }
 
    static function onEnterFrame(event:Event) {
       _mouseX = Std.int(stage.mouseX);
       _mouseY = Std.int(stage.mouseY);
       if (engine != null) {
-         engine.tick(_renderer);
+         engine.tick(_render);
       }
-      _renderer.flip();
+      _render.flip();
       _mousePressed = false;
       _mouseReleased = false;
       while (_keyResetIndex > 0) {
@@ -301,6 +310,16 @@ class Lo {
    static function onMouseUp(event:MouseEvent) {
       _mouseDown = false;
       _mouseReleased = true;
+   }
+
+   static inline public function resetQuality(value:Null<StageQuality>=null) {
+      if (value != null) {
+         _quality = value;
+      }
+      if (_tmpQuality != _quality) {
+         stage.quality = _quality;
+      }
+      _tmpQuality = _quality;
    }
 
    static inline function getCameraMouseX():Float {
@@ -343,8 +362,24 @@ class Lo {
       return _mouseY;
    }
 
-   static inline function getRenderer():Renderer {
-      return _renderer;
+   static inline function getQuality():StageQuality {
+      return _tmpQuality;
+   }
+
+   static inline function setQuality(value:StageQuality):StageQuality {
+      if (_tmpQuality != value) {
+         _tmpQuality = value;
+         Lo.stage.quality = _tmpQuality;
+      }
+      return value;
+   }
+
+   static inline function getRender():Render {
+      return _render;
+   }
+
+   static inline function getRenderTarget():SpriteRenderTarget {
+      return _renderTarget;
    }
 
    static inline function getWidth():Int {

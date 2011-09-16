@@ -47,7 +47,7 @@ class Spritemap extends Image {
       super(texture, new Rectangle(0, 0, frameWidth, frameHeight));
    }
 
-   override public function render(target:Renderer) {
+   override public function render(renderer:Render) {
       // Update the current frame
       if (_anim != null && isPlaying) {
          var oldFrame = _frame;
@@ -86,7 +86,7 @@ class Spritemap extends Image {
       // Render the frame
       clipRect.x = (_frame % _cols) * _frameWidth;
       clipRect.y = Std.int(_frame / _cols) * _frameHeight;
-      super.render(target);
+      super.render(renderer);
    }
 
    public function add(name:String, frames:Array<Int>, frameRate:Float=0, isLooping:Bool=true, isFlipped:Bool=false):Anim {
