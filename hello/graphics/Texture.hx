@@ -179,4 +179,9 @@ class Texture {
    inline function getSourceRect():Rectangle {
       return atlas.sourceRect;
    }
+
+   static public function createFromSource(source:Dynamic, id:String='default'):Texture {
+      var atlas = new TextureAtlas(source);
+      return atlas.setTextureFromRect(id, atlas.sourceRect);
+   }
 }
