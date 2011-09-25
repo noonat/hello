@@ -20,7 +20,7 @@ class RenderTarget {
 #end
 
    public function new(width:Int, height:Int, transparent:Bool=false) {
-      backgroundColor = 0x000000;
+      backgroundColor = 0xff000000;
       _buffer = new BitmapData(width, height, transparent, 0);
       _bufferRect = _buffer.rect;
       _width = width;

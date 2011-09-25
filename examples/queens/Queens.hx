@@ -29,7 +29,7 @@ class Queens extends Engine {
 
    public function new() {
       super();
-      Lo.renderTarget.backgroundColor = 0x0f110b;
+      Lo.renderTarget.backgroundColor = 0xff0f110b;
       Lo.renderTarget.scale = 2;
       atlas = new TextureAtlas('atlas_queens');
       atlas.setTexturesFromPropertyList('atlas_queens_plist');
