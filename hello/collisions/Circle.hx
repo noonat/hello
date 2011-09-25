@@ -14,8 +14,9 @@ class Circle extends Bounds {
 
    inline public function set(radius:Float, ?x:Float, ?y:Float) {
       this.radius = radius;
-      this.x = x == null ? radius : x;
-      this.y = y == null ? radius : y;
+      _x = x == null ? radius : x;
+      _y = y == null ? radius : y;
+      synchronize();
    }
 
    inline function getRadius():Float {
@@ -29,6 +30,7 @@ class Circle extends Bounds {
       _halfHeight = value;
       _width = value * 2;
       _height = value * 2;
+      synchronize();
       return value;
    }
 

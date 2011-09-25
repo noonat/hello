@@ -12,8 +12,9 @@ class AABB extends Bounds {
       _halfHeight = halfHeight;
       _width = _halfWidth * 2;
       _height = _halfHeight * 2;
-      this.x = x == null ? halfWidth : x;
-      this.y = y == null ? halfHeight : y;
+      _x = x == null ? halfWidth : x;
+      _y = y == null ? halfHeight : y;
+      synchronize();
    }
 
    inline public function setMinMax(minX:Float, minY:Float, maxX:Float, maxY:Float) {
@@ -21,17 +22,20 @@ class AABB extends Bounds {
       _height = maxY - minY;
       _halfWidth = _width * 0.5;
       _halfHeight = _height * 0.5;
-      this.x = minX + _halfWidth;
-      this.y = minY + _halfHeight;
+      _x = minX + _halfWidth;
+      _y = minY + _halfHeight;
+      synchronize();
    }
 
    inline public function setWidth(value:Float) {
       _width = value;
       _halfWidth = value * 0.5;
+      synchronize();
    }
 
    inline public function setHeight(value:Float) {
       _height = value;
       _halfHeight = value * 0.5;
+      synchronize();
    }
 }

@@ -113,7 +113,7 @@ class Entity {
          _x = sweep.x;
          _y = sweep.y;
          if (updateCells && (_x != oldX || _y != oldY)) {
-            world.updateEntityCells(this);
+            synchronize();
          }
       } else {
          _x += dx;
@@ -129,11 +129,17 @@ class Entity {
          moveBy(dx, 0, mask, false);
          moveBy(0, dy, mask, false);
          if (updateCells && (_x != oldX || _y != oldY)) {
-            world.updateEntityCells(this);
+            synchronize();
          }
       } else {
          _x += dx;
          _y += dy;
+      }
+   }
+
+   inline public function synchronize() {
+      if (world != null) {
+         world.updateEntityCells(this);
       }
    }
 

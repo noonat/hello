@@ -26,7 +26,7 @@ class Bounds {
    var _grid:Grid;
 
    // Common bounding volume properties
-   public var entity:Entity;
+   public var entity(getEntity, setEntity):Entity;
    public var halfWidth(getHalfWidth, never):Float;
    public var halfHeight(getHalfHeight, never):Float;
    public var width(getWidth, never):Float;
@@ -35,13 +35,16 @@ class Bounds {
    public var minY(getMinY, never):Float;
    public var maxX(getMaxX, never):Float;
    public var maxY(getMaxY, never):Float;
-   public var x:Float;
-   public var y:Float;
+   public var x(getX, setX):Float;
+   public var y(getY, setY):Float;
    var _class:String;
+   var _entity:Entity;
    var _halfWidth:Float;
    var _halfHeight:Float;
    var _width:Float;
    var _height:Float;
+   var _x:Float;
+   var _y:Float;
 
    function new(type:BoundsType) {
       _type = type;
@@ -49,8 +52,8 @@ class Bounds {
       _halfHeight =0 ;
       _width = 0;
       _height = 0;
-      x = 0;
-      y = 0;
+      _x = 0;
+      _y = 0;
       _class = Type.getClassName(Type.getClass(this));
    }
 
@@ -127,6 +130,12 @@ class Bounds {
       }
    }
 
+   inline function synchronize() {
+      if (_entity != null) {
+         _entity.synchronize();
+      }
+   }
+
    inline function getType():BoundsType {
       return _type;
    }
@@ -141,6 +150,18 @@ class Bounds {
 
    inline function getGrid():Grid {
       return _grid;
+   }
+
+   inline function getEntity():Entity {
+      return _entity;
+   }
+
+   inline function setEntity(value:Entity):Entity {
+      if (_entity != value) {
+         _entity = value;
+         synchronize();
+      }
+      return value;
    }
 
    inline function getHalfWidth():Float {
@@ -160,18 +181,42 @@ class Bounds {
    }
 
    inline function getMinX():Float {
-      return x - _halfWidth;
+      return _x - _halfWidth;
    }
 
    inline function getMinY():Float {
-      return y - _halfHeight;
+      return _y - _halfHeight;
    }
 
    inline function getMaxX():Float {
-      return x + _halfWidth;
+      return _x + _halfWidth;
    }
 
    inline function getMaxY():Float {
-      return y + _halfHeight;
+      return _y + _halfHeight;
+   }
+
+   inline function getX():Float {
+      return _x;
+   }
+
+   inline function setX(value:Float):Float {
+      if (_x != value) {
+         _x = value;
+         synchronize();
+      }
+      return value;
+   }
+
+   inline function getY():Float {
+      return _y;
+   }
+
+   inline function setY(value:Float):Float {
+      if (_y != value) {
+         _y = value;
+         synchronize();
+      }
+      return value;
    }
 }
